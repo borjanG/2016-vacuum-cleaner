@@ -9,7 +9,7 @@ objetsStatiques = {100: ('aspirateur', '@'),
 class Monde(object):
 
   def __init__(self, a, l = 1, c = 2):
-    """bla"""
+    """ initialisation """
 
     self.__objetsStatiques = {100: ('aspirateur', '@'),
                               0: ('rien', ' '),
