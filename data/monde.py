@@ -17,6 +17,7 @@ class Monde(object):
 
   def __init__(self, a, l=1, c=2):
     """ Monde constructor """
+    assert isinstance(a,Aspirateur),"il faut un Stochy en argument"
 
     self.__lignes = l
     self.__cols = c

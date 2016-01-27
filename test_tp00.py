@@ -104,14 +104,14 @@ def test_init():
     except:
         _out = '.'
     if '1' in _out: return _out
-    
+    print("ok")
     try:
         _ = tp00.Monde(1)
         _out = 'a'
     except:
         _out = '.'
     if 'a' in _out: return _out
-
+    print("oooooh")
     _a = tp00.Aspirateur()
     try:
         _ = tp00.Monde(_a)
@@ -223,11 +223,12 @@ def main():
         print('correction needed, something missing')
     else:
         # On passe aux tests plus complexes
-        _s += test_init()
-        _s += test_str()
-        _s += test_initialisation()
-        _s += test_posAgent()
-        _s += test_table()
+        print(_s)
+        _s += test_init();print('test_init',_s)
+        _s += test_str();print('test_str',_s)
+        _s += test_initialisation();print('test_initialisation',_s)
+        _s += test_posAgent();print('test_posAgent',_s)
+        _s += test_table();print('test_table',_s)
         
     # Bilan
     _all = len(_s) 

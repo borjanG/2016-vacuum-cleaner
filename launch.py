@@ -28,3 +28,11 @@ if __name__ == "__main__":
   print(m.table)
   print(m.posAgent)
   print(m)
+
+  m=Monde(1)
+  # print(m.table)
+  # print(m.posAgent)
+  m.initialisation()
+  print(m.table)
+  print(m.posAgent)
+  print(m)
