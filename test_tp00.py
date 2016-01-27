@@ -7,7 +7,7 @@ __date__ = "27.01.16"
 __version__ = "0.2"
 
 ## remplacer XXX par le nom de votre fichier
-import XXX as tp00
+import monde as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random
@@ -172,17 +172,17 @@ def test_initialisation():
     _out = ''
     _ = tp00.Aspirateur()
     _m = tp00.Monde( _ )
-    _rep = subtest_initialisation_nbSol(_m,1,2)
+    _rep = test_initialisation_nbSol(_m,1,2)
     _out += check_property( 8 == _rep , "nb sol found %d" % _rep )
     _m = tp00.Monde( _, 2, 1 )
-    _rep = subtest_initialisation_nbSol(_m,2,1)
+    _rep = test_initialisation_nbSol(_m,2,1)
     _out += check_property( 8 == _rep , "nb sol found %d" % _rep )
     _m = tp00.Monde( _, 2 )
-    _rep = subtest_initialisation_nbSol(_m,2,2)
+    _rep = test_initialisation_nbSol(_m,2,2)
     _out += check_property( 64 == _rep , "nb sol found %d" % _rep )
     nl,nc = 2,3
     _m = tp00.Monde( _, nl,nc)
-    _rep = subtest_initialisation_nbSol(_m,nl,nc)
+    _rep = test_initialisation_nbSol(_m,nl,nc)
     _sz = nl*nc
     _out += check_property( _sz * 2**_sz == _rep , "vues %d attendues %d" % (_rep,_sz * 2**_sz ))
         
@@ -224,7 +224,7 @@ def main():
     else:
         # On passe aux tests plus complexes
         _s += test_init()
-        _s += test_str()
+        #_s += test_str()
         _s += test_initialisation()
         _s += test_posAgent()
         _s += test_table()
