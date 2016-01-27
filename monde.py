@@ -3,8 +3,8 @@ from random import randrange
 from copy import deepcopy
 
 objetsStatiques = {100: ('aspirateur', '@'),
-					0: ('rien', ' '), 
-					1: ('poussiere', ':')}
+					 0: ('rien', ' '), 
+					 1: ('poussiere', ':')}
 
 class Monde(object):
 
@@ -31,7 +31,7 @@ class Monde(object):
 		return self.__posAgent
 
 	def __str__(self):
-				tab=[]
+		tab=[]
 		for i in range(len(self.table)):
 			tab.append([])
 			for j in range(len(self.table[0]):
