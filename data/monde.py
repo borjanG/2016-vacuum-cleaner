@@ -26,13 +26,13 @@ class Monde(object):
 
   @property 
   def objetsStatiques(self):
-    return objetsStatiques
+    return deepcopy(objetsStatiques)
   @property
   def table(self):
-    return self.__table
+    return deepcopy(self.__table)
   @property 
   def posAgent(self):
-    return self.__posAgent
+    return deepcopy(self.__posAgent)
 
   def __str__(self):
     """ Generic string method """

@@ -104,14 +104,14 @@ def test_init():
     except:
         _out = '.'
     if '1' in _out: return _out
-    print("ok")
+
     try:
         _ = tp00.Monde(1)
         _out = 'a'
     except:
         _out = '.'
     if 'a' in _out: return _out
-    print("oooooh")
+
     _a = tp00.Aspirateur()
     try:
         _ = tp00.Monde(_a)

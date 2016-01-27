@@ -29,10 +29,9 @@ if __name__ == "__main__":
   print(m.posAgent)
   print(m)
 
-  m=Monde(1)
-  # print(m.table)
-  # print(m.posAgent)
-  m.initialisation()
+  m.table[0][0]=56
   print(m.table)
   print(m.posAgent)
   print(m)
+
+  
