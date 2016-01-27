@@ -1,8 +1,12 @@
 #Custom libs
-from aspirateur import Aspirateur
+from data.aspirateur import Aspirateur
 #Generic python libs
 from random import randrange
 from copy import deepcopy
+
+__author__ = "Terral, Rodriguez, Geshkovski"
+__date__ = "27.01.16"
+__version__ = "0.1"
 
 #Global variable (?)
 objetsStatiques = {100: ('aspirateur', '@'),
@@ -52,14 +56,3 @@ class Monde(object):
     self.__table = deepcopy([[randrange(len(self.objetsStatiques)-1)
                               for j in range(self.__cols)]
                              for i in range(self.__lignes)])
-
-if __name__ == "__main__":
-
-  a = Aspirateur()
-  m = Monde(a)
-  # print(m.table)
-  # print(m.posAgent)
-  m.initialisation()
-  print(m.table)
-  print(m.posAgent)
-  print(m)
