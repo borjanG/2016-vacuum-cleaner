@@ -35,9 +35,9 @@ class Monde(object):
 	def __str__(self):
                 tab=[]
 		for i in range(len(self.table)):
-                        tab.append([])
-                        for j in range(len(self.table[0]):
-                                tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
+                    tab.append([])
+                    for j in range(len(self.table[0])):
+                        tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
                 return str(tab)
                                        
 
