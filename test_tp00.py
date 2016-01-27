@@ -7,7 +7,7 @@ __date__ = "27.01.16"
 __version__ = "0.2"
 
 ## remplacer XXX par le nom de votre fichier
-import monde as tp00
+import data.monde as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random
@@ -224,7 +224,7 @@ def main():
     else:
         # On passe aux tests plus complexes
         _s += test_init()
-        #_s += test_str()
+        _s += test_str()
         _s += test_initialisation()
         _s += test_posAgent()
         _s += test_table()
