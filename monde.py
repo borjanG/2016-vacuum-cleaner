@@ -8,8 +8,6 @@ objetsStatiques = {100: ('aspirateur', '@'),
 
 class Monde(object):
 
-	
-
 	def __init__(self, a, l = 1, c = 2):
 		"""bla"""
 
@@ -33,13 +31,13 @@ class Monde(object):
 		return self.__posAgent
 
 	def __str__(self):
-                tab=[]
+				tab=[]
 		for i in range(len(self.table)):
-            tab.append([])
-            for j in range(len(self.table[0]):
-                tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
-        return str(tab)
-                                       
+			tab.append([])
+			for j in range(len(self.table[0]):
+				tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
+		return str(tab)
+									   
 
 	def initialisation(self):
 		self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
@@ -56,4 +54,4 @@ if __name__ == "__main__":
 	m.initialisation()
 	print(m.table)
 	print(m.posAgent)
-    print(m)
+	print(m)
