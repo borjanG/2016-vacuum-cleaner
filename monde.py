@@ -14,8 +14,8 @@ class Monde(object):
 		"""bla"""
 
 		self.__objetsStatiques = {100: ('aspirateur', '@'),
-					0: ('rien', ' '), 
-					1: ('poussiere', ':')}
+									0: ('rien', ' '), 
+									1: ('poussiere', ':')}
 		self.__lignes = l
 		self.__cols = c
 		self.__table = [[0 for j in range(c)] for i in range(l)]
@@ -35,10 +35,10 @@ class Monde(object):
 	def __str__(self):
                 tab=[]
 		for i in range(len(self.table)):
-                        tab.append([])
-                        for j in range(len(self.table[0]):
-                                tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
-                return str(tab)
+            tab.append([])
+            for j in range(len(self.table[0]):
+                tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
+        return str(tab)
                                        
 
 	def initialisation(self):
@@ -56,4 +56,4 @@ if __name__ == "__main__":
 	m.initialisation()
 	print(m.table)
 	print(m.posAgent)
-        print(m)
+    print(m)
