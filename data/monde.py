@@ -18,7 +18,7 @@ class Monde(object):
   def __init__(self, a, l=1, c=2):
     """ Monde constructor """
 
-    assert isinstance(a, Aspirateur), "il faut un Stochy en parametres"
+    assert isinstance(a, Aspirateur), "il faut un Stochy en parametre"
     self.__lignes = l
     self.__cols = c
     self.__table = [[0 for j in range(c)] for i in range(l)]
@@ -47,7 +47,7 @@ class Monde(object):
     """
 
     tab = []
-    key = max(self.objetsStatiques.keys()) #Pas plus de 100 cles qd meme
+    key = max(self.objetsStatiques.keys()) #Pas plus de 100 keys qd meme
 
     for i in range(len(self.table)):
       tab.append([])
@@ -69,8 +69,8 @@ class Monde(object):
 
     #Header
     _.append(header)
-
-    #ligne 0
+    #Middle
+    #Ligne 0
     _elt = "\u2551" + "%3s" %(tab[0][0]) #Premier element
     if c > 1:
       for j in range(1, c):
@@ -78,7 +78,7 @@ class Monde(object):
     _elt += "\u2551"
     _.append(_elt)
 
-    #autres lignes s'il y en a
+    #Autres lignes (s'il y en a)
     if l > 1:
       for i in range(1, l):
         _.append(middle)
@@ -87,7 +87,9 @@ class Monde(object):
           for j in range(1, c):
             _elt += "\u2502" + "%3s" %(tab[i][j])
         _elt += "\u2551"
-        _.append(_elt)      
+        _.append(_elt)
+
+    #Footer      
     _.append(footer)
     
     return "\n".join(_)
