@@ -35,7 +35,8 @@ class Monde(object):
     for i in range(len(self.table)):
       tab.append([])
       for j in range(len(self.table[0])):
-        tab[i][j]=self.objetsStatiques[self.table[i][j]][1]
+        tab[i].append(self.objetsStatiques[self.table[i][j]][1])
+    tab[self.posAgent[0]][self.posAgent[1]]+=self.objetsStatiques[100][1]
     return str(tab)
                                                                      
 
