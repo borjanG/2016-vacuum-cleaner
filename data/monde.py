@@ -15,7 +15,7 @@ objetsStatiques = {100: ('aspirateur', '@'),
 
 class Monde(object):
 
-  def __init__(self, a, l = 1, c = 2):
+  def __init__(self, a, l=1, c=2):
     """ Monde constructor """
 
     self.__lignes = l
@@ -42,12 +42,51 @@ class Monde(object):
       for j in range(len(self.table[0])):
         tab[i].append(self.objetsStatiques[self.table[i][j]][1])
     tab[self.posAgent[0]][self.posAgent[1]]+=self.objetsStatiques[100][1]
-    
-    header="\u2554"+"\u2550"*3+"\u2564"+"\u2550"*3+"\u2557"
-    middle="\u2551"+ "%3s" %(tab[0][0]) + "\u2502"+ "%3s" %(tab[0][1]) + "\u2551"
-    footer="\u255A"+"\u2550"*3+"\u2567"+"\u2550"*3+"\u255D"
 
-    return "\n".join([header,middle,footer])
+    l=len(tab)
+    c=len(tab[0])
+
+    truc_header="\u2550"*3+"\u2564"
+    truc_middle="\u2500"*3+"\u253C"
+    truc_footer="\u2550"*3+"\u2567"
+
+    _=[]
+
+    header="\u2554"+truc_header*(c-1)+"\u2550"*3+"\u2557"
+    middle="\u2551"+truc_middle*(c-1)+"\u2500"*3+"\u2551"
+    footer="\u255A"+truc_footer*(c-1)+"\u2550"*3+"\u255D"
+
+    #header
+    _.append(header)
+
+    #ligne 0
+    _elt="\u2551"+"%3s" %(tab[0][0]) #ligne 0 col 0
+    if c>1:
+      for j in range(1,c):
+        _elt+="\u2502"+"%3s" %(tab[0][j])
+    _elt+="\u2551"
+    _.append(_elt)
+
+    #autres lignes s'il y en a
+    if l>1:
+      for i in range(1,l):
+        _.append(middle)
+    
+        _elt="\u2551"+"%3s" %(tab[i][0]) #ligne i col 0
+        if c>1: #autres colonnes s'il y en a
+          for j in range(1,c):
+            _elt+="\u2502"+"%3s" %(tab[i][j])
+        _elt+="\u2551"
+
+        _.append(_elt)
+      
+    _.append(footer)
+    return "\n".join(_)
+  
+##    header="\u2554"+"\u2550"*3+"\u2564"+"\u2550"*3+"\u2557"
+##    middle="\u2551"+ "%3s" %(tab[0][0]) + "\u2502"+ "%3s" %(tab[0][1]) + "\u2551"
+##    footer="\u255A"+"\u2550"*3+"\u2567"+"\u2550"*3+"\u255D"
+##    return "\n".join([header,middle,footer])
                                                                      
 
   def initialisation(self):
