@@ -4,7 +4,7 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour la première réalisation aspi autonome"
 __date__ = "27.01.16"
-__version__ = "0.2"
+__version__ = "0.2a"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
@@ -61,30 +61,30 @@ def test_table():
     """
     _out = ''
     _a = tp00.Aspirateur()
-    _ = tp00.Monde(_a)
-    _out += check_property(isinstance(_.table, list ),'list expected found %s' % type(_.table))
+    nl,nc=3,3
+    _m = tp00.Monde(_a,nl,nc)
+    _out += check_property(isinstance(_m.table, list ),'list expected found %s' % type(_m.table))
     if _out[-1] != '.' : return _out
-    _tmp = subtest_table_size(_.table,1,2) ; _out += _tmp
-    if _tmp != '..' :
+    _tmp = subtest_table_size(_m.table,nl,nc) ; _out += _tmp
+    if _tmp != '.'*nl+'.' :
         return _out
-    for x in _.table[0]: 
+    for x in _m.table[0]: 
         _out += check_property(x in tp00.objetsStatiques,'unknown object %d' % x)
-    if -_out.count('.') != len(_out): return _out
-    _old = _.table
+    if _out.count('.') != len(_out): return _out
     # non modifiable
     try:
-        _.table = 'glob'
-        if _.table != _old: 
+        _m.table = 'glob'
+        if _m.table == 'glob': 
             _out += '1'
         else: _out += '.'
     except:
         _out += '.'
     if _out[-1] != '.' : return _out
+    
     try:
-        j = random.randrange(len(_table[0]))
-        _old = _.table[0][j]
-        _.table[0][j] = -42
-        if _.table[0][j] != _old :
+        j = random.randrange(len(_m.table[0]))
+        _m.table[0][j] = -42 #tentative d'affectation
+        if _m.table[0][j] == -42 : #réussite c'est mauvais
             _out += '2'
         else:
             _out += '.'
@@ -152,7 +152,7 @@ def test_str():
     _out += check_property(prop,'no basic item in world')
     return _out
 
-def test_initialisation_nbSol(world,nl,nc):
+def subtest_initialisation_nbSol(world,nl,nc):
     """ test couteux on limite la taille nl*nc """
     _rep = set([])
     if nl*nc < 3 : _m = 200
@@ -172,17 +172,17 @@ def test_initialisation():
     _out = ''
     _ = tp00.Aspirateur()
     _m = tp00.Monde( _ )
-    _rep = test_initialisation_nbSol(_m,1,2)
+    _rep = subtest_initialisation_nbSol(_m,1,2)
     _out += check_property( 8 == _rep , "nb sol found %d" % _rep )
     _m = tp00.Monde( _, 2, 1 )
-    _rep = test_initialisation_nbSol(_m,2,1)
+    _rep = subtest_initialisation_nbSol(_m,2,1)
     _out += check_property( 8 == _rep , "nb sol found %d" % _rep )
     _m = tp00.Monde( _, 2 )
-    _rep = test_initialisation_nbSol(_m,2,2)
+    _rep = subtest_initialisation_nbSol(_m,2,2)
     _out += check_property( 64 == _rep , "nb sol found %d" % _rep )
     nl,nc = 2,3
     _m = tp00.Monde( _, nl,nc)
-    _rep = test_initialisation_nbSol(_m,nl,nc)
+    _rep = subtest_initialisation_nbSol(_m,nl,nc)
     _sz = nl*nc
     _out += check_property( _sz * 2**_sz == _rep , "vues %d attendues %d" % (_rep,_sz * 2**_sz ))
         
@@ -231,11 +231,11 @@ def main():
         
     # Bilan
     _all = len(_s) 
-    _err = _s.count('E')
-    return (_all - _err), _err, _all, round(100 * (_all - _err) / _all, 2)
+    _ok = _s.count('.')
+    return _ok, (_all-_ok), _all, round(100 * _ok / _all, 2)
     
 if __name__ == "__main__" :
 
     print("succ %d fail %d sum %d, rate = %.2f" % main())
-    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(193))
+    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(198))
     
