@@ -1,5 +1,5 @@
 #Custom libs
-from data.aspirateur import Aspirateur
+from aspirateur import Aspirateur
 #Generic python libs
 from random import randrange
 from copy import deepcopy
