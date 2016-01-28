@@ -24,7 +24,7 @@ class Monde(object):
     self.__table = [[0 for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
 
-  #Deepcopy car hashmap ^ liste de listes
+  #Deepcopy car hash table ^ liste de listes
   @property 
   def objetsStatiques(self):
     return deepcopy(objetsStatiques)

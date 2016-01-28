@@ -4,7 +4,7 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour la première réalisation aspi autonome"
 __date__ = "27.01.16"
-__version__ = "0.2a"
+__version__ = "0.5"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
@@ -104,7 +104,7 @@ def test_init():
     except:
         _out = '.'
     if '1' in _out: return _out
-
+    
     try:
         _ = tp00.Monde(1)
         _out = 'a'
@@ -223,13 +223,19 @@ def main():
         print('correction needed, something missing')
     else:
         # On passe aux tests plus complexes
-        print(_s)
-        _s += test_init();print('test_init',_s)
-        _s += test_str();print('test_str',_s)
-        _s += test_initialisation();print('test_initialisation',_s)
-        _s += test_posAgent();print('test_posAgent',_s)
-        _s += test_table();print('test_table',_s)
+        for meth in "init str initialisation posAgent table".split() :
+            meth = 'test_'+meth
+            _tmp = eval(meth)()
+            print(meth,_tmp)
+            _s += _tmp
         
+        """
+        _s += test_init()
+        _s += test_str()
+        _s += test_initialisation()
+        _s += test_posAgent()
+        _s += test_table()
+        """
     # Bilan
     _all = len(_s) 
     _ok = _s.count('.')
