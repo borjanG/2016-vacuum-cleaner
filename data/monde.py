@@ -5,13 +5,15 @@ from random import randrange
 from copy import deepcopy
 
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "27.01.16"
-__version__ = "0.1"
+__date__ = "29.01.16"
+__version__ = "0.2"
 
 #Global variable (?)
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
-                   1: ('poussiere', ':')}
+                   1: ('poussiere', ':')} 
+                   #2: ('poubelle', '#'), 
+                   #3: ('station', '$')}
 
 class Monde(object):
 
@@ -24,7 +26,7 @@ class Monde(object):
     self.__table = [[0 for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
 
-  #Deepcopy car hash table ^ liste de listes
+  #Deepcopy car hash table & liste de listes
   @property 
   def objetsStatiques(self):
     return deepcopy(objetsStatiques)
@@ -49,16 +51,19 @@ class Monde(object):
     tab = []
     key = max(self.objetsStatiques.keys()) #Pas plus de 100 keys qd meme
 
+    #Genere le tableau
     for i in range(len(self.table)):
       tab.append([])
       for j in range(len(self.table[0])):
         tab[i].append(self.objetsStatiques[self.table[i][j]][1])
     tab[self.posAgent[0]][self.posAgent[1]] += self.objetsStatiques[key][1]
+    # tab[self.posAgent[0]][self.posAgent[1]] = self.objetsStatiques[key][1]
 
     l = len(tab)
     c = len(tab[0])
     _=[]
 
+    #Strings utiles
     _head = "\u2550"*3 + "\u2564"
     _mid = "\u2500"*3 + "\u253C"
     _foot = "\u2550"*3 + "\u2567"
@@ -69,6 +74,7 @@ class Monde(object):
 
     #Header
     _.append(header)
+
     #Middle
     #Ligne 0
     _elt = "\u2551" + "%3s" %(tab[0][0]) #Premier element
@@ -100,3 +106,12 @@ class Monde(object):
     self.__table = deepcopy([[randrange(len(self.objetsStatiques)-1)
                               for j in range(self.__cols)]
                               for i in range(self.__lignes)])
+
+  #Methodes futurs.. pour rappel (perso y'a moyen que j'oublie :P)
+
+  # def feedback(self, *args):
+  #   """ Renvoie un feedback en fonction de l'action de l'agent """
+
+  #   if self.__move:
+  #     feedback = value
+
