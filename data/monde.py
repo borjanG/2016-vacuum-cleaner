@@ -64,11 +64,11 @@ class Monde(object):
         pass
 
     if action == "Droite":
-      if self.__cols > self.posAgent[1]:
+      if self.__cols -1 > self.posAgent[1]:
         if self.table[self.posAgent[0]][self.posAgent[1]+1] == 2:
           pass
         else:
-          self.posAgent = self.posAgent(self.posAgent[0], self.posAgent[1]+1)
+          self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
       else:
         pass
 
@@ -152,19 +152,22 @@ class Monde(object):
     choix = self.agent.getDecision(percept)
     self.agent.setReward(self.applyChoix(choix))
     self.updateWorld()
-    self.__historique.append(((self.agent.posAgent, self.agent.table), choix))
+    self.__historique.append(((self.posAgent, self.table), choix))
 
   def simulation(self, n = 42):
     """ """
 
     self.initialisation()
+    print(self)
     while self.agent.vivant and n > 0:
       self.step()
-      perfGlobale += 0
+      print("Here")
+      print(self)
+      print(self.historique)
       n-=1
     self.__historique = []
-    self.agent.setReward(perfGlobale)
-    return perfGlobale 
+    self.agent.setReward(self.perfGlobale)
+    return self.perfGlobale 
 
 
   def initialisation(self):
