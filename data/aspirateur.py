@@ -14,6 +14,7 @@ class Aspirateur(object):
     self.__vivant = True
     self.__capteurs = capteurs
     self.__actions = actions
+    self.__reward = 0
 
   @property 
   def vivant(self):
@@ -33,8 +34,8 @@ class Aspirateur(object):
     return action 
 
   def getEvaluation(self):
-    return 0.0
+    return self.__reward
 
   def setReward(self, reward):
-    
-    pass
+    assert isinstance(reward,(int,float)),'stochy veut un nombre!!!'
+    self.__reward = reward 
