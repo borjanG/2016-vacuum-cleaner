@@ -5,7 +5,7 @@ from random import randrange
 from copy import deepcopy
 
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "29.01.16"
+__date__ = "02.02.16"
 __version__ = "0.2"
 
 #Global variable (?)
@@ -19,7 +19,7 @@ class Monde(object):
   def __init__(self, a, l=1, c=2):
     """ Monde constructor """
 
-    assert isinstance(a, Aspirateur), "il faut un Stochy en parametre"
+    assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre"
     
     self.__agent = a 
     self.__lignes = l
@@ -41,6 +41,7 @@ class Monde(object):
   def posAgent(self):
     #Shallow copy suffit
     return self.__posAgent[:]
+
   @property 
   def agent(self):
     return self.__agent 
@@ -53,6 +54,8 @@ class Monde(object):
 
 
   def applyChoix(self, action):
+    """ Mise a jour du monde et de la position de l'agent en fonction 
+        de son choix """
 
     if action == "Gauche":
       if 0 < self.posAgent[1]:
@@ -81,6 +84,8 @@ class Monde(object):
     return 0.0 
 
   def getPerception(self, capteurs = []):
+    """ Recuperation des valeurs dans les cases 
+        disponibles au aspirateur par ses capteurs """
     return []
 
   def __str__(self):
@@ -146,7 +151,7 @@ class Monde(object):
     return "\n".join(_)
 
   def step(self):
-    """ """
+    """ Ce qui se passe ~ un etat """
 
     percept = self.getPerception(self.agent.capteurs)
     choix = self.agent.getDecision(percept)
@@ -155,18 +160,21 @@ class Monde(object):
     self.__historique.append(((self.posAgent, self.table), choix))
 
   def simulation(self, n = 42):
-    """ """
+    """ Execution de n etats et evolue le monde """
 
     self.initialisation()
     print(self)
+
     while self.agent.vivant and n > 0:
       self.step()
       print("Here")
       print(self)
       print(self.historique)
       n-=1
+
     self.__historique = []
     self.agent.setReward(self.perfGlobale)
+
     return self.perfGlobale 
 
 
@@ -178,6 +186,7 @@ class Monde(object):
                               for i in range(self.__lignes)])
 
   def updateWorld(self):
+    """ Mise a jour aleatoire du monde dynamique """
     #Agit sur table 
     pass 
 

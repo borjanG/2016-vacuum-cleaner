@@ -6,8 +6,10 @@ if __name__ == "__main__":
 
   a = Aspirateur()
   m = Monde(a,1,4)
-  # m.simulation(5)
-  # print(m.table)
-  # print(m.posAgent)
+  m.simulation(5)
+  print(m.table)
+  print(m.posAgent)
+  # a.setReward(42)
+  # print(a.getEvaluation())
 
   

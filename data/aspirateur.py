@@ -1,6 +1,6 @@
 #Custom libs
 import data.monde 
-#Generic py libs
+#Generic python libs
 from random import randrange
 
 #Circular dependencies.. Can't import Monde explicitly..
@@ -34,8 +34,11 @@ class Aspirateur(object):
     return action 
 
   def getEvaluation(self):
+    """ Recupere l'evaluation """
     return self.__reward
 
   def setReward(self, reward):
-    assert isinstance(reward,(int,float)),'stochy veut un nombre!!!'
+    """ Associe une recompense au aspirateur """
+
+    assert isinstance(reward, (int,float)), ' stochy veut un nombre!'
     self.__reward = reward 
