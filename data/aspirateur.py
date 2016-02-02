@@ -1,5 +1,7 @@
 #Custom libs
 import data.monde 
+#Generic py libs
+from random import randrange
 
 #Circular dependencies.. Can't import Monde explicitly..
 #FFS Python :@ :/ .. 
@@ -7,20 +9,32 @@ import data.monde
 class Aspirateur(object):
   """ Aspirateur constructor """
 
-  def __init__(self):
-    self.__stock = 150    #a varier plus tard
-    self.__run = True     
-    self.__batterie = 100 #a varier plus tard
-	# pass
+  def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
+    #
+    self.__vivant = True
+    self.__capteurs = capteurs
+    self.__actions = actions
 
   @property 
-  def vider(self):
-    self.__stock = 0
-		
-  @property 
-  def arret(self):
-    self.__run = False
+  def vivant(self):
+    return self.__vivant
 
-  # def aspirer(self, t, pos@):
-  # def gauche(self, t, pos@):
-  # def droite(self, t, pos@):
+  @property 
+  def capteurs(self):
+    return self.__capteurs 
+
+  @property 
+  def actions(self):
+    return self.__actions
+
+  def getDecision(self, content):
+    index = randrange(len(self.actions))
+    action = self.actions[index]
+    return action 
+
+  def getEvaluation(self):
+    return 0.0
+
+  def setReward(self, reward):
+    
+    pass

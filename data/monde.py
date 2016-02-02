@@ -11,9 +11,8 @@ __version__ = "0.2"
 #Global variable (?)
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
-                   1: ('poussiere', ':')} 
-                   #2: ('poubelle', '#'), 
-                   #3: ('station', '$')}
+                   1: ('poussiere', ':')}
+                   #2: ('inamovible','+')}
 
 class Monde(object):
 
@@ -21,10 +20,15 @@ class Monde(object):
     """ Monde constructor """
 
     assert isinstance(a, Aspirateur), "il faut un Stochy en parametre"
+    
+    self.__agent = a 
     self.__lignes = l
     self.__cols = c
     self.__table = [[0 for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
+    self.__historique = []
+    self.__perfGlobale = 0.0
+
 
   #Deepcopy car hash table & liste de listes
   @property 
@@ -37,6 +41,47 @@ class Monde(object):
   def posAgent(self):
     #Shallow copy suffit
     return self.__posAgent[:]
+  @property 
+  def agent(self):
+    return self.__agent 
+  @property 
+  def historique(self):
+    return deepcopy(self.__historique)
+  @property 
+  def perfGlobale(self):
+    return self.__perfGlobale
+
+
+  def applyChoix(self, action):
+
+    if action == "Gauche":
+      if 0 < self.posAgent[1]:
+        if self.table[self.posAgent[0]][self.posAgent[1]-1] == 2:
+          pass
+        else:
+          self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+      else:
+        pass
+
+    if action == "Droite":
+      if self.__cols > self.posAgent[1]:
+        if self.table[self.posAgent[0]][self.posAgent[1]+1] == 2:
+          pass
+        else:
+          self.posAgent = self.posAgent(self.posAgent[0], self.posAgent[1]+1)
+      else:
+        pass
+
+    if action == "Aspirer":
+      if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
+        self.__table[self.posAgent[0]][self.posAgent[1]] = 0
+      else:
+        pass
+
+    return 0.0 
+
+  def getPerception(self, capteurs = []):
+    return []
 
   def __str__(self):
     """ Generic string method
@@ -99,7 +144,29 @@ class Monde(object):
     _.append(footer)
     
     return "\n".join(_)
-                                                                      
+
+  def step(self):
+    """ """
+
+    percept = self.getPerception(self.agent.capteurs)
+    choix = self.agent.getDecision(percept)
+    self.agent.setReward(self.applyChoix(choix))
+    self.updateWorld()
+    self.__historique.append(((self.agent.posAgent, self.agent.table), choix))
+
+  def simulation(self, n = 42):
+    """ """
+
+    self.initialisation()
+    while self.agent.vivant and n > 0:
+      self.step()
+      perfGlobale += 0
+      n-=1
+    self.__historique = []
+    self.agent.setReward(perfGlobale)
+    return perfGlobale 
+
+
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
@@ -107,11 +174,8 @@ class Monde(object):
                               for j in range(self.__cols)]
                               for i in range(self.__lignes)])
 
-  #Methodes futurs.. pour rappel (perso y'a moyen que j'oublie :P)
+  def updateWorld(self):
+    #Agit sur table 
+    pass 
 
-  # def feedback(self, *args):
-  #   """ Renvoie un feedback en fonction de l'action de l'agent """
-
-  #   if self.__move:
-  #     feedback = value
 
