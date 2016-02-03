@@ -8,12 +8,12 @@ __author__ = "Terral, Rodriguez, Geshkovski"
 __date__ = "03.02.16"
 __version__ = "0.2"
 
-#Global variable (?)
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
                    1: ('poussiere', ':')}
                    #2: ('inamovible','+')}
 
+#Liste de cles
 d = list(objetsStatiques.keys())
 
 # ------------ #    
@@ -26,6 +26,7 @@ class Monde(object):
     """ Monde constructor """
 
     assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre"
+    assert type(l) and type(c) == int, "Il faut des entiers pour dimensions"
     
     self.__agent = a 
     self.__lignes = l
@@ -58,7 +59,6 @@ class Monde(object):
   @property 
   def perfGlobale(self):
     return self.__perfGlobale
-
 
   def applyChoix(self, action):
     """ Mise a jour du monde et de la position de l'agent en fonction 
@@ -93,6 +93,14 @@ class Monde(object):
   def getPerception(self, capteurs = []):
     """ Recuperation des valeurs dans les cases 
         disponibles au aspirateur par ses capteurs """
+    #Supposant que capteurs c'est des indices des pieces
+    #Par exemple, capteurs = [(0, 0)]
+    assert isinstance(capteurs, list)
+    
+    eyes = []    
+    for elem in capteurs:
+      eyes.append(self.table[elem[0]][elem[1]])
+      
     return []
 
   def __str__(self):
@@ -164,17 +172,16 @@ class Monde(object):
     choix = self.agent.getDecision(percept)
     self.agent.setReward(self.applyChoix(choix))
     self.updateWorld()
-    self.__historique.append(((self.posAgent, self.table), choix))
+    self.__historique.append(((self.table, self.posAgent), choix))
 
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
 
     self.initialisation()
-    print(self)
+    # print(self)
 
     while self.agent.vivant and n > 0:
       self.step()
-      print("Here")
       print(self)
       print(self.historique)
       n-=1
@@ -182,6 +189,8 @@ class Monde(object):
     self.__historique = []
     self.agent.setReward(self.perfGlobale)
 
+    #Je ne vois pas a quoi ca sert de retourner un property qui 
+    #fait que retourner qqchose deja
     return self.perfGlobale 
 
   def initialisation(self):
@@ -223,7 +232,7 @@ class Aspirateur(object):
     return self.__actions
 
   def getDecision(self, content = []):
-    """"""
+    """ Renvoie une action en accord avec l'etat de l'environnement """
 
     assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
@@ -244,36 +253,33 @@ class Aspirateur(object):
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
 
-  #Il veut dire quoi par [8]???
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   def getDecision(self, content = []):
-    """  """
+    """ Renvoie une action en accord avec l'etat de l'environnement """
     assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
     #
-    # index = 
-    # action = self.
+    #  
+    # 
 
 class AspiVoyant(Aspirateur):
   """ Aspirateur qui aspire la salete uniquement """
 
-  def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
+  def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   def getDecision(self, content = []):
-    """"""
+    """ Renvoie une action en accord avec l'etat de l'environnement """
     assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
-    if content == 1:
+    #N'importe quoi
+    if content[self.capteurs.index(8)] == 1:
+      #Much ado about nothing
       action = self.actions[self.actions.index('Aspirer')]
-      #Because YOLO j'aime pas associer des string aux variables explicitement
     else:
       action = self.actions[randrange(len(self.actions))-1]
     return action
-
-  #Il dit "qui apprenne a aspirer..", donc il faut peut-etre changer
-  #le mecanisme de feedback, donc modif setReward et getEvaluation. 
 
 
