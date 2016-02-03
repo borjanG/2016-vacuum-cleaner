@@ -1,11 +1,11 @@
 #Custom libs
-from data.aspirateur import Aspirateur
+# from data.aspirateur import Aspirateur
 #Generic python libs
 from random import randrange
 from copy import deepcopy
 
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "02.02.16"
+__date__ = "03.02.16"
 __version__ = "0.2"
 
 #Global variable (?)
@@ -13,6 +13,10 @@ objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
                    1: ('poussiere', ':')}
                    #2: ('inamovible','+')}
+
+# ------------ #    
+# --- MONDE -- #
+# ------------ #
 
 class Monde(object):
 
@@ -33,6 +37,7 @@ class Monde(object):
   #Deepcopy car hash table & liste de listes
   @property 
   def objetsStatiques(self):
+    #Peut-etre pas besoin de cet attribut??
     return deepcopy(objetsStatiques)
   @property
   def table(self):
@@ -177,7 +182,6 @@ class Monde(object):
 
     return self.perfGlobale 
 
-
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
@@ -188,6 +192,84 @@ class Monde(object):
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
     #Agit sur table 
-    pass 
+    pass
+
+# ------------ #    
+# --- AGENT -- #
+# ------------ #
+
+class Aspirateur(object):
+  """ Aspirateur constructor """
+
+  def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
+    #
+    self.__vivant = True
+    self.__capteurs = capteurs
+    self.__actions = actions
+    self.__reward = 0
+
+  @property 
+  def vivant(self):
+    return self.__vivant
+
+  @property 
+  def capteurs(self):
+    return self.__capteurs 
+
+  @property 
+  def actions(self):
+    return self.__actions
+
+  def getDecision(self, content):
+    """"""
+    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+
+    index = randrange(len(self.actions))
+    action = self.actions[index]
+    return action 
+
+  def getEvaluation(self):
+    """ Recupere l'evaluation """
+    return self.__reward
+
+  def setReward(self, reward):
+    """ Associe une recompense au aspirateur """
+
+    assert isinstance(reward, float), ' Stochy veut un nombre!'
+    self.__reward = reward 
+
+class AspiClairvoyant(Aspirateur):
+  """ Aspirateur qui voit le contenu de sa propre case """
+
+  def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
+    super().__init__(capteurs, actions)
+
+  def getDecision(self, content):
+    """ J'arrive pas a comprendre l'enonce, donc j'ai rien fait :D """
+    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+
+    # index = 
+    # action = self.
+
+class AspiVoyant(Aspirateur):
+  """ Aspirateur qui aspire la salete uniquement """
+
+  #Il veut dire quoi par [8]???
+  def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
+    super().__init__(capteurs, actions)
+
+  def getDecision(self, content):
+    """"""
+    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+
+    if content == 1:
+      action = self.actions[self.actions.index('Aspirer')]
+      #Because YOLO j'aime pas associer des string aux variables explicitement
+    else:
+      action = self.actions[randrange(len(self.actions))-1]
+    return action
+
+  #Il dit "qui apprenne a aspirer..", donc il faut peut-etre changer
+  #le mecanisme de feedback, donc modif setReward et getEvaluation. 
 
 

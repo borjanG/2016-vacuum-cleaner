@@ -1,6 +1,6 @@
 #Custom libs
-from data.monde import Monde
-from data.aspirateur import Aspirateur
+from data.monde import *
+# from data.aspirateur import Aspirateur
 
 if __name__ == "__main__":
 
