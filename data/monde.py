@@ -14,6 +14,8 @@ objetsStatiques = {100: ('aspirateur', '@'),
                    1: ('poussiere', ':')}
                    #2: ('inamovible','+')}
 
+d = list(objetsStatiques.keys())
+
 # ------------ #    
 # --- MONDE -- #
 # ------------ #
@@ -220,9 +222,10 @@ class Aspirateur(object):
   def actions(self):
     return self.__actions
 
-  def getDecision(self, content):
+  def getDecision(self, content = []):
     """"""
-    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+
+    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -241,26 +244,27 @@ class Aspirateur(object):
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
 
+  #Il veut dire quoi par [8]???
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
-  def getDecision(self, content):
-    """ J'arrive pas a comprendre l'enonce, donc j'ai rien fait :D """
-    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+  def getDecision(self, content = []):
+    """  """
+    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
+    #
     # index = 
     # action = self.
 
 class AspiVoyant(Aspirateur):
   """ Aspirateur qui aspire la salete uniquement """
 
-  #Il veut dire quoi par [8]???
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
-  def getDecision(self, content):
+  def getDecision(self, content = []):
     """"""
-    assert isinstance(content, list) and list(set(content).intersection(list(objetsStatiques.keys()))) == content, 'No.'
+    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
     if content == 1:
       action = self.actions[self.actions.index('Aspirer')]
