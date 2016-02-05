@@ -4,9 +4,10 @@ from data.monde import *
 
 if __name__ == "__main__":
 
-  a = Aspirateur()
-  m = Monde(a,1,4)
+  a = AspiVoyant()
+  m = Monde(a,1,2)
   m.simulation(4)
+
   # print(m.table)
   # print(m.posAgent)
   # a.setReward(42)

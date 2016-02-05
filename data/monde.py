@@ -96,12 +96,22 @@ class Monde(object):
     #Supposant que capteurs c'est des indices des pieces
     #Par exemple, capteurs = [(0, 0)]
     assert isinstance(capteurs, list)
-    
-    eyes = []    
-    for elem in capteurs:
-      eyes.append(self.table[elem[0]][elem[1]])
-      
-    return []
+
+    i=self.posAgent[0]
+    j=self.posAgent[1]
+
+    seer = [(i-1,j),(i-1,j+1),(i,j+1),(i+1,j+1),(i+1,j),
+            (i+1,j-1),(i,j-1),(i-1,j-1),(i,j)]
+
+    oracle=[]
+    for flash in capteurs:
+      x=seer[flash][0]
+      y=seer[flash][1]
+      if 0<=x<len(self.table) and 0<=y<len(self.table[0]):
+        oracle.append(self.table[x][y])
+      else:
+        oracle.append(0)
+    return oracle
 
   def __str__(self):
     """ Generic string method
@@ -169,6 +179,7 @@ class Monde(object):
     """ Ce qui se passe ~ un etat """
 
     percept = self.getPerception(self.agent.capteurs)
+    print('percept : ',percept)
     choix = self.agent.getDecision(percept)
     self.agent.setReward(self.applyChoix(choix))
     self.updateWorld()
@@ -182,8 +193,9 @@ class Monde(object):
 
     while self.agent.vivant and n > 0:
       self.step()
+      print("Nouveau step")
       print(self)
-      print(self.historique)
+      print("A fait : ",self.historique)
       n-=1
 
     self.__historique = []
@@ -204,7 +216,7 @@ class Monde(object):
     """ Mise a jour aleatoire du monde dynamique """
     #Agit sur table 
     pass
-
+#===============================================================================================================
 # ------------ #    
 # --- AGENT -- #
 # ------------ #
@@ -213,7 +225,8 @@ class Aspirateur(object):
   """ Aspirateur constructor """
 
   def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
-    #
+    assert isinstance(capteurs,list) and set(capteurs).issubset(set(range(9))),"capteurs pas cool"
+    
     self.__vivant = True
     self.__capteurs = capteurs
     self.__actions = actions
@@ -233,8 +246,7 @@ class Aspirateur(object):
 
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-
-    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -249,7 +261,7 @@ class Aspirateur(object):
 
     assert isinstance(reward, float), ' Stochy veut un nombre!'
     self.__reward = reward 
-
+#===============================================================================================================
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
 
@@ -258,28 +270,70 @@ class AspiClairvoyant(Aspirateur):
 
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+#    assert set(content).issubset(d),"percept pas ok"
+    
+    if content[0] == 1:
+      #Much ado about nothing
+      action = self.actions[self.actions.index('Aspirer')]
+    else:
+      action = self.actions[randrange(len(self.actions))-1] #aspirer est la derniere action de actions
 
-    #
-    #  
-    # 
-
+    return action
+#===============================================================================================================
 class AspiVoyant(Aspirateur):
   """ Aspirateur qui aspire la salete uniquement """
 
-  def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
+  def __init__(self, capteurs = [6,8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+#    assert set(content).issubset(d),"percept pas ok"
 
-    #N'importe quoi
-    if content[self.capteurs.index(8)] == 1:
-      #Much ado about nothing
-      action = self.actions[self.actions.index('Aspirer')]
+    #self.capteurs
+    
+    if 8 in content:
+      i8=self.capteurs.index(8)
+      if content[i8]==1:
+        action='Aspirer'
+        return(action)
+    if {2,6}.issubset(content):
+      i2=self.capteurs.index(2)
+      i6=self.capteurs.index(6)
+      if content[i2]==content[i6]==1:
+        action=self.actions[randrange(len(self.actions))-1]
+        return(action)
+      elif content[i2]==1:
+        action='Droite'
+        return(action)
+      else:
+        action='Gauche'
+        return(action)
+    elif 6 in content:
+      i6=self.capteurs.index(6)
+      if content[i6]==1:
+        action='Gauche'
+        return(action)
+      return(self.actions[randrange(len(self.actions))-1])
+    elif 2 in content:
+      i2=self.capteurs.index(2)
+      if content[i2]==1:
+        action='Droite'
+        return(action)
+      return(self.actions[randrange(len(self.actions))-1])
     else:
-      action = self.actions[randrange(len(self.actions))-1]
-    return action
+      action=self.actions[randrange(len(self.actions))-1]
+      return(action)
+                        
+##    #N'importe quoi
+##    if content[self.capteurs.index(8)] == 1:
+##      #Much ado about nothing
+##      action = self.actions[self.actions.index('Aspirer')]
+##    else:
+##      action = self.actions[randrange(len(self.actions))-1]
+
+    
 
 
