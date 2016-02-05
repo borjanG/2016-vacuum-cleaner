@@ -4,7 +4,8 @@ from data.monde import *
 
 if __name__ == "__main__":
 
-  a = AspiVoyant()
+  # a = AspiVoyant()
+  a = Aspirateur()
   m = Monde(a,1,2)
   m.simulation(4)
 
