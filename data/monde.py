@@ -1,12 +1,14 @@
-#Custom libs
-# from data.aspirateur import Aspirateur
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 #Generic python libs
 from random import randrange
 from copy import deepcopy
 
+#This code contains easter eggs.
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "03.02.16"
-__version__ = "0.2"
+__date__ = "06.02.16"
+__version__ = "0.3"
 
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
@@ -16,9 +18,9 @@ objetsStatiques = {100: ('aspirateur', '@'),
 #Liste de cles
 d = list(objetsStatiques.keys())
 
-# ------------ #    
-# --- MONDE -- #
-# ------------ #
+                          # ------------ #    
+# ----------------------- # --- MONDE -- # --------------------------------------#
+                          # ------------ #
 
 class Monde(object):
 
@@ -40,7 +42,6 @@ class Monde(object):
   #Deepcopy car hash table & liste de listes
   @property 
   def objetsStatiques(self):
-    #Peut-etre pas besoin de cet attribut??
     return deepcopy(objetsStatiques)
   @property
   def table(self):
@@ -90,18 +91,19 @@ class Monde(object):
 
     return 0.0 
 
+  # /!\ A MODIF.
   def getPerception(self, capteurs = []):
     """ Recuperation des valeurs dans les cases 
         disponibles au aspirateur par ses capteurs """
     assert isinstance(capteurs, list)
 
-    i=self.posAgent[0]
-    j=self.posAgent[1]
+    i = self.posAgent[0]
+    j = self.posAgent[1]
 
     seer = [(i-1,j), (i-1,j+1), (i,j+1), (i+1,j+1), (i+1,j),
             (i+1,j-1), (i,j-1), (i-1,j-1), (i,j)]
 
-    oracle=[]
+    oracle = []
     for flash in capteurs:
       x = seer[flash][0]
       y = seer[flash][1]
@@ -109,6 +111,7 @@ class Monde(object):
         oracle.append(self.table[x][y])
       else:
         oracle.append(0)
+
     return oracle
 
   def __str__(self):
@@ -210,15 +213,15 @@ class Monde(object):
     #Agit sur table 
     pass
 
-# ------------ #    
-# --- AGENT -- #
-# ------------ #
+                          # ------------ #    
+# ----------------------- # --- AGENT -- # --------------------------------------------------------#
+                          # ------------ #
 
 class Aspirateur(object):
   """ Aspirateur constructor """
 
   def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
-    assert isinstance(capteurs,list) and set(capteurs).issubset(set(range(9))),"capteurs pas cool"
+    assert isinstance(capteurs, list) and set(capteurs).issubset(set(range(9))), "I'm blind!"
     
     self.__vivant = True
     self.__capteurs = capteurs
@@ -239,7 +242,7 @@ class Aspirateur(object):
 
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
+    assert set(content).issubset(d), "I'm blind!"
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -253,24 +256,28 @@ class Aspirateur(object):
     """ Associe une recompense au aspirateur """
 
     assert isinstance(reward, float), ' Stochy veut un nombre!'
-    self.__reward = reward 
+    self.__reward = reward
+
+                          # ------------- #
+# ----------------------- # --- FILLES -- # --------------------------------------------------------# 
+                          # ------------- #
 
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
 
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
-    
+
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
-#    assert set(content).issubset(d),"percept pas ok"
+    assert set(content).issubset(d), "I'm blind!"
     
     if content[0] == 1:
       #Much ado about nothing
       action = self.actions[self.actions.index('Aspirer')]
     else:
-      action = self.actions[randrange(len(self.actions))-1] #aspirer est la derniere action de actions
+      action = self.actions[randrange(len(self.actions))-1] 
+      #'Aspirer' est la derniere action de actions
 
     return action
 
@@ -280,10 +287,10 @@ class AspiVoyant(Aspirateur):
   def __init__(self, capteurs = [6,8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
+  # /!\ A MODIF.
   def getDecision(self, content = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-#    assert isinstance(content, list) and (set(content) - set(d)).intersection(d) == (set(content) - set(d)), "No."
-#    assert set(content).issubset(d),"percept pas ok"
+    assert set(content).issubset(d), "I'm blind!"
   
     #Ne marche pas. (encore)
     if 8 in content:
@@ -291,6 +298,7 @@ class AspiVoyant(Aspirateur):
       if content[i8] == 1:
         action = 'Aspirer'
         return(action)
+
     if {2,6}.issubset(content):
       i2 = self.capteurs.index(2)
       i6 = self.capteurs.index(6)
@@ -303,18 +311,21 @@ class AspiVoyant(Aspirateur):
       else:
         action = 'Gauche'
         return(action)
+
     elif 6 in content:
       i6 = self.capteurs.index(6)
       if content[i6] == 1:
         action = 'Gauche'
         return(action)
       return(self.actions[randrange(len(self.actions))-1])
+
     elif 2 in content:
       i2 = self.capteurs.index(2)
       if content[i2] == 1:
         action = 'Droite'
         return(action)
       return(self.actions[randrange(len(self.actions))-1])
+
     else:
-      action=self.actions[randrange(len(self.actions))-1]
+      action = self.actions[randrange(len(self.actions))-1]
       return(action)
