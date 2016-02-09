@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #Generic python libs
-from random import randrange, choice
+from random import randrange
 from copy import deepcopy
 
 #This code contains easter eggs.
@@ -206,11 +206,9 @@ class Monde(object):
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
-    # self.__table = deepcopy([[randint(len(self.objetsStatiques)-1)
-    #                           for j in range(self.__cols)]
-    #                           for i in range(self.__lignes)])
-    _ = [k for k in objetsStatiques if 0<= k < 100]
-    self.__table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+    self.__table = deepcopy([[randrange(len(self.objetsStatiques)-1)
+                              for j in range(self.__cols)]
+                              for i in range(self.__lignes)])
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
