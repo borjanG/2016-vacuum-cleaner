@@ -250,13 +250,16 @@ class Aspirateur(object):
 
   def getEvaluation(self):
     """ Recupere l'evaluation """
-    return self.__reward
+    return 0.
 
   def setReward(self, reward):
     """ Associe une recompense au aspirateur """
 
     assert isinstance(reward, float), ' Stochy veut un nombre!'
     self.__reward = reward
+
+  def getLastReward(self):
+    return self.__reward
 
                           # ------------- #
 # ----------------------- # --- FILLES -- # --------------------------------------------------------# 

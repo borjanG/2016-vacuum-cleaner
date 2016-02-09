@@ -8,7 +8,7 @@ __version__ = "0.1"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
-# import mmc_tp00 as tp00
+
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random
@@ -49,7 +49,79 @@ def subtest_readonly(obj,lattr):
         
     return _s
     
-            
+#------ Tests Aspirateurs -------
+
+def test_init_Aspirateur():
+    _out = ''
+    try:
+        _ = tp00.Aspirateur()
+        _out += '.'
+    except Exception:
+        _out += '1'
+        
+    return _out
+
+def test_capteurs():
+    _out = ''
+    return _out
+
+def test_actions():
+    _out = ''
+    return _out
+    
+def test_vivant():
+    _out = ''
+    return _out
+        
+def test_setReward():
+    _out = ''
+    return _out
+
+def test_getLastReward():
+    _out = ''
+    return _out
+
+def test_getEvaluation():
+    _out = ''
+    return _out
+
+def test_getDecision():
+    _out = ''
+    return _out
+
+#------- Monde ------
+def test_agent():
+    _out = ''
+    return _out
+
+def test_perfGlobale():
+    _out = ''
+    return _out
+
+def test_historique():
+    _out = ''
+    return _out
+
+def test_updateWorld():
+    _out = ''
+    return _out
+
+def test_applyChoix():
+    _out = ''
+    return _out
+
+def test_getPerception():
+    _out = ''
+    return _out
+
+def test_step():
+    _out = ''
+    return _out
+
+def test_simulation():
+    _out = ''
+    return _out
+
 def main():
     _msg = ''
     _s = ''
@@ -63,17 +135,18 @@ def main():
     # Controle des attributs/méthodes requis
     _attr = "capteurs actions vivant".split()
     _toDO.extend( _attr )
-    _meth = "setReward getEvaluation getDecision".split()
+    _meth = "setReward getLastReward getEvaluation getDecision".split()
     _toDO.extend( _meth )
     
     for _ in _attr:
         _msg += check_property(hasattr(tp00.Aspirateur,_),'%s inconnu' % _)
     print("attributs Aspirateur:",_msg)
-    _s += _msg 
-    
-    _msg = subtest_readonly(aspi,_attr)
-    print("attributs are ReadOnly",_msg)
     _s += _msg ; _msg = ''
+    
+    if '.'*len(_s) == _s:
+        _msg = subtest_readonly(aspi,_attr)
+        print("attributs are ReadOnly",_msg)
+        _s += _msg ; _msg = ''
         
     
     for _ in _meth:
@@ -92,10 +165,11 @@ def main():
         _msg += check_property(hasattr(tp00.Monde,_),'%s inconnu' % _)
     print("attributs Monde:",_msg)
     _s += _msg ; _msg = ''
-        
-    _msg = subtest_readonly(world,_attr)
-    print("attributs are ReadOnly",_msg)
-    _s += _msg ; _msg = ''
+    
+    if '.'*len(_s) == _s:    
+        _msg = subtest_readonly(world,_attr)
+        print("attributs are ReadOnly",_msg)
+        _s += _msg ; _msg = ''
     
     for _ in _meth:
         _msg += check_property(hasattr(tp00.Monde,_),'%s inconnu' % _)
@@ -104,18 +178,21 @@ def main():
     print("méthodes Monde:",_msg)
     _s += _msg ; _msg = ''
 
+    _msg = test_init_Aspirateur()
+    print("Constructeur Aspirateur",_msg)
+    _s += _msg ; _msg = ''
     
-    # if '.'*len(_s) != _s :
-    #     print(_s)
-    #     print('correction needed, something missing')
-    # else:
-    #     # On passe aux tests plus complexes
-    #     for meth in _toDO :
-    #         meth = 'test_'+meth
-    #         _tmp = eval(meth)()
-    #         print(meth,_tmp)
-    #         _s += _tmp
-    # 
+    if '.'*len(_s) != _s :
+        print(_s)
+        print('correction needed, something missing')
+    else:
+        # On passe aux tests plus complexes
+        for meth in _toDO :
+            meth = 'test_'+meth
+            _msg = eval(meth)()
+            print(meth,_msg)
+            _s += _msg
+    
         
     # Bilan
     _all = len(_s) 
@@ -124,4 +201,4 @@ def main():
 
 if __name__ == '__main__' :
     print("succ %d fail %d sum %d, rate = %.2f" % main())
-    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(34))
+    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(37))
