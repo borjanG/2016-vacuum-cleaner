@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #Generic python libs
-from random import randrange
+from random import randrange, choice
 from copy import deepcopy
 
 #This code contains easter eggs.
@@ -45,6 +45,7 @@ class Monde(object):
     return deepcopy(objetsStatiques)
   @property
   def table(self):
+    # assert(self.__table.count(0)+self.__table.count(1) == self.__lignes*self.__cols)
     return deepcopy(self.__table)
   @property 
   def posAgent(self):
@@ -89,7 +90,7 @@ class Monde(object):
       else:
         pass
 
-    return 0.0 
+    return 0.
 
   # /!\ A MODIF.
   def getPerception(self, capteurs = []):
@@ -110,7 +111,7 @@ class Monde(object):
       if 0 <= x < len(self.table) and 0 <= y < len(self.table[0]):
         oracle.append(self.table[x][y])
       else:
-        oracle.append(0)
+        oracle.append(-1)
 
     return oracle
 
@@ -187,14 +188,15 @@ class Monde(object):
 
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
+    # assert n == 2*len(self.table), "2*taille du monde pour n!"
 
     self.initialisation()
-    # print(self)
+    print(self)
 
     while self.agent.vivant and n > 0:
       self.step()
-      # print(self)
-      # print("A fait : ",self.historique)
+      print(self)
+      print("A fait : ",self.historique)
       n-=1
 
     self.__historique = []
@@ -204,9 +206,11 @@ class Monde(object):
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
-    self.__table = deepcopy([[randrange(len(self.objetsStatiques)-1)
-                              for j in range(self.__cols)]
-                              for i in range(self.__lignes)])
+    # self.__table = deepcopy([[randint(len(self.objetsStatiques)-1)
+    #                           for j in range(self.__cols)]
+    #                           for i in range(self.__lignes)])
+    _ = [k for k in objetsStatiques if 0<= k < 100]
+    self.__table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
@@ -221,8 +225,10 @@ class Aspirateur(object):
   """ Aspirateur constructor """
 
   def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
-    assert isinstance(capteurs, list) and set(capteurs).issubset(set(range(9))), "I'm blind!"
-    
+    assert isinstance(capteurs, list) and set(capteurs).issubset(set(range(9))) and len(set(capteurs)) == len(capteurs), "I'm blind!"
+    assert isinstance(actions, (list, tuple)) 
+    #Les sets c'est trop fort en python yep.
+
     self.__vivant = True
     self.__capteurs = capteurs
     self.__actions = actions
@@ -240,9 +246,9 @@ class Aspirateur(object):
   def actions(self):
     return self.__actions
 
-  def getDecision(self, content = []):
+  def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(content).issubset(d), "I'm blind!"
+    assert set(percept).issubset(d), "I'm blind!"
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -271,11 +277,11 @@ class AspiClairvoyant(Aspirateur):
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
-  def getDecision(self, content = []):
+  def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(content).issubset(d), "I'm blind!"
+    assert set(percept).issubset(d), "I'm blind!"
     
-    if content[0] == 1:
+    if percept[0] == 1:
       #Much ado about nothing
       action = self.actions[self.actions.index('Aspirer')]
     else:
@@ -287,48 +293,28 @@ class AspiClairvoyant(Aspirateur):
 class AspiVoyant(Aspirateur):
   """ Aspirateur qui aspire la salete uniquement """
 
-  def __init__(self, capteurs = [6,8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
+  def __init__(self, capteurs = [8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   # /!\ A MODIF.
-  def getDecision(self, content = []):
+  def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(content).issubset(d), "I'm blind!"
+    # assert set(percept).issubset(d), "I'm blind!"
   
-    #Ne marche pas. (encore)
-    if 8 in content:
-      i8 = self.capteurs.index(8)
-      if content[i8] == 1:
-        action = 'Aspirer'
-        return(action)
-
-    if {2,6}.issubset(content):
-      i2 = self.capteurs.index(2)
-      i6 = self.capteurs.index(6)
-      if content[i2] == content[i6] == 1:
-        action = self.actions[randrange(len(self.actions))-1]
-        return(action)
-      elif content[i2] == 1:
-        action = 'Droite'
-        return(action)
+    if len(percept) == 1:
+      if percept[0] == 1:
+        #Much ado about nothing
+        action = self.actions[self.actions.index('Aspirer')]
       else:
-        action = 'Gauche'
-        return(action)
-
-    elif 6 in content:
-      i6 = self.capteurs.index(6)
-      if content[i6] == 1:
-        action = 'Gauche'
-        return(action)
-      return(self.actions[randrange(len(self.actions))-1])
-
-    elif 2 in content:
-      i2 = self.capteurs.index(2)
-      if content[i2] == 1:
-        action = 'Droite'
-        return(action)
-      return(self.actions[randrange(len(self.actions))-1])
-
+        action = self.actions[randrange(len(self.actions))-1] 
+        #'Aspirer' est la derniere action de actions
     else:
-      action = self.actions[randrange(len(self.actions))-1]
-      return(action)
+      if percept[self.capteurs.index(8)] == 1:
+        action = 'Aspirer'
+      else:
+        if percept == [0, 1]:
+          action = 'Droite'
+        #Si jamais double gauche retour a droite
+        else:
+          action = 'Gauche'
+    return action

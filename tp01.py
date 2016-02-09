@@ -9,6 +9,7 @@ __version__ = "0.1"
 from data.monde import objetsStatiques, Aspirateur, Monde
 from briques import Rule, KB
 import copy
+from random import randint
 
 class Aspirateur_KB(Aspirateur):
     """ 4 paramètres
@@ -22,27 +23,29 @@ class Aspirateur_KB(Aspirateur):
         assert 0 <= probaExploitation <= 1, "Probability expected"
         assert isinstance(learn,bool), "Boolean expected got %s" % type(learn)
         # initialisation de variables privées __XXX (nom à choisir)
-        self.__XXX = KB() # base de données vide
-        self.__XXX = probaExploitation
-        self.__XXX = learn
-        self.__XXX = None # dernière action choisie
-        self.__XXX = None # dernier percept reçu
+        self.__la_variable_privee_contenant_la_base_de_connaissance = KB() # base de données vide
+        self.__la_variable_privee_contenant_probaExploitation = probaExploitation
+        self.__la_variable_privee_contenant_learn = learn
+        self.__la_variable_privee_contenant_la_derniere_action_choisie = None # dernière action choisie
+        self.__la_variable_privee_contenant_le_dernier_percept_recu = None # dernier percept reçu
 
         
     @property
-    def apprentissage(self): return la_variable_privée_contenant_learn
+    def apprentissage(self): return self.__la_variable_privee_contenant_learn
     @apprentissage.setter
     def apprentissage(self,v):
-        # on vérifie que v est un booléen et si oui on affecte la_variable_privée_contenant_learn
+        assert isinstance(v, bool), "pas bool."
+        self.__la_variable_privee_contenant_learn = v
         
     @property
-    def knowledge(self): return copy.deepcopy(la_variable_privée_contenant_la_base_de_connaissance)
+    def knowledge(self): return copy.deepcopy(self.__la_variable_privee_contenant_la_base_de_connaissance)
     @knowledge.setter
     def knowledge(self,v):
-        # on vérifie que v est une KB, si oui on affecte la_variable_privée_contenant_la_base_de_connaissance
+        assert isinstance(v, KB), "pas KB"
+        self.__la_variable_privee_contenant_la_base_de_connaissance = v
         
     @property
-    def probaExploitation(self): return la_variable_privée_contenant_probaExploitation
+    def probaExploitation(self): return self.__la_variable_privee_contenant_probaExploitation
     
     def getEvaluation(self):
         # On renvoie l'évaluation de l'agent
@@ -52,8 +55,13 @@ class Aspirateur_KB(Aspirateur):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
-        # On sauvegarde percepts dans la_variable_privée_contenant_le_dernier_percept
-        # On récupère la liste des règles dont la condition correspond aux percepts
+
+        self.__la_variable_privee_contenant_le_dernier_percept_recu = percepts
+        liste_de_regles = KB.find(percepts)
+        if len(liste_de_regles) == 0:
+            self.actions[randint(len(self.actions))]
+        else:
+
         # Si la liste est vide on choisit une action au hasard
         # Sinon
         #     On calcule les actions les actions dans la base pour ce percept
@@ -66,8 +74,8 @@ class Aspirateur_KB(Aspirateur):
         #        si pas d'autres on pioche aléatoirement dans les actions pas dans la base
         #        si elle existe mais que son score est négatif et qu'il y a des actions pas dans la base
         #           on prend une action aléatoire
-        # On sauvegarde dans la_variable_privée_contenant_la_dernière_action_choisie
-        # On renvoie l'action
+        self.__la_variable_privee_contenant_la_derniere_action_choisie = action
+        return self.__la_variable_privee_contenant_la_derniere_action_choisie
         
     def setReward(self,value):
         super(Aspirateur_KB,self).setReward(value)
