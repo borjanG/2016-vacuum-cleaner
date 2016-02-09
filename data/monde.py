@@ -7,13 +7,12 @@ from copy import deepcopy
 
 #This code contains easter eggs.
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "06.02.16"
+__date__ = "09.02.16"
 __version__ = "0.3"
 
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
                    1: ('poussiere', ':')}
-                   #2: ('inamovible','+')}
 
 #Liste de cles
 d = list(objetsStatiques.keys())
@@ -28,7 +27,7 @@ class Monde(object):
     """ Monde constructor """
 
     assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre"
-    assert type(l) and type(c) == int, "Il faut des entiers pour dimensions"
+    assert type(l) == int and type(c) == int, "Il faut des entiers pour dimensions"
     
     self.__agent = a 
     self.__lignes = l
@@ -206,9 +205,10 @@ class Monde(object):
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
-    self.__table = deepcopy([[randrange(len(self.objetsStatiques)-1)
+    
+    self.__table = [[randrange(len(self.objetsStatiques)-1)
                               for j in range(self.__cols)]
-                              for i in range(self.__lignes)])
+                              for i in range(self.__lignes)]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
@@ -246,7 +246,7 @@ class Aspirateur(object):
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(percept).issubset(d), "I'm blind!"
+    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -277,7 +277,7 @@ class AspiClairvoyant(Aspirateur):
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(percept).issubset(d), "I'm blind!"
+    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
     
     if percept[0] == 1:
       #Much ado about nothing
@@ -297,7 +297,7 @@ class AspiVoyant(Aspirateur):
   # /!\ A MODIF.
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    # assert set(percept).issubset(d), "I'm blind!"
+    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
   
     if len(percept) == 1:
       if percept[0] == 1:
