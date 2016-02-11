@@ -33,15 +33,16 @@ class Monde(object):
     self.__lignes = l
     self.__cols = c
     self.__table = [[0 for j in range(c)] for i in range(l)]
+    # self.__table = [[choice(set(d) - set(100)) for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
     self.__historique = []
     self.__perfGlobale = 0.0
 
 
   #Deepcopy car hash table & liste de listes
-  @property 
-  def objetsStatiques(self):
-    return deepcopy(objetsStatiques)
+  # @property 
+  # def objetsStatiques(self):
+  #   return deepcopy(objetsStatiques)
   @property
   def table(self):
     # assert(self.__table.count(0)+self.__table.count(1) == self.__lignes*self.__cols)
@@ -125,15 +126,15 @@ class Monde(object):
     """
 
     tab = []
-    key = max(self.objetsStatiques.keys()) #Pas plus de 100 keys qd meme
+    key = max(objetsStatiques.keys()) #Pas plus de 100 keys qd meme
 
     #Genere le tableau
     for i in range(len(self.table)):
       tab.append([])
       for j in range(len(self.table[0])):
-        tab[i].append(self.objetsStatiques[self.table[i][j]][1])
-    tab[self.posAgent[0]][self.posAgent[1]] += self.objetsStatiques[key][1]
-    # tab[self.posAgent[0]][self.posAgent[1]] = self.objetsStatiques[key][1]
+        tab[i].append(objetsStatiques[self.table[i][j]][1])
+    tab[self.posAgent[0]][self.posAgent[1]] += objetsStatiques[key][1]
+    # tab[self.posAgent[0]][self.posAgent[1]] = objetsStatiques[key][1]
 
     l = len(tab)
     c = len(tab[0])
@@ -181,10 +182,10 @@ class Monde(object):
 
     percept = self.getPerception(self.agent.capteurs)
     choix = self.agent.getDecision(percept)
+    self.__historique.append(((self.table, self.posAgent), choix))
     self.agent.setReward(self.applyChoix(choix))
     self.updateWorld()
-    self.__historique.append(((self.table, self.posAgent), choix))
-
+    
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
     # assert n == 2*len(self.table), "2*taille du monde pour n!"
@@ -198,7 +199,7 @@ class Monde(object):
       # print("A fait : ",self.historique)
       n-=1
 
-    self.__historique = []
+    # self.__historique = []
     self.agent.setReward(self.perfGlobale)
     return self.perfGlobale 
 
@@ -206,7 +207,7 @@ class Monde(object):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
     
-    self.__table = [[randrange(len(self.objetsStatiques)-1)
+    self.__table = [[randrange(len(objetsStatiques)-1)
                               for j in range(self.__cols)]
                               for i in range(self.__lignes)]
 
