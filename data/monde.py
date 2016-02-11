@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #Generic python libs
-from random import randrange
+from random import randrange, choice
 from copy import deepcopy
 
 #This code contains easter eggs.
@@ -190,12 +190,12 @@ class Monde(object):
     # assert n == 2*len(self.table), "2*taille du monde pour n!"
 
     self.initialisation()
-    print(self)
+    # print(self)
 
     while self.agent.vivant and n > 0:
       self.step()
-      print(self)
-      print("A fait : ",self.historique)
+      # print(self)
+      # print("A fait : ",self.historique)
       n-=1
 
     self.__historique = []
@@ -259,7 +259,7 @@ class Aspirateur(object):
   def setReward(self, reward):
     """ Associe une recompense au aspirateur """
 
-    assert isinstance(reward, float), ' Stochy veut un nombre!'
+    assert isinstance(reward, (float, int)), ' Stochy veut un nombre!'
     self.__reward = reward
 
   def getLastReward(self):
@@ -283,8 +283,8 @@ class AspiClairvoyant(Aspirateur):
       #Much ado about nothing
       action = self.actions[self.actions.index('Aspirer')]
     else:
-      action = self.actions[randrange(len(self.actions))-1] 
-      #'Aspirer' est la derniere action de actions
+      choix = list(set(actions)-{'Aspirer'})
+      action = choice(choix) 
 
     return action
 
@@ -304,8 +304,8 @@ class AspiVoyant(Aspirateur):
         #Much ado about nothing
         action = self.actions[self.actions.index('Aspirer')]
       else:
-        action = self.actions[randrange(len(self.actions))-1] 
-        #'Aspirer' est la derniere action de actions
+        choix = list(set(actions)-{'Aspirer'})
+        action = choice(choix) 
     else:
       if percept[self.capteurs.index(8)] == 1:
         action = 'Aspirer'

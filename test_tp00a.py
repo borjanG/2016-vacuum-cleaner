@@ -3,12 +3,11 @@
 
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour la première réalisation aspi autonome"
-__date__ = "09.02.16"
-__version__ = "0.5"
+__date__ = "11.02.16"
+__version__ = "0.7"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
-#import mmc_tp00 as tp00
 #import corrige_tp00a as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
@@ -51,11 +50,25 @@ def subtest_readonly(obj,lattr):
             if oldv != getattr(obj,att): _s += 'E'
         except Exception:
             _s += '.'
-        if _s[-2:] != '..' : return '%s: avant %s apres %s' % (att,oldv,getattr(obj,att))
+        if _s[-2:] != '..' :
+            return '%s: avant %s apres %s' % (att,oldv,getattr(obj,att))
         
     return _s
-    
-    
+
+#------- Var --------
+class MyEnv(object):
+    _fake = dict()
+    for i in (-25,-2,-1,3,13,27,45,85,99,1001,101,228,42):
+        _fake[i] = ('.'*abs(i),str(i))
+    tp00.objetsStatiques = _fake
+    def __init__(self,nbl=1,nbc=2):
+        self.aspi = tp00.Aspirateur()
+        self.world = tp00.Monde(self.aspi,nbl,nbc)
+    def __getattr__(self,att):
+        if hasattr(self.aspi,att): return getattr(self.aspi,att)
+        else: return getattr(self.world,att)
+
+numeric = float,int
 #------ Tests Aspirateurs -------
 
 def test_init_Aspirateur():
@@ -70,10 +83,13 @@ def test_init_Aspirateur():
     except Exception:
         _out += 'a'
     if has_failure(_out): return _out
-    _out += check_property(_a.capteurs == [],'capteurs par défaut trouvé %s' %  _a.capteurs,'b')  
+    _out += check_property(_a.capteurs == [],
+                           'capteurs par défaut trouvé %s' %  _a.capteurs,'b')  
     if has_failure(_out): return _out
-    _out += check_property(len(_a.actions) == 3,'wrong number of actions','c')
-    _out += check_property(sorted(_a.actions) == sorted(_actions),"bad actions",'d')
+    _out += check_property(len(_a.actions) == 3,
+                           'wrong number of actions','c')
+    _out += check_property(sorted(_a.actions) == sorted(_actions),
+                            "bad actions",'d')
     return _out
 
 def test_capteurs():
@@ -99,7 +115,8 @@ def test_capteurs():
     _lc = random.sample( range(9), 4 )
     _a = tp00.Aspirateur( _lc )
     
-    _out += check_property( len(_a.capteurs) == len(_lc),"bad list of captors",'d')
+    _out += check_property( len(_a.capteurs) == len(_lc),
+                                "bad list of captors",'d')
     _out += check_property( _a.capteurs == _lc,"bad list of captors",'e')
     return _out
 
@@ -110,20 +127,24 @@ def test_actions():
     _out = ''
     try:
         _a = tp00.Aspirateur([],1)
-        _out += check_property(isinstance(_a.actions,(list,tuple)),"list or tuple expected found %s" % type(_a.actions),'a')
+        _out += check_property(isinstance(_a.actions,(list,tuple)),
+                                   "list or tuple expected found %s" % type(_a.actions),'a')
     except Exception:
         _out += '.'
     if has_failure(_out): return _out
     _a = tp00.Aspirateur([],['o','u','t'])
-    _out += check_property(len(_a.actions)==len("out"),"wrong number of actions",'b')
-    _out += check_property(sorted(_a.actions) == sorted("out"),"wrong actions",'c')
+    _out += check_property(len(_a.actions)==len("out"),
+                               "wrong number of actions",'b')
+    _out += check_property(sorted(_a.actions) == sorted("out"),
+                               "wrong actions",'c')
     return _out
     
 def test_vivant():
     _out = ''
     _a = tp00.Aspirateur()
     _out += check_property( isinstance(_a.vivant,bool), "boolean required", '1')
-    _out += check_property( _a.vivant, "should be alive, found %s" % _a.vivant, '2')
+    _out += check_property( _a.vivant,
+                            "should be alive, found %s" % _a.vivant, '2')
     return _out
         
 def test_setReward():
@@ -132,6 +153,10 @@ def test_setReward():
 
 def test_getLastReward():
     _out = ''
+    _a = tp00.Aspirateur()
+    _a.setReward(42)
+    _out += check_property(42 == _a.getLastReward(),
+                            "42 expected found %s" % _a.getLastReward())
     return _out
 
 def test_getEvaluation():
@@ -140,37 +165,75 @@ def test_getEvaluation():
 
 def test_getDecision():
     _out = ''
+    _a = tp00.Aspirateur([],"A E I O U".split())
+    for i in range(10):
+        _ = _a.getDecision([])
+        _out += check_property(_ in "AEIOU", "%s is not an action" % _,
+                                str(i))
     return _out
 
 #------- Monde ------
 def test_table():
     """ une nouvelle contrainte est apparue dans TP00 """
     _out = ''
-    _a = tp00.Aspirateur()
     _old = tp00.objetsStatiques
-    _fake = dict()
-    for i in (-25,-2,-1,0,1,3,27,45,85,99,1001,101,228):
-        _fake[i] = ('.'*abs(i),str(i))
-    tp00.objetsStatiques = _fake
-    _m = tp00.Monde(_a,11,10)
-    _out += check_property(len(_m.table) == 11,'nbLig is wrong','a')
-    _out += check_property(len(_m.table[0]) == 10, 'nbCol is wrong','b')
-    _val = [ _m.table[i][j] for i in range(len(_m.table)) 
-             for j in range(len(_m.table[0])) if 0 <= _m.table[i][j] < 100 ]
+    _mmc = MyEnv(11,10)
+    _out += check_property(len(_mmc.table) == 11,'nbLig is wrong','a')
+    _out += check_property(len(_mmc.table[0]) == 10, 'nbCol is wrong','b')
+    _val = [ _mmc.table[i][j] for i in range(len(_mmc.table)) 
+             for j in range(len(_mmc.table[0])) if 0 <= _mmc.table[i][j] < 100 ]
     _out += check_property( len(_val) == 11*10, 'bad number of elements', 'c')
     _out += check_property( _val.count(0)+_val.count(1) != 11*10, 'bad elements','d')
     return _out 
     
 def test_agent():
     _out = ''
+    try:
+        _m = tp00.Monde(1)
+        _out += '1'
+    except:
+        _out += '.'
+    _a = tp00.Aspirateur()
+    try:
+        _m = tp00.Monde(_a)
+        _out += '.'
+    except:
+        _out += 'b'
+    _out += check_property(_a == _m.agent,"where is %s" % _a,'c')
     return _out
 
 def test_perfGlobale():
     _out = ''
+    _mmc = MyEnv()
+    _a = _mmc.simulation(5)
+    _out += check_property(_a == _mmc.perfGlobale,"wrong perfGlobale")
+    _out += check_property(isinstance(_mmc.perfGlobale,numeric))
     return _out
 
 def test_historique():
     _out = ''
+    _mmc = MyEnv(3,5)
+    _out += check_property(_mmc.historique == [],"historique wrong init",'a')
+    _a = _mmc.simulation(5)
+    # print(len(_mmc.historique), "Here")
+    _out += check_property(len(_mmc.historique) == 5,
+                            "historique wrong length",'b')
+    for i,x in enumerate(_mmc.historique): # chr(50)='2'
+        _out += check_property(isinstance(x,tuple),
+                                   "tuple expected",chr(ord('c')+i))
+        _out += check_property(len(x)==2,
+                                '2 are expected got %d' % len(x),'+')
+        _out += check_property(isinstance(x[0],tuple),
+                                "tuple expected",chr(ord('p')+i))
+        _out += check_property(len(x[0])==2,
+                                '%s is wrong' % str(x[0]),'-') # table,posAgent
+        _out += check_property(len(x[0][1]) == 2,
+                                '%s is not a posAgent' % str(x[0][1]),
+                                ':') # posAgent
+        _out += check_property(len(x[0][0]) == 3,'wrong nbl',';') # table
+        _out += check_property(len(x[0][0][1]) == 5,'wrong nbc','!') # table[1]
+        _out += check_property(x[0][0][2][3] in MyEnv._fake,
+                                'table is wrongly filled','#')
     return _out
 
 def test_updateWorld():
@@ -223,7 +286,8 @@ def main():
     for _ in _meth:
         _msg += check_property(hasattr(tp00.Aspirateur,_),'%s inconnu' % _)
         if _msg[-1] == '.' :
-            _msg += check_property(callable(getattr(tp00.Aspirateur,_)), '%s pas une méthode' % _)
+            _msg += check_property(callable(getattr(tp00.Aspirateur,_)),
+                                       '%s pas une méthode' % _)
     print("méthodes Aspirateur:",_msg)
     _s += _msg ; _msg = ''
         
@@ -245,7 +309,8 @@ def main():
     for _ in _meth:
         _msg += check_property(hasattr(tp00.Monde,_),'%s inconnu' % _)
         if _msg[-1] == '.' :
-            _msg += check_property(callable(getattr(tp00.Monde,_)), '%s pas une méthode' % _)
+            _msg += check_property(callable(getattr(tp00.Monde,_)),
+                                       '%s pas une méthode' % _)
     print("méthodes Monde:",_msg)
     _s += _msg ; _msg = ''
 
@@ -272,4 +337,4 @@ def main():
 
 if __name__ == '__main__' :
     print("succ %d fail %d sum %d, rate = %.2f" % main())
-    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(57))
+    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(115))
