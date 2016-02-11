@@ -5,8 +5,8 @@ if __name__ == "__main__":
 
   a = AspiVoyant()
   # a = Aspirateur()
-  m = Monde(a,3,5)
-  m.simulation(5)
+  m = Monde(a,1,2)
+  m.simulation(4)
   # print(m.historique)
   # print(m.table)
   # print(m.posAgent)

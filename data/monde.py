@@ -195,8 +195,8 @@ class Monde(object):
 
     while self.agent.vivant and n > 0:
       self.step()
-      # print(self)
-      # print("A fait : ",self.historique)
+##      print(self)
+##      print("A fait : ",self.historique)
       n-=1
 
     # self.__historique = []
@@ -206,10 +206,16 @@ class Monde(object):
   def initialisation(self):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
+
+    l=list(objetsStatiques.keys())
+    if 100 in l:l.remove(100)
+    t=len(l)
+    self.__table = [[l[randrange(t)]for j in range(self.__cols)]
+                    for i in range(self.__lignes)]
     
-    self.__table = [[randrange(len(objetsStatiques)-1)
-                              for j in range(self.__cols)]
-                              for i in range(self.__lignes)]
+##    self.__table = [[randrange(len(objetsStatiques)-1)
+##                              for j in range(self.__cols)]
+##                              for i in range(self.__lignes)]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
