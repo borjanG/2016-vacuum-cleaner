@@ -7,7 +7,7 @@ from copy import deepcopy
 
 #This code contains easter eggs.
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "09.02.16"
+__date__ = "12.02.16"
 __version__ = "0.3"
 
 objetsStatiques = {100: ('aspirateur', '@'),
@@ -17,9 +17,9 @@ objetsStatiques = {100: ('aspirateur', '@'),
 #Liste de cles
 d = list(objetsStatiques.keys())
 
-                          # ------------ #    
-# ----------------------- # --- MONDE -- # --------------------------------------#
-                          # ------------ #
+  # ------------ #    
+  #     MONDE    # -------------------------------------------------------------------#
+  # ------------ #
 
 class Monde(object):
 
@@ -35,7 +35,7 @@ class Monde(object):
     self.__table = [[0 for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
     self.__historique = []
-    self.__perfGlobale = 0.0
+    self.__perfGlobale = 0.
     self.initialisation()
 
   @property
@@ -86,11 +86,10 @@ class Monde(object):
 
     return 0.
 
-  # /!\ A MODIF.
   def getPerception(self, capteurs = []):
     """ Recuperation des valeurs dans les cases 
         disponibles au aspirateur par ses capteurs """
-    assert isinstance(capteurs, list)
+    assert isinstance(capteurs, list), "needs a list."
 
     i = self.posAgent[0]
     j = self.posAgent[1]
@@ -122,13 +121,11 @@ class Monde(object):
     tab = []
     key = max(objetsStatiques.keys()) #Pas plus de 100 keys qd meme
 
-    #Genere le tableau
     for i in range(len(self.table)):
       tab.append([])
       for j in range(len(self.table[0])):
         tab[i].append(objetsStatiques[self.table[i][j]][1])
     tab[self.posAgent[0]][self.posAgent[1]] += objetsStatiques[key][1]
-    # tab[self.posAgent[0]][self.posAgent[1]] = objetsStatiques[key][1]
 
     l = len(tab)
     c = len(tab[0])
@@ -199,25 +196,30 @@ class Monde(object):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
 
+    #Charlotte
     # l=list(objetsStatiques.keys())
     # if 100 in l:l.remove(100)
     # t=len(l)
     # self.__table = [[l[randrange(t)] for j in range(self.__cols)]
     #                 for i in range(self.__lignes)]
 
-    _ = [ k for k in objetsStatiques.keys() if 0 <= k < 100 ]
+    #mmc
+    # _ = [ k for k in objetsStatiques.keys() if 0 <= k < 100 ]
+    # self.__table = [ [ choice( _ ) for j in range(self.__cols) ]
+                        # for i in range(self.__lignes) ]
 
-    self.__table = [ [ choice( _ ) for j in range(self.__cols) ]
-                        for i in range(self.__lignes) ]
+    #Borjan
+    _ = list(set(objetsStatiques.keys()).intersection(range(100)))
+    self.__table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
     #Agit sur table 
     pass
 
-                          # ------------ #    
-# ----------------------- # --- AGENT -- # --------------------------------------------------------#
-                          # ------------ #
+  # ------------ #    
+  #     AGENT    # --------------------------------------------------------------------------------------------------------------------#
+  # ------------ #
 
 class Aspirateur(object):
   """ Aspirateur constructor """
@@ -265,9 +267,9 @@ class Aspirateur(object):
   def getLastReward(self):
     return self.__reward
 
-                          # ------------- #
-# ----------------------- # --- FILLES -- # --------------------------------------------------------# 
-                          # ------------- #
+  # ------------- #
+  #     Agentz    # ---------------------------------------------------------------# 
+  # ------------- #
 
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
