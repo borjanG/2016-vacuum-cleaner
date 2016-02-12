@@ -4,11 +4,12 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour la première réalisation aspi autonome"
 __date__ = "11.02.16"
-__version__ = "0.7"
+__version__ = "0.9"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
 #import corrige_tp00a as tp00
+#import mmc_tp00 as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random
@@ -50,16 +51,27 @@ def subtest_readonly(obj,lattr):
             if oldv != getattr(obj,att): _s += 'E'
         except Exception:
             _s += '.'
-        if _s[-2:] != '..' :
+        if has_failure(_s,2):
+            return '%s: avant %s apres %s' % (att,oldv,getattr(obj,att))
+
+        try:
+            _s += '.'
+            setattr(obj,att,[-1,0,1])
+            if oldv != getattr(obj,att): _s += 'E'
+        except Exception:
+            _s += '.'
+        if has_failure(_s,2):
             return '%s: avant %s apres %s' % (att,oldv,getattr(obj,att))
         
     return _s
 
-#------- Var --------
+#------- Var & Tools --------
 class MyEnv(object):
+    """ On force les attributs à etre dans aspi et world """
+    __slots__ = ('aspi','world')
     _fake = dict()
-    for i in (-25,-2,-1,3,13,27,45,85,99,1001,101,228,42):
-        _fake[i] = ('.'*abs(i),str(i))
+    for i in (-25, -2, -1, 3, 13, 27, 45, 85, 99, 1001, 100, 228, 42):
+        _fake[i] = ('.'*min(abs(i),5),str(i))
     tp00.objetsStatiques = _fake
     def __init__(self,nbl=1,nbc=2):
         self.aspi = tp00.Aspirateur()
@@ -68,7 +80,35 @@ class MyEnv(object):
         if hasattr(self.aspi,att): return getattr(self.aspi,att)
         else: return getattr(self.world,att)
 
+# des raccourcis pour les controle de type
 numeric = float,int
+ltup = list,tuple
+
+def getArgs(cls,meth):
+    """ On récupère les arguments formels """
+    import inspect
+    return inspect.getfullargspec(getattr(cls,meth))._asdict()['args']
+
+# Definition des signatures pour chaque méthode
+aspiSig = {'setReward': (2,0),
+            'getEvaluation': (1,1,numeric),
+            'getLastReward': (1,1,numeric),
+            'getDecision': (2,1,str)}
+mondeSig = {'getPerception': (2,1,ltup),
+            'applyChoix': (2,1,numeric),
+            'updateWorld': (1,0),
+            'step': (1,0),
+            'simulation': (2,1,numeric)}
+
+# Controle de type pour les cas de base
+def check_out(dic,meth,*args):
+    _mmc = MyEnv()
+    _ = getattr(_mmc,meth)(*args)
+    if dic[meth][1] == 0: _prop = (_ is None)
+    elif dic[meth][1] == 1: _prop = (isinstance(_,dic[meth][2]))
+    else: _prop = (dic[meth][1]==len(_)) # à refléchir si le cas arrive
+    return check_property(_prop,'%s: bad output type' % meth)
+    
 #------ Tests Aspirateurs -------
 
 def test_init_Aspirateur():
@@ -149,10 +189,12 @@ def test_vivant():
         
 def test_setReward():
     _out = ''
+    _out += check_out(aspiSig,'setReward',42)
     return _out
 
 def test_getLastReward():
     _out = ''
+    _out += check_out(aspiSig,'getLastReward')
     _a = tp00.Aspirateur()
     _a.setReward(42)
     _out += check_property(42 == _a.getLastReward(),
@@ -161,10 +203,12 @@ def test_getLastReward():
 
 def test_getEvaluation():
     _out = ''
+    _out += check_out(aspiSig,'getEvaluation')
     return _out
 
 def test_getDecision():
     _out = ''
+    _out += check_out(aspiSig,'getDecision',[])
     _a = tp00.Aspirateur([],"A E I O U".split())
     for i in range(10):
         _ = _a.getDecision([])
@@ -182,6 +226,7 @@ def test_table():
     _out += check_property(len(_mmc.table[0]) == 10, 'nbCol is wrong','b')
     _val = [ _mmc.table[i][j] for i in range(len(_mmc.table)) 
              for j in range(len(_mmc.table[0])) if 0 <= _mmc.table[i][j] < 100 ]
+    print(len(_val))
     _out += check_property( len(_val) == 11*10, 'bad number of elements', 'c')
     _out += check_property( _val.count(0)+_val.count(1) != 11*10, 'bad elements','d')
     return _out 
@@ -199,7 +244,7 @@ def test_agent():
         _out += '.'
     except:
         _out += 'b'
-    _out += check_property(_a == _m.agent,"where is %s" % _a,'c')
+    _out += check_property(_a == _m.agent,"where is %s ?" % _a,'c')
     return _out
 
 def test_perfGlobale():
@@ -215,9 +260,9 @@ def test_historique():
     _mmc = MyEnv(3,5)
     _out += check_property(_mmc.historique == [],"historique wrong init",'a')
     _a = _mmc.simulation(5)
-    # print(len(_mmc.historique), "Here")
     _out += check_property(len(_mmc.historique) == 5,
                             "historique wrong length",'b')
+    # vérification du contenu historique
     for i,x in enumerate(_mmc.historique): # chr(50)='2'
         _out += check_property(isinstance(x,tuple),
                                    "tuple expected",chr(ord('c')+i))
@@ -238,22 +283,27 @@ def test_historique():
 
 def test_updateWorld():
     _out = ''
+    _out += check_out(mondeSig,'updateWorld')
     return _out
 
 def test_applyChoix():
     _out = ''
+    _out += check_out(mondeSig,'applyChoix','Aspirer')    
     return _out
 
 def test_getPerception():
     _out = ''
+    _out += check_out(mondeSig,'getPerception',[])
     return _out
 
 def test_step():
     _out = ''
+    _out += check_out(mondeSig,'step')
     return _out
 
 def test_simulation():
     _out = ''
+    _out += check_out(mondeSig,'simulation',5)
     return _out
 
 def main():
@@ -261,8 +311,7 @@ def main():
     _s = ''
     _toDO = []
     try:
-        aspi = tp00.Aspirateur()
-        world = tp00.Monde(aspi) 
+        _mmc = MyEnv()
     except Exception:
         return "test_tp00 is required to succeed"
         
@@ -278,7 +327,7 @@ def main():
     _s += _msg ; _msg = ''
     
     if '.'*len(_s) == _s:
-        _msg = subtest_readonly(aspi,_attr)
+        _msg = subtest_readonly(_mmc,_attr)
         print("attributs are ReadOnly",_msg)
         _s += _msg ; _msg = ''
         
@@ -290,7 +339,13 @@ def main():
                                        '%s pas une méthode' % _)
     print("méthodes Aspirateur:",_msg)
     _s += _msg ; _msg = ''
-        
+
+    for _ in aspiSig:
+        _msg += check_property(len(getArgs(tp00.Aspirateur,_)) == aspiSig[_][0],
+                                "%s pas le bon nombre d'arguments" % _)
+    print("input Aspirateur",_msg)
+    _s += _msg ; _msg = ''
+    
     _attr = "agent perfGlobale historique table".split()
     _toDO.extend( _attr )
     _meth = "updateWorld applyChoix getPerception step simulation".split()
@@ -302,7 +357,7 @@ def main():
     _s += _msg ; _msg = ''
     
     if '.'*len(_s) == _s:    
-        _msg = subtest_readonly(world,_attr)
+        _msg = subtest_readonly(_mmc,_attr)
         print("attributs are ReadOnly",_msg)
         _s += _msg ; _msg = ''
     
@@ -312,6 +367,12 @@ def main():
             _msg += check_property(callable(getattr(tp00.Monde,_)),
                                        '%s pas une méthode' % _)
     print("méthodes Monde:",_msg)
+    _s += _msg ; _msg = ''
+
+    for _ in mondeSig:
+        _msg += check_property(len(getArgs(tp00.Monde,_)) == mondeSig[_][0],
+                                "%s pas le bon nombre d'arguments" % _)
+    print("input Monde",_msg)
     _s += _msg ; _msg = ''
 
     _msg = test_init_Aspirateur()
@@ -337,4 +398,4 @@ def main():
 
 if __name__ == '__main__' :
     print("succ %d fail %d sum %d, rate = %.2f" % main())
-    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(115))
+    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(147))

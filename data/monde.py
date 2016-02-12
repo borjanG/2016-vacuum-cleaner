@@ -33,19 +33,13 @@ class Monde(object):
     self.__lignes = l
     self.__cols = c
     self.__table = [[0 for j in range(c)] for i in range(l)]
-    # self.__table = [[choice(set(d) - set(100)) for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
     self.__historique = []
     self.__perfGlobale = 0.0
+    self.initialisation()
 
-
-  #Deepcopy car hash table & liste de listes
-  # @property 
-  # def objetsStatiques(self):
-  #   return deepcopy(objetsStatiques)
   @property
   def table(self):
-    # assert(self.__table.count(0)+self.__table.count(1) == self.__lignes*self.__cols)
     return deepcopy(self.__table)
   @property 
   def posAgent(self):
@@ -188,9 +182,7 @@ class Monde(object):
     
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
-    # assert n == 2*len(self.table), "2*taille du monde pour n!"
 
-    self.initialisation()
     # print(self)
 
     while self.agent.vivant and n > 0:
@@ -207,15 +199,16 @@ class Monde(object):
     """ Initialisation du monde """
     self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
 
-    l=list(objetsStatiques.keys())
-    if 100 in l:l.remove(100)
-    t=len(l)
-    self.__table = [[l[randrange(t)]for j in range(self.__cols)]
-                    for i in range(self.__lignes)]
-    
-##    self.__table = [[randrange(len(objetsStatiques)-1)
-##                              for j in range(self.__cols)]
-##                              for i in range(self.__lignes)]
+    # l=list(objetsStatiques.keys())
+    # if 100 in l:l.remove(100)
+    # t=len(l)
+    # self.__table = [[l[randrange(t)] for j in range(self.__cols)]
+    #                 for i in range(self.__lignes)]
+
+    _ = [ k for k in objetsStatiques.keys() if 0 <= k < 100 ]
+
+    self.__table = [ [ choice( _ ) for j in range(self.__cols) ]
+                        for i in range(self.__lignes) ]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
