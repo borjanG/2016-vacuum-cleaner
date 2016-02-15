@@ -9,7 +9,7 @@ __version__ = "0.1"
 from data.monde import objetsStatiques, Aspirateur, Monde
 from briques import Rule, KB
 import copy
-from random import randint
+from random import randint, choice, random
 
 class Aspirateur_KB(Aspirateur):
     """ 4 paramètres
@@ -48,8 +48,10 @@ class Aspirateur_KB(Aspirateur):
     def probaExploitation(self): return self.__la_variable_privee_contenant_probaExploitation
     
     def getEvaluation(self):
+
         # On renvoie l'évaluation de l'agent
-        # (nombre de pièces nettoyées + 1) / ( len(self.knowledge) + 1 )
+        eval=(self.nettoyage + 1) / ( len(self.knowledge) + 1 )
+        return eval 
         
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
@@ -59,27 +61,36 @@ class Aspirateur_KB(Aspirateur):
         self.__la_variable_privee_contenant_le_dernier_percept_recu = percepts
         liste_de_regles = KB.find(percepts)
         if len(liste_de_regles) == 0:
-            self.actions[randint(len(self.actions))]
+            action = choice(self.actions)
         else:
+            liste_action_base=[regle.conclusion for regle in liste_de_regles]
+            liste_action_pas_base = list(set(actions).difference(liste_action_base))
 
-        # Si la liste est vide on choisit une action au hasard
-        # Sinon
-        #     On calcule les actions les actions dans la base pour ce percept
-        #     On calcule les actions pas dans la base pour ce percept
-        #     On cherche l'action ayant le meilleur score moyen (elle existe)
-        #     On tire un nombre aléatoire (r) que l'on compare à la probabilité d'exploitation
-        #     si r < probaExploitation alors 
-        #        l'action choisie est celle déterminée par le scoreMoyen maximum
-        #     sinon on pioche de manière équiprobable dans les autres actions
-        #        si pas d'autres on pioche aléatoirement dans les actions pas dans la base
-        #        si elle existe mais que son score est négatif et qu'il y a des actions pas dans la base
-        #           on prend une action aléatoire
+            meilleure_regle = max(liste_de_regles, key=lambda action: action.scoreMoyen)
+
+            r=random()
+            if r < self.probaExploitation:
+                action=meilleure_regle
+            else:
+                liste_autres_action_base=liste_action_base.remove(meilleure_regle.conclusion)
+                if len(liste_autres_action_base)!=0:
+                    action = choice(liste_autres_action_base)
+                    if action.scoreMoyen < 0:
+                        action = choice(liste_action_pas_base)
+                else:
+                    action = choice(liste_action_pas_base)
+
         self.__la_variable_privee_contenant_la_derniere_action_choisie = action
         return self.__la_variable_privee_contenant_la_derniere_action_choisie
         
     def setReward(self,value):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
+            action = self.__la_variable_privee_contenant_la_derniere_action_choisie
+            # percepts = World.getPerception()
+
+            r = Rule(percepts, action, value)
+            self.knowledge.add(r)
             # On crée une Rule avec les 3 paramètres percepts,action,value r = Rule(....)
             # On ajoute cette règle dans la base grace à self.knowledge.add(r)
         
@@ -93,39 +104,61 @@ class World(Monde):
         super(World,self).initialisation()
         # creer une variable privée qui va servir à compter le nombre de fois ou l'agent est dans
         # une case donnée. La variable est donc une liste de liste dont chaque valeur est à 0
-        # self._XXX = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table) ]
-        # i,j = self.posAgent
-        # self.__XXX[i][j] = 1
+        self._passage = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table) ]
+        i,j = self.posAgent
+        self.__passage[i][j] = 1
         # ajoute à l'agent un compteur de pièces nettoyées, initalisé à 0
-        # self.agent.nettoyage = 0
+        self.agent.nettoyage = 0
         
     def getPerception(self,capteurs):
         """ informe l'agent en fonction des capteurs """
-        # renvoie la liste des valeurs contenues dans self.table[nx][ny]
-        # on utilise delta = [ (-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0) ]
-        # pour x dans capteurs faire
-        #     nx = self.posAgent[0]+delta[x][0]
-        #     ny = self.posAgent[1]+delta[x][1]
-        #     si nx >= 0 et < nbLignes & ny >= 0 et < nbColonnes : table[nx][ny] existe
-        #     sinon la valeur est -1
-        # On renvoie une liste de la taille de capteurs
+
+        delta = [ (-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0) ]
+        res = []
+        for x in capteurs:
+            nx = self.posAgent[0]+delta[x][0]
+            ny = self.posAgent[1]+delta[x][1]
+            if nbLignes > nx >= 0 and nbColonnes > ny >= 0: res.append(self.table[nx][ny])
+            else: res.append(-1)
+        return res   
+
         
     def applyChoix(self,choix):
         """ modifie table & posAgent en fonction de choix """
-        # si choix est Aspirer et que l'agent est sur une case poussiere
-        # modifier la table (disparition poussière), augmenter self.agent.nettoyage, renvoyer le score 2
-        # si choix est Aspirer et que l'agent est sur une case propre
-        # pas de modification, renvoyer le score 0
-        # si choix est un déplacement et que l'agent ne peut pas le faire
-        # pas de modification, renvoyer -1
-        # sinon, modifier la position de l'agent, renvoyer 1
-        # ATTENTION AVANT de renvoyer le score, mais APRES avoir modifier table & posAgent
-        # i,j = self.posAgent
-        # variable_cachée_compteur[i][j] += 1
+
+        if choix == 'Aspirer':
+            if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
+                self.__table[self.posAgent[0]][self.posAgent[1]] = 0
+                self.agent.nettoyage+=1
+                score = 2
+            else:
+                score = 0
+        else:
+            ny = self.posAgent[1]
+            if choix == 'Gauche':
+                if ny > 0: 
+                    self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+                    score = 1
+                else:
+                    score = -1
+            elif choix == 'Droite':
+                if ny < nbColonnes: 
+                    self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
+                    score = 1
+                else:
+                    score = -1
+        i,j = self.posAgent
+        self.__passage[i][j] += 1  
+        return score
         
-    
     @property
     def perfGlobale(self):
-        # return nombre de pièces nettoyées − nombre de pièces visitées 3 fois ou plus
+
+        compteur=0
+        for elem in self._passage:
+            for x in elem:
+                if x >= 3: compteur+=1
+
+        return self.agent.nettoyage - compteur
 
 
