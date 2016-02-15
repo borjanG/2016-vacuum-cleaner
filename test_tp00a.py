@@ -4,12 +4,11 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour la première réalisation aspi autonome"
 __date__ = "11.02.16"
-__version__ = "0.9"
+__version__ = "final"
 
 ## remplacer XXX par le nom de votre fichier
 import data.monde as tp00
 #import corrige_tp00a as tp00
-#import mmc_tp00 as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random
@@ -226,7 +225,6 @@ def test_table():
     _out += check_property(len(_mmc.table[0]) == 10, 'nbCol is wrong','b')
     _val = [ _mmc.table[i][j] for i in range(len(_mmc.table)) 
              for j in range(len(_mmc.table[0])) if 0 <= _mmc.table[i][j] < 100 ]
-    print(len(_val))
     _out += check_property( len(_val) == 11*10, 'bad number of elements', 'c')
     _out += check_property( _val.count(0)+_val.count(1) != 11*10, 'bad elements','d')
     return _out 
@@ -251,8 +249,9 @@ def test_perfGlobale():
     _out = ''
     _mmc = MyEnv()
     _a = _mmc.simulation(5)
-    _out += check_property(_a == _mmc.perfGlobale,"wrong perfGlobale")
-    _out += check_property(isinstance(_mmc.perfGlobale,numeric))
+    _out += check_property(isinstance(_mmc.perfGlobale,numeric),"bad type",'1')
+    if has_failure(_out): return _out
+    _out += check_property(_a == _mmc.perfGlobale,"wrong perfGlobale",'2')
     return _out
 
 def test_historique():
@@ -386,8 +385,14 @@ def main():
         # On passe aux tests plus complexes
         for meth in _toDO :
             meth = 'test_'+meth
-            _msg = eval(meth)()
-            print(meth,_msg)
+            try:
+                _msg = eval(meth)()
+                print(meth,_msg)
+            except Exception as _e:
+                print("failure: {}".format(meth))
+                print(_e)
+                _msg = "X"
+            if has_failure(_msg): break
             _s += _msg
     
         
@@ -397,5 +402,9 @@ def main():
     return _ok, (_all-_ok), _all, round(100 * _ok / _all, 2)
 
 if __name__ == '__main__' :
-    print("succ %d fail %d sum %d, rate = %.2f" % main())
+    try:
+        _result = main()
+        print("succ %d fail %d sum %d, rate = %.2f" % _result)
+    except Exception as _e:
+        print(_e)
     print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(147))
