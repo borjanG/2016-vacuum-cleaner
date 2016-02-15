@@ -22,13 +22,11 @@ class Aspirateur_KB(Aspirateur):
         super(Aspirateur_KB,self).__init__(lCap,lAct)
         assert 0 <= probaExploitation <= 1, "Probability expected"
         assert isinstance(learn,bool), "Boolean expected got %s" % type(learn)
-        # initialisation de variables privées __XXX (nom à choisir)
         self.__la_variable_privee_contenant_la_base_de_connaissance = KB() # base de données vide
         self.__la_variable_privee_contenant_probaExploitation = probaExploitation
         self.__la_variable_privee_contenant_learn = learn
         self.__la_variable_privee_contenant_la_derniere_action_choisie = None # dernière action choisie
         self.__la_variable_privee_contenant_le_dernier_percept_recu = None # dernier percept reçu
-
         
     @property
     def apprentissage(self): return self.__la_variable_privee_contenant_learn
@@ -47,11 +45,7 @@ class Aspirateur_KB(Aspirateur):
     @property
     def probaExploitation(self): return self.__la_variable_privee_contenant_probaExploitation
     
-    def getEvaluation(self):
-
-        # On renvoie l'évaluation de l'agent
-        eval=(self.nettoyage + 1) / ( len(self.knowledge) + 1 )
-        return eval 
+    def getEvaluation(self): return (self.nettoyage+1)/(len(self.knowledge)+1)
         
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
@@ -60,20 +54,20 @@ class Aspirateur_KB(Aspirateur):
 
         self.__la_variable_privee_contenant_le_dernier_percept_recu = percepts
         liste_de_regles = KB.find(percepts)
+
         if len(liste_de_regles) == 0:
             action = choice(self.actions)
         else:
-            liste_action_base=[regle.conclusion for regle in liste_de_regles]
+            liste_action_base = [regle.conclusion for regle in liste_de_regles]
             liste_action_pas_base = list(set(actions).difference(liste_action_base))
-
             meilleure_regle = max(liste_de_regles, key=lambda action: action.scoreMoyen)
+            r = random()
 
-            r=random()
             if r < self.probaExploitation:
-                action=meilleure_regle
+                action = meilleure_regle
             else:
-                liste_autres_action_base=liste_action_base.remove(meilleure_regle.conclusion)
-                if len(liste_autres_action_base)!=0:
+                liste_autres_action_base = liste_action_base.remove(meilleure_regle.conclusion)
+                if len(liste_autres_action_base) != 0:
                     action = choice(liste_autres_action_base)
                     if action.scoreMoyen < 0:
                         action = choice(liste_action_pas_base)
@@ -153,12 +147,17 @@ class World(Monde):
         
     @property
     def perfGlobale(self):
-
+        """ """
         compteur=0
-        for elem in self._passage:
+        for elem in self.__passage:
             for x in elem:
                 if x >= 3: compteur+=1
-
         return self.agent.nettoyage - compteur
+
+        #Borjan
+        # T = 0
+        # for i in range(len(self.__passage)):
+        #     T += len(list(filter(lambda x: x>2, self.__passage[i])))
+        # return self.agent.nettoyage - T
 
 
