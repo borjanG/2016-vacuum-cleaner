@@ -184,8 +184,8 @@ class Monde(object):
 
     while self.agent.vivant and n > 0:
       self.step()
-##      print(self)
-##      print("A fait : ",self.historique)
+      print(self)
+      print("A fait : ",self.historique)
       n-=1
 
     # self.__historique = []

@@ -1,12 +1,14 @@
 #Custom libs
 from data.monde import *
+from tp01 import *
 
 if __name__ == "__main__":
 
-  a = AspiVoyant()
+  # a = AspiVoyant()
+  a = Aspirateur_KB(0.5)
   # a = Aspirateur()
-  m = Monde(a,1,2)
-  m.simulation(4)
+  m = Monde(a,1,5)
+  m.simulation(10)
   # print(m.historique)
   # print(m.table)
   # print(m.posAgent)

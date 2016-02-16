@@ -23,17 +23,17 @@ class Aspirateur_KB(Aspirateur):
         assert 0 <= probaExploitation <= 1, "Probability expected"
         assert isinstance(learn,bool), "Boolean expected got %s" % type(learn)
         self.__la_variable_privee_contenant_la_base_de_connaissance = KB() # base de données vide
-        self.__la_variable_privee_contenant_probaExploitation = probaExploitation
-        self.__la_variable_privee_contenant_learn = learn
-        self.__la_variable_privee_contenant_la_derniere_action_choisie = None # dernière action choisie
-        self.__la_variable_privee_contenant_le_dernier_percept_recu = None # dernier percept reçu
+        self.__probaExploitation = probaExploitation
+        self.__learn = learn
+        self.__last_action = None # dernière action choisie
+        self.__last_percept = None # dernier percept reçu
         
     @property
-    def apprentissage(self): return self.__la_variable_privee_contenant_learn
+    def apprentissage(self): return self.__learn
     @apprentissage.setter
     def apprentissage(self,v):
         assert isinstance(v, bool), "pas bool."
-        self.__la_variable_privee_contenant_learn = v
+        self.__learn = v
         
     @property
     def knowledge(self): return copy.deepcopy(self.__la_variable_privee_contenant_la_base_de_connaissance)
@@ -43,7 +43,7 @@ class Aspirateur_KB(Aspirateur):
         self.__la_variable_privee_contenant_la_base_de_connaissance = v
         
     @property
-    def probaExploitation(self): return self.__la_variable_privee_contenant_probaExploitation
+    def probaExploitation(self): return self.__probaExploitation
     
     def getEvaluation(self): return (self.nettoyage+1)/(len(self.knowledge)+1)
         
@@ -52,8 +52,8 @@ class Aspirateur_KB(Aspirateur):
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
 
-        self.__la_variable_privee_contenant_le_dernier_percept_recu = percepts
-        liste_de_regles = KB.find(percepts)
+        self.__last_percept = percepts
+        liste_de_regles = self.__la_variable_privee_contenant_la_base_de_connaissance.find(percepts)
 
         if len(liste_de_regles) == 0:
             action = choice(self.actions)
@@ -74,14 +74,14 @@ class Aspirateur_KB(Aspirateur):
                 else:
                     action = choice(liste_action_pas_base)
 
-        self.__la_variable_privee_contenant_la_derniere_action_choisie = action
-        return self.__la_variable_privee_contenant_la_derniere_action_choisie
+        self.__last_action = action
+        return self.__last_action
         
     def setReward(self,value):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
-            action = self.__la_variable_privee_contenant_la_derniere_action_choisie
-            # percepts = World.getPerception()
+            action = self.__last_action
+            percepts = self.__last_percept
 
             r = Rule(percepts, action, value)
             self.knowledge.add(r)
@@ -98,7 +98,7 @@ class World(Monde):
         super(World,self).initialisation()
         # creer une variable privée qui va servir à compter le nombre de fois ou l'agent est dans
         # une case donnée. La variable est donc une liste de liste dont chaque valeur est à 0
-        self._passage = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table) ]
+        self._passage = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table)) ]
         i,j = self.posAgent
         self.__passage[i][j] = 1
         # ajoute à l'agent un compteur de pièces nettoyées, initalisé à 0
