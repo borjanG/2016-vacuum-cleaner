@@ -100,7 +100,7 @@ class World(Monde):
         # une case donnée. La variable est donc une liste de liste dont chaque valeur est à 0
         self._passage = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table)) ]
         i,j = self.posAgent
-        self.__passage[i][j] = 1
+        self._passage[i][j] = 1
         # ajoute à l'agent un compteur de pièces nettoyées, initalisé à 0
         self.agent.nettoyage = 0
         
@@ -142,22 +142,22 @@ class World(Monde):
                 else:
                     score = -1
         i,j = self.posAgent
-        self.__passage[i][j] += 1  
+        self._passage[i][j] += 1  
         return score
         
     @property
     def perfGlobale(self):
         """ """
         compteur=0
-        for elem in self.__passage:
+        for elem in self._passage:
             for x in elem:
                 if x >= 3: compteur+=1
         return self.agent.nettoyage - compteur
 
         #Borjan
         # T = 0
-        # for i in range(len(self.__passage)):
-        #     T += len(list(filter(lambda x: x>2, self.__passage[i])))
+        # for i in range(len(self._passage)):
+        #     T += len(list(filter(lambda x: x>2, self._passage[i])))
         # return self.agent.nettoyage - T
 
 
