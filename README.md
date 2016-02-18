@@ -1,10 +1,10 @@
 # IA-Vacuum
 
-SEMAINE 4 -> 17.02.2016 (ENVOIE = CHARLOTTE)
+SEMAINE 4 -> 19.02.2016 (ENVOIE = CHARLOTTE)
 
 A faire avant td (peut-etre, mes propositions):
 - Commencer a reflechir sur le rapport
-- Ou il y a "/!\ A MODIF.", chacun peut reflechir et proposer des modif plus efficaces.
-- Faire de sorte qu'il y a une station et une poubelle dans le tableau (mais de maniere que la poussiere et le propre sont plus frequents)
+- Sauvgarde de liste des scores de l'agent dans un fichier (txt ou xls etc), puis utiliser MATLAB/Scilab pour tracer l'evolution du agent en fonction des rewards (ecrire aussi un code Python PIL pour cela?)
+- bla
 
 Good job :)
