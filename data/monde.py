@@ -7,8 +7,8 @@ from copy import deepcopy
 
 #This code contains easter eggs.
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "12.02.16"
-__version__ = "0.3"
+__date__ = "19.02.16"
+__version__ = "0.4"
 
 objetsStatiques = {100: ('aspirateur', '@'),
                    0: ('rien', ' '),
@@ -34,7 +34,7 @@ class Monde(object):
     self.__cols = c
     self.__table = [[0 for j in range(c)] for i in range(l)]
     self.__posAgent = (0,0)
-    self.__historique = []
+    self.__historique = list()
     self.__perfGlobale = 0.
     self.initialisation()
 
@@ -62,29 +62,26 @@ class Monde(object):
 
     if action == "Gauche":
       if 0 < self.posAgent[1]:
-        if self.table[self.posAgent[0]][self.posAgent[1]-1] == 2:
-          pass
-        else:
-          self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+        self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+        score = 1
       else:
-        pass
+        score = -1
 
     if action == "Droite":
       if self.__cols -1 > self.posAgent[1]:
-        if self.table[self.posAgent[0]][self.posAgent[1]+1] == 2:
-          pass
-        else:
-          self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
+        self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
+        score = 1
       else:
-        pass
+        score = -1
 
     if action == "Aspirer":
       if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
         self.__table[self.posAgent[0]][self.posAgent[1]] = 0
+        score = 2
       else:
-        pass
+        score = 0
 
-    return 0.
+    return score
 
   def getPerception(self, capteurs = []):
     """ Recuperation des valeurs dans les cases 
@@ -184,8 +181,8 @@ class Monde(object):
 
     while self.agent.vivant and n > 0:
       self.step()
-      print(self)
-      print("A fait : ",self.historique)
+      # print(self)
+      # print("A fait : ",self.historique)
       n-=1
 
     # self.__historique = []
@@ -232,7 +229,7 @@ class Aspirateur(object):
     self.__vivant = True
     self.__capteurs = capteurs
     self.__actions = actions
-    self.__reward = 0
+    self.__reward = list()
 
   @property 
   def vivant(self):
@@ -260,12 +257,14 @@ class Aspirateur(object):
 
   def setReward(self, reward):
     """ Associe une recompense au aspirateur """
-
     assert isinstance(reward, (float, int)), ' Stochy veut un nombre!'
-    self.__reward = reward
+    
+    self.__reward.append(reward)
 
   def getLastReward(self):
-    return self.__reward
+    if len(self.__reward) != 0:
+      return self.__reward[-1]
+    return 0
 
   # ------------- #
   #     Agentz    # ---------------------------------------------------------------# 
@@ -296,7 +295,6 @@ class AspiVoyant(Aspirateur):
   def __init__(self, capteurs = [8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
-  # /!\ A MODIF.
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
     assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
@@ -314,7 +312,6 @@ class AspiVoyant(Aspirateur):
       else:
         if percept == [0, 1]:
           action = 'Droite'
-        #Si jamais double gauche retour a droite
         else:
           action = 'Gauche'
     return action
