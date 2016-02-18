@@ -1,6 +1,6 @@
 # IA-Vacuum
 
-SEMAINE 3 -> 12.02.2016 (ENVOIE = NAOMIE)
+SEMAINE 4 -> 17.02.2016 (ENVOIE = CHARLOTTE)
 
 A faire avant td (peut-etre, mes propositions):
 - Commencer a reflechir sur le rapport
