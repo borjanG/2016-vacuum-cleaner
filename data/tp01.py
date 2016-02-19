@@ -96,6 +96,8 @@ class World(Monde):
         i,j = self.posAgent
         self._passage[i][j] = 1
         self.agent.nettoyage = 0
+        # self.__lignes = nbLignes
+        # self.__cols = nbColonnes
         
     def getPerception(self,capteurs):
         """ informe l'agent en fonction des capteurs """
