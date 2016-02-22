@@ -186,7 +186,11 @@ class Monde(object):
       n-=1
 
     # self.__historique = []
-    self.agent.setReward(self.perfGlobale)
+
+    #On stoque les scores de applyChoix dans __reward
+    #Doit on vraiment aussi y stoquer perfglobale?
+    #self.agent.setReward(self.perfGlobale)
+
     return self.perfGlobale 
 
   def initialisation(self):
