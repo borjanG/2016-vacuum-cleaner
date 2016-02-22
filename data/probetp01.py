@@ -18,11 +18,11 @@ class Aspirateur_KB(Aspirateur):
         lAct: valeur par défaut la liste des 3 actions Gauche Droite Aspirer
         learn: valeur par défaut False (pas d'apprentissage)
     """
-    def __init__(self,probaExploitation,lCap=[],lAct="Gauche Droite Aspirer".split(),learn=False):
+    def __init__(self, probaExploitation, lCap=[], lAct="Gauche Droite Aspirer".split(), learn=False):
         super(Aspirateur_KB,self).__init__(lCap,lAct)
 
         assert 0 <= probaExploitation <= 1, "Probability expected"
-        assert isinstance(learn,bool), "Boolean expected got %s" % type(learn)
+        assert isinstance(learn, bool), "Boolean expected got %s" % type(learn)
         
         self.__knowbase = KB() # base de données vide
         self.__probaExploitation = probaExploitation
@@ -33,7 +33,7 @@ class Aspirateur_KB(Aspirateur):
     @property
     def apprentissage(self): return self.__learn
     @apprentissage.setter
-    def apprentissage(self,v):
+    def apprentissage(self, v):
         assert isinstance(v, bool), "pas bool."
         self.__learn = v
         
@@ -94,13 +94,10 @@ class Aspirateur_KB(Aspirateur):
             
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
-    def __init__(self,agent,nbLignes=1,nbColonnes=2):
-        # super(World,self).__init__(agent,nbLignes,nbColonnes)
-        super().__init__(agent, nbLignes, nbColonnes)
+    def __init__(self,agent, nbLignes=1, nbColonnes=2):
+        super(World,self).__init__(agent,nbLignes,nbColonnes)
         self.__cols = nbColonnes
         self.__lignes = nbLignes
-        self._table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
-        self.initialisation()
     
     def initialisation(self):
         super(World,self).initialisation()
