@@ -1,0 +1,737 @@
+﻿Aléatoire
+simulation 01
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0] vs perf globale [-1]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+
+Historique
+00: table [[0, 0]] position (0, 0) action Droite
+01: table [[0, 0]] position (0, 1) action Gauche
+02: table [[0, 0]] position (0, 0) action Gauche
+03: table [[0, 0]] position (0, 0) action Gauche
+_______________________
+simulation 02
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0] vs perf globale [-1, 0]
+   A B
+  ┌─┬─┐
+1 │@│x│
+  └─┴─┘
+table: [[0, 1]] posAgent is (0, 0)
+
+Historique
+00: table [[1, 1]] position (0, 0) action Droite
+01: table [[1, 1]] position (0, 1) action Gauche
+02: table [[1, 1]] position (0, 0) action Gauche
+03: table [[1, 1]] position (0, 0) action Aspirer
+_______________________
+simulation 03
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0] vs perf globale [-1, 0, -1]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+
+Historique
+00: table [[0, 0]] position (0, 0) action Droite
+01: table [[0, 0]] position (0, 1) action Droite
+02: table [[0, 0]] position (0, 1) action Aspirer
+03: table [[0, 0]] position (0, 1) action Droite
+_______________________
+simulation 04
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0] vs perf globale [-1, 0, -1, 0]
+   A B
+  ┌─┬─┐
+1 │@│x│
+  └─┴─┘
+table: [[0, 1]] posAgent is (0, 0)
+
+Historique
+00: table [[1, 1]] position (0, 1) action Gauche
+01: table [[1, 1]] position (0, 0) action Gauche
+02: table [[1, 1]] position (0, 0) action Aspirer
+03: table [[0, 1]] position (0, 0) action Gauche
+_______________________
+simulation 05
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0] vs perf globale [-1, 0, -1, 0, 0]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 1)
+
+Historique
+00: table [[1, 1]] position (0, 1) action Aspirer
+01: table [[1, 0]] position (0, 1) action Droite
+02: table [[1, 0]] position (0, 1) action Aspirer
+03: table [[1, 0]] position (0, 1) action Droite
+_______________________
+simulation 06
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0, 1.0] vs perf globale [-1, 0, -1, 0, 0, -1]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 1)
+
+Historique
+00: table [[1, 0]] position (0, 1) action Droite
+01: table [[1, 0]] position (0, 1) action Droite
+02: table [[1, 0]] position (0, 1) action Aspirer
+03: table [[1, 0]] position (0, 1) action Droite
+_______________________
+simulation 07
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0, 1.0, 1.0] vs perf globale [-1, 0, -1, 0, 0, -1, -1]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+
+Historique
+00: table [[0, 0]] position (0, 0) action Aspirer
+01: table [[0, 0]] position (0, 0) action Aspirer
+02: table [[0, 0]] position (0, 0) action Gauche
+03: table [[0, 0]] position (0, 0) action Gauche
+_______________________
+simulation 08
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0] vs perf globale [-1, 0, -1, 0, 0, -1, -1, -1]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+
+Historique
+00: table [[0, 0]] position (0, 1) action Aspirer
+01: table [[0, 0]] position (0, 1) action Droite
+02: table [[0, 0]] position (0, 1) action Aspirer
+03: table [[0, 0]] position (0, 1) action Gauche
+_______________________
+simulation 09
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 2.0] vs perf globale [-1, 0, -1, 0, 0, -1, -1, -1, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+
+Historique
+00: table [[0, 1]] position (0, 1) action Aspirer
+01: table [[0, 0]] position (0, 1) action Gauche
+02: table [[0, 0]] position (0, 0) action Aspirer
+03: table [[0, 0]] position (0, 0) action Gauche
+_______________________
+simulation 10
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [1.0, 2.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0] vs perf globale [-1, 0, -1, 0, 0, -1, -1, -1, 0, -1]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 0)
+
+Historique
+00: table [[1, 0]] position (0, 1) action Droite
+01: table [[1, 0]] position (0, 1) action Aspirer
+02: table [[1, 0]] position (0, 1) action Gauche
+03: table [[1, 0]] position (0, 0) action Gauche
+_______________________
+statistiques Evaluation Agent
+moyenne 1.4
+mediane 1.0
+minimum 1.0
+maximum 2.0
+EcT 0.49
+statistiques Performance Globale
+moyenne -0.6
+mediane -1.0
+minimum -1
+maximum 0
+EcT 0.49
+Apprenant
+simulation 01
+{'alea': 3, 'exploitation': 1, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333] vs perf globale [-1]
+   A B
+  ┌─┬─┐
+1 │@│x│
+  └─┴─┘
+table: [[1, 1]] posAgent is (0, 0)
+1,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,1 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 1]] position (0, 0) action Droite
+01: table [[1, 1]] position (0, 1) action Droite
+02: table [[1, 1]] position (0, 1) action Droite
+03: table [[1, 1]] position (0, 1) action Gauche
+_______________________
+simulation 02
+{'alea': 0, 'exploitation': 4, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333, 0.3333333333333333] vs perf globale [-1, -1]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 1]] posAgent is (0, 1)
+1,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+________
+1,1 ->  Droite (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 1]] position (0, 1) action Gauche
+01: table [[1, 1]] position (0, 0) action Droite
+02: table [[1, 1]] position (0, 1) action Gauche
+03: table [[1, 1]] position (0, 0) action Droite
+_______________________
+simulation 03
+{'alea': 4, 'exploitation': 0, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4] vs perf globale [-1, -1, 0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Droite (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 1 Total= +2.00 Moyenne +2.00)
+________
+1,1 ->  Droite (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[0, 1]] position (0, 1) action Aspirer
+01: table [[0, 0]] position (0, 1) action Droite
+02: table [[0, 0]] position (0, 1) action Gauche
+03: table [[0, 0]] position (0, 0) action Droite
+_______________________
+simulation 04
+{'alea': 2, 'exploitation': 2, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333] vs perf globale [-1, -1, 0, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 0)
+0,-1 ->  Droite (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 2 Total= +2.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 2 Total= +4.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+________
+1,1 ->  Droite (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 1]] position (0, 1) action Aspirer
+01: table [[1, 0]] position (0, 1) action Aspirer
+02: table [[1, 0]] position (0, 1) action Gauche
+03: table [[1, 0]] position (0, 0) action Gauche
+_______________________
+simulation 05
+{'alea': 0, 'exploitation': 3, 'total': 4, 'exploration': 1}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333] vs perf globale [-1, -1, 0, 0, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 0)
+0,-1 ->  Droite (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 3 Total= +6.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 1]] position (0, 0) action Droite
+01: table [[1, 1]] position (0, 1) action Droite
+02: table [[1, 1]] position (0, 1) action Aspirer
+03: table [[1, 0]] position (0, 1) action Gauche
+_______________________
+simulation 06
+{'alea': 0, 'exploitation': 4, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333, 0.16666666666666666] vs perf globale [-1, -1, 0, 0, 0, -1]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 0)
+0,-1 ->  Droite (nbUsage = 1 Total= -1.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 3 Total= +6.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 4 Total= -4.00 Moyenne -1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 0]] position (0, 1) action Gauche
+01: table [[1, 0]] position (0, 0) action Gauche
+02: table [[1, 0]] position (0, 0) action Gauche
+03: table [[1, 0]] position (0, 0) action Gauche
+_______________________
+simulation 07
+{'alea': 1, 'exploitation': 2, 'total': 4, 'exploration': 1}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666] vs perf globale [-1, -1, 0, 0, 0, -1, -1]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 5 Total= +5.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 2 Total= +2.00 Moyenne +1.00)
+0,0 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 3 Total= +6.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 4 Total= -4.00 Moyenne -1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[0, 0]] position (0, 1) action Gauche
+01: table [[0, 0]] position (0, 0) action Aspirer
+02: table [[0, 0]] position (0, 0) action Droite
+03: table [[0, 0]] position (0, 1) action Droite
+_______________________
+simulation 08
+{'alea': 1, 'exploitation': 3, 'total': 4, 'exploration': 0}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666] vs perf globale [-1, -1, 0, 0, 0, -1, -1, -1]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 1)
+0,-1 ->  Droite (nbUsage = 2 Total= -2.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 6 Total= +6.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 2 Total= +2.00 Moyenne +1.00)
+0,0 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 3 Total= +6.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 6 Total= -6.00 Moyenne -1.00)
+1,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 0]] position (0, 1) action Gauche
+01: table [[1, 0]] position (0, 0) action Gauche
+02: table [[1, 0]] position (0, 0) action Gauche
+03: table [[1, 0]] position (0, 0) action Droite
+_______________________
+simulation 09
+{'alea': 0, 'exploitation': 3, 'total': 4, 'exploration': 1}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.3333333333333333] vs perf globale [-1, -1, 0, 0, 0, -1, -1, -1, 0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 7 Total= +7.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+0,0 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 4 Total= +8.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 6 Total= -6.00 Moyenne -1.00)
+1,0 ->  Droite (nbUsage = 1 Total= +1.00 Moyenne +1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[0, 1]] position (0, 1) action Aspirer
+01: table [[0, 0]] position (0, 1) action Gauche
+02: table [[0, 0]] position (0, 0) action Droite
+03: table [[0, 0]] position (0, 1) action Droite
+_______________________
+simulation 10
+{'alea': 0, 'exploitation': 2, 'total': 4, 'exploration': 2}
+eval agent [0.3333333333333333, 0.3333333333333333, 0.4, 0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.3333333333333333, 0.16666666666666666] vs perf globale [-1, -1, 0, 0, 0, -1, -1, -1, 0, -1]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 1)
+0,-1 ->  Droite (nbUsage = 5 Total= -5.00 Moyenne -1.00)
+0,-1 ->  Gauche (nbUsage = 8 Total= +8.00 Moyenne +1.00)
+0,-1 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+0,0 ->  Droite (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+0,0 -> Aspirer (nbUsage = 1 Total= +0.00 Moyenne +0.00)
+________
+1,-1 ->  Droite (nbUsage = 3 Total= -3.00 Moyenne -1.00)
+1,-1 ->  Gauche (nbUsage = 3 Total= +3.00 Moyenne +1.00)
+1,-1 -> Aspirer (nbUsage = 4 Total= +8.00 Moyenne +2.00)
+________
+1,0 ->  Gauche (nbUsage = 6 Total= -6.00 Moyenne -1.00)
+1,0 ->  Droite (nbUsage = 2 Total= +2.00 Moyenne +1.00)
+________
+1,1 ->  Droite (nbUsage = 4 Total= +4.00 Moyenne +1.00)
+________
+
+Historique
+00: table [[1, 0]] position (0, 1) action Droite
+01: table [[1, 0]] position (0, 1) action Gauche
+02: table [[1, 0]] position (0, 0) action Droite
+03: table [[1, 0]] position (0, 1) action Droite
+_______________________
+statistiques Evaluation Agent
+moyenne 0.273
+mediane 0.333
+minimum 0.167
+maximum 0.4
+EcT 0.089
+statistiques Performance Globale
+moyenne -0.6
+mediane -1.0
+minimum -1
+maximum 0
+EcT 0.49
+Base forcée
+simulation 01
+{'alea': 1, 'exploitation': 3, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857] vs perf globale [0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[1, 0]] position (0, 1) action Gauche
+01: table [[1, 0]] position (0, 0) action Gauche
+02: table [[1, 0]] position (0, 0) action Aspirer
+03: table [[0, 0]] position (0, 0) action Droite
+_______________________
+simulation 02
+{'alea': 0, 'exploitation': 4, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857] vs perf globale [0, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[0, 1]] position (0, 1) action Aspirer
+01: table [[0, 0]] position (0, 1) action Gauche
+02: table [[0, 0]] position (0, 0) action Droite
+03: table [[0, 0]] position (0, 1) action Gauche
+_______________________
+simulation 03
+{'alea': 3, 'exploitation': 1, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285] vs perf globale [0, 0, -1]
+   A B
+  ┌─┬─┐
+1 │x│@│
+  └─┴─┘
+table: [[1, 0]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[1, 0]] position (0, 1) action Gauche
+01: table [[1, 0]] position (0, 0) action Droite
+02: table [[1, 0]] position (0, 1) action Droite
+03: table [[1, 0]] position (0, 1) action Aspirer
+_______________________
+simulation 04
+{'alea': 0, 'exploitation': 4, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285] vs perf globale [0, 0, -1, -1]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[0, 0]] position (0, 1) action Gauche
+01: table [[0, 0]] position (0, 0) action Droite
+02: table [[0, 0]] position (0, 1) action Gauche
+03: table [[0, 0]] position (0, 0) action Droite
+_______________________
+simulation 05
+{'alea': 2, 'exploitation': 2, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857] vs perf globale [0, 0, -1, -1, 0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[0, 1]] position (0, 0) action Aspirer
+01: table [[0, 1]] position (0, 0) action Droite
+02: table [[0, 1]] position (0, 1) action Droite
+03: table [[0, 1]] position (0, 1) action Aspirer
+_______________________
+simulation 06
+{'alea': 2, 'exploitation': 2, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857] vs perf globale [0, 0, -1, -1, 0, 0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 1]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[1, 1]] position (0, 0) action Gauche
+01: table [[1, 1]] position (0, 0) action Gauche
+02: table [[1, 1]] position (0, 0) action Aspirer
+03: table [[0, 1]] position (0, 0) action Droite
+_______________________
+simulation 07
+{'alea': 1, 'exploitation': 3, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857] vs perf globale [0, 0, -1, -1, 0, 0, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[1, 0]] position (0, 0) action Aspirer
+01: table [[0, 0]] position (0, 0) action Droite
+02: table [[0, 0]] position (0, 1) action Droite
+03: table [[0, 0]] position (0, 1) action Gauche
+_______________________
+simulation 08
+{'alea': 3, 'exploitation': 1, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.14285714285714285] vs perf globale [0, 0, -1, -1, 0, 0, 0, -1]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 1]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[0, 1]] position (0, 1) action Gauche
+01: table [[0, 1]] position (0, 0) action Aspirer
+02: table [[0, 1]] position (0, 0) action Aspirer
+03: table [[0, 1]] position (0, 0) action Droite
+_______________________
+simulation 09
+{'alea': 1, 'exploitation': 3, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.2857142857142857] vs perf globale [0, 0, -1, -1, 0, 0, 0, -1, 0]
+   A B
+  ┌─┬─┐
+1 │@│.│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 0)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[1, 0]] position (0, 0) action Aspirer
+01: table [[0, 0]] position (0, 0) action Droite
+02: table [[0, 0]] position (0, 1) action Gauche
+03: table [[0, 0]] position (0, 0) action Gauche
+_______________________
+simulation 10
+{'alea': 1, 'exploitation': 3, 'total': 4, 'exploration': 0}
+eval agent [0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.14285714285714285, 0.2857142857142857, 0.2857142857142857] vs perf globale [0, 0, -1, -1, 0, 0, 0, -1, 0, 0]
+   A B
+  ┌─┬─┐
+1 │.│@│
+  └─┴─┘
+table: [[0, 0]] posAgent is (0, 1)
+0,-1 ->  Gauche (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,0 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+0,1 ->  Droite (nbUsage = 1 Total= +0.10 Moyenne +0.10)
+________
+1,-1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,0 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+1,1 -> Aspirer (nbUsage = 1 Total= +0.20 Moyenne +0.20)
+________
+
+Historique
+00: table [[0, 1]] position (0, 1) action Droite
+01: table [[0, 1]] position (0, 1) action Aspirer
+02: table [[0, 0]] position (0, 1) action Gauche
+03: table [[0, 0]] position (0, 0) action Droite
+_______________________
+statistiques Evaluation Agent
+moyenne 0.243
+mediane 0.286
+minimum 0.143
+maximum 0.286
+EcT 0.065
+statistiques Performance Globale
+moyenne -0.3
+mediane 0.0
+minimum -1
+maximum 0
+EcT 0.458
+
+>>> 
