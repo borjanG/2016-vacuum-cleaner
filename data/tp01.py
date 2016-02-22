@@ -88,7 +88,12 @@ class Aspirateur_KB(Aspirateur):
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
     def __init__(self,agent,nbLignes=1,nbColonnes=2):
-        super(World,self).__init__(agent,nbLignes,nbColonnes)
+        # super(World,self).__init__(agent,nbLignes,nbColonnes)
+        super().__init__(agent, nbLignes, nbColonnes)
+        self.__cols = nbColonnes
+        self.__lignes = nbLignes
+        self.__table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
+        self.initialisation()
     
     def initialisation(self):
         super(World,self).initialisation()
@@ -96,8 +101,6 @@ class World(Monde):
         i,j = self.posAgent
         self._passage[i][j] = 1
         self.agent.nettoyage = 0
-        # self.__lignes = nbLignes
-        # self.__cols = nbColonnes
         
     def getPerception(self,capteurs):
         """ informe l'agent en fonction des capteurs """
@@ -107,7 +110,7 @@ class World(Monde):
         for x in capteurs:
             nx = self.posAgent[0]+delta[x][0]
             ny = self.posAgent[1]+delta[x][1]
-            if nbLignes > nx >= 0 and nbColonnes > ny >= 0: res.append(self.table[nx][ny])
+            if self.__lignes > nx >= 0 and self.__cols > ny >= 0: res.append(self.table[nx][ny])
             else: res.append(-1)
         return res   
 
@@ -131,7 +134,7 @@ class World(Monde):
                 else:
                     score = -1
             elif choix == 'Droite':
-                if ny < nbColonnes: 
+                if ny < self.__cols: 
                     self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
                     score = 1
                 else:
