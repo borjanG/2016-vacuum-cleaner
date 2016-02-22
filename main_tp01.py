@@ -1,4 +1,4 @@
-from data.probetp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
+from data.tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
 import numpy as np # pour faire des stats simples
 
 def test_performance(w,n,nb=10):
@@ -15,7 +15,7 @@ def test_performance(w,n,nb=10):
     for i in range(nb):
         print("simulation %02d" % (i+1))
         w.simulation(n)
-        #print(w.agent.compteurs)
+        print(w.agent.compteurs)
         _resultat['agent'].append(w.agent.getEvaluation())
         _resultat['world'].append(w.perfGlobale)
         print("eval agent {0[agent]} vs perf globale {0[world]}".format(_resultat))

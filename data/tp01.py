@@ -27,7 +27,8 @@ class Aspirateur_KB(Aspirateur):
         self.__learn = learn
         self.__last_action = None # dernière action choisie
         self.__last_percept = None # dernier percept reçu
-        
+        self.compteurs=0
+
     @property
     def apprentissage(self): return self.__learn
     @apprentissage.setter
@@ -52,6 +53,8 @@ class Aspirateur_KB(Aspirateur):
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         # assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
 
+        self.compteurs+=1
+
         self.__last_percept = percepts
         liste_de_regles = self.__la_variable_privee_contenant_la_base_de_connaissance.find(percepts)
 
@@ -66,9 +69,12 @@ class Aspirateur_KB(Aspirateur):
             if r < self.probaExploitation:
                 action = meilleure_regle
             else:
-                liste_autres_action_base = liste_action_base.remove(meilleure_regle.conclusion)
-                if len(liste_autres_action_base) != 0:
-                    action = choice(liste_autres_action_base)
+                # liste_autres_action_base = liste_action_base.remove(meilleure_regle.conclusion)
+                liste_action_base.remove(meilleure_regle.conclusion)
+                if len(liste_action_base) != 0:
+                # if len(liste_autres_action_base) != 0:
+                    action = choice(liste_action_base)
+                    # action = choice(liste_autres_action_base)
                     if action.scoreMoyen < 0:
                         action = choice(liste_action_pas_base)
                 else:
@@ -94,6 +100,10 @@ class World(Monde):
         self.__lignes = nbLignes
         self._table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
         self.initialisation()
+
+    # def simulation(self, n = 42):
+    #     super().simulation(n)
+    #     self.agent.compteur=0
     
     def initialisation(self):
         super(World,self).initialisation()

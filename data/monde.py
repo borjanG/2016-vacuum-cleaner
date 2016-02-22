@@ -180,6 +180,8 @@ class Monde(object):
     # print('DEBUT:')
     # print(self)
 
+    self.agent.compteurs=0
+
     self.__historique = []
     
     cpt=0 #compteur pour afficher historique
