@@ -92,7 +92,7 @@ class World(Monde):
         super().__init__(agent, nbLignes, nbColonnes)
         self.__cols = nbColonnes
         self.__lignes = nbLignes
-        self.__table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
+        self._table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
         self.initialisation()
     
     def initialisation(self):
@@ -118,9 +118,14 @@ class World(Monde):
     def applyChoix(self,choix):
         """ modifie table & posAgent en fonction de choix """
 
+        # print('table : ',self.table)
+        # print('_table : ',self._table)
+        # print('posAgent : ',self.posAgent)
+        # print('_posAgent : ',self._posAgent)
+
         if choix == 'Aspirer':
             if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
-                self.__table[self.posAgent[0]][self.posAgent[1]] = 0
+                self._table[self.posAgent[0]][self.posAgent[1]] = 0
                 self.agent.nettoyage+=1
                 score = 2
             else:
@@ -129,13 +134,13 @@ class World(Monde):
             ny = self.posAgent[1]
             if choix == 'Gauche':
                 if ny > 0: 
-                    self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+                    self._posAgent = (self.posAgent[0], self.posAgent[1]-1)
                     score = 1
                 else:
                     score = -1
             elif choix == 'Droite':
-                if ny < self.__cols: 
-                    self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
+                if ny < self.__cols-1: 
+                    self._posAgent = (self.posAgent[0], self.posAgent[1]+1)
                     score = 1
                 else:
                     score = -1

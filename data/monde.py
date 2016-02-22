@@ -32,19 +32,19 @@ class Monde(object):
     self.__agent = a 
     self.__lignes = l
     self.__cols = c
-    self.__table = [[0 for j in range(c)] for i in range(l)]
-    self.__posAgent = (0,0)
+    self._table = [[0 for j in range(c)] for i in range(l)]
+    self._posAgent = (0,0)
     self.__historique = list()
     self.__perfGlobale = 0.
     self.initialisation()
 
   @property
   def table(self):
-    return deepcopy(self.__table)
+    return deepcopy(self._table)
   @property 
   def posAgent(self):
     #Shallow copy suffit
-    return self.__posAgent[:]
+    return self._posAgent[:]
 
   @property 
   def agent(self):
@@ -62,21 +62,21 @@ class Monde(object):
 
     if action == "Gauche":
       if 0 < self.posAgent[1]:
-        self.__posAgent = (self.posAgent[0], self.posAgent[1]-1)
+        self._posAgent = (self.posAgent[0], self.posAgent[1]-1)
         score = 1
       else:
         score = -1
 
     if action == "Droite":
       if self.__cols -1 > self.posAgent[1]:
-        self.__posAgent = (self.posAgent[0], self.posAgent[1]+1)
+        self._posAgent = (self.posAgent[0], self.posAgent[1]+1)
         score = 1
       else:
         score = -1
 
     if action == "Aspirer":
       if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
-        self.__table[self.posAgent[0]][self.posAgent[1]] = 0
+        self._table[self.posAgent[0]][self.posAgent[1]] = 0
         score = 2
       else:
         score = 0
@@ -177,41 +177,47 @@ class Monde(object):
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
 
-    # print(self)
+    print('DEBUT:')
+    print(self)
+
+    cpt=0 #compteur pour afficher historique
 
     while self.agent.vivant and n > 0:
       self.step()
-      # print(self)
-      # print("A fait : ",self.historique)
+      print("Avant : ",self.historique[cpt][0], "    Veut faire : ", self.historique[cpt][1])
+      print(self)
       n-=1
+      cpt+=1
 
     # self.__historique = []
 
     #On stoque les scores de applyChoix dans __reward
     #Doit on vraiment aussi y stoquer perfglobale?
-    #self.agent.setReward(self.perfGlobale)
+    self.agent.setReward(self.perfGlobale)
+
+    print('FIN')
 
     return self.perfGlobale 
 
   def initialisation(self):
     """ Initialisation du monde """
-    self.__posAgent = (randrange(self.__lignes), randrange(self.__cols))
+    self._posAgent = (randrange(self.__lignes), randrange(self.__cols))
 
     #Charlotte
     # l=list(objetsStatiques.keys())
     # if 100 in l:l.remove(100)
     # t=len(l)
-    # self.__table = [[l[randrange(t)] for j in range(self.__cols)]
+    # self._table = [[l[randrange(t)] for j in range(self.__cols)]
     #                 for i in range(self.__lignes)]
 
     #mmc
     # _ = [ k for k in objetsStatiques.keys() if 0 <= k < 100 ]
-    # self.__table = [ [ choice( _ ) for j in range(self.__cols) ]
+    # self._table = [ [ choice( _ ) for j in range(self.__cols) ]
                         # for i in range(self.__lignes) ]
 
     #Borjan
     _ = list(set(objetsStatiques.keys()).intersection(range(100)))
-    self.__table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+    self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
