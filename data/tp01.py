@@ -50,7 +50,7 @@ class Aspirateur_KB(Aspirateur):
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
-        assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
+        # assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
 
         self.__last_percept = percepts
         liste_de_regles = self.__la_variable_privee_contenant_la_base_de_connaissance.find(percepts)
@@ -59,7 +59,7 @@ class Aspirateur_KB(Aspirateur):
             action = choice(self.actions)
         else:
             liste_action_base = [regle.conclusion for regle in liste_de_regles]
-            liste_action_pas_base = list(set(actions).difference(liste_action_base))
+            liste_action_pas_base = list(set(self.actions).difference(liste_action_base))
             meilleure_regle = max(liste_de_regles, key=lambda action: action.scoreMoyen)
             r = random()
 
@@ -122,7 +122,7 @@ class World(Monde):
         # print('_table : ',self._table)
         # print('posAgent : ',self.posAgent)
         # print('_posAgent : ',self._posAgent)
-
+        score = 0
         if choix == 'Aspirer':
             if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
                 self._table[self.posAgent[0]][self.posAgent[1]] = 0

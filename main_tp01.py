@@ -1,4 +1,4 @@
-from data.tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
+from data.probetp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
 import numpy as np # pour faire des stats simples
 
 def test_performance(w,n,nb=10):
