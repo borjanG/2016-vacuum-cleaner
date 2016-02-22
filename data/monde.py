@@ -177,15 +177,17 @@ class Monde(object):
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
 
-    print('DEBUT:')
-    print(self)
+    # print('DEBUT:')
+    # print(self)
 
+    self.__historique = []
+    
     cpt=0 #compteur pour afficher historique
 
     while self.agent.vivant and n > 0:
       self.step()
-      print("Avant : ",self.historique[cpt][0], "    Veut faire : ", self.historique[cpt][1])
-      print(self)
+      # print("Avant : ",self.historique[cpt][0], "    Veut faire : ", self.historique[cpt][1])
+      # print(self)
       n-=1
       cpt+=1
 
@@ -195,7 +197,7 @@ class Monde(object):
     #Doit on vraiment aussi y stoquer perfglobale?
     self.agent.setReward(self.perfGlobale)
 
-    print('FIN')
+    # print('FIN')
 
     return self.perfGlobale 
 
