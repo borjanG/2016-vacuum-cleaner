@@ -62,7 +62,7 @@ class Aspirateur_KB(Aspirateur):
 
         if len(rule_lst) == 0:
             action = choice(self.actions)
-            self.compteurs['alea']+=1
+            self.compteurs['alea'] += 1
         else:
             base_actions = [regle.conclusion for regle in rule_lst]
             notbase_actions = list(set(self.actions) - set(base_actions))
@@ -71,15 +71,10 @@ class Aspirateur_KB(Aspirateur):
 
             if r < self.probaExploitation:
                 action = best_rule.conclusion
-                self.compteurs['exploitation']+=1
+                self.compteurs['exploitation'] += 1
             else:
                 num = rule_lst.index(best_rule)
                 other_rules = rule_lst[:num] + rule_lst[(num+1):]
-                # rule_lst.remove(best_rule)
-                #--> modifie direct rule_lst, renvoie None
-                #PS: j'aime bien ton remove, c est cool il renvoie une liste modifiée
-                #Borjan: merci :D
-                
                 if len(other_rules) !=0:
                     _ = choice(other_rules)
                     action = _.conclusion
@@ -90,7 +85,7 @@ class Aspirateur_KB(Aspirateur):
                 
                 self.compteurs['exploration'] += 1 
 
-        self.compteurs['total']+=1
+        self.compteurs['total'] += 1
         self.__last_action = action
         return self.__last_action
         
@@ -122,10 +117,12 @@ class World(Monde):
         delta = [ (-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0) ]
         res = []
         for x in capteurs:
-            nx = self.posAgent[0]+delta[x][0]
-            ny = self.posAgent[1]+delta[x][1]
-            if self.__lignes > nx >= 0 and self.__cols > ny >= 0: res.append(self.table[nx][ny])
-            else: res.append(-1)
+            nx = self.posAgent[0] + delta[x][0]
+            ny = self.posAgent[1] + delta[x][1]
+            if self.__lignes > nx >= 0 and self.__cols > ny >= 0: 
+                res.append(self.table[nx][ny])
+            else: 
+                res.append(-1)
         return res   
  
     def applyChoix(self,choix):
