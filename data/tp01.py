@@ -63,19 +63,16 @@ class Aspirateur_KB(Aspirateur):
         else:
             liste_action_base = [regle.conclusion for regle in liste_de_regles]
             liste_action_pas_base = list(set(self.actions).difference(liste_action_base))
-            meilleure_regle = max(liste_de_regles, key=lambda action: action.scoreMoyen)
+            meilleure_regle = max(liste_de_regles, key=lambda regle: regle.scoreMoyen)
             r = random()
 
             if r < self.probaExploitation:
-                action = meilleure_regle
+                action = meilleure_regle.conclusion
             else:
-                # liste_autres_action_base = liste_action_base.remove(meilleure_regle.conclusion)
-                liste_action_base.remove(meilleure_regle.conclusion)
-                if len(liste_action_base) != 0:
-                # if len(liste_autres_action_base) != 0:
-                    action = choice(liste_action_base)
-                    # action = choice(liste_autres_action_base)
-                    if action.scoreMoyen < 0:
+                liste_de_regles.remove(meilleure_regle)
+                if len(liste_de_regles) != 0:
+                    regle = choice(liste_de_regles)
+                    if regle.scoreMoyen < 0:
                         action = choice(liste_action_pas_base)
                 else:
                     action = choice(liste_action_pas_base)

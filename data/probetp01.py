@@ -71,8 +71,13 @@ class Aspirateur_KB(Aspirateur):
             if r < self.probaExploitation:
                 action = best_rule.conclusion
             else:
+
                 num = rule_lst.index(best_rule)
                 other_rules = rule_lst[:num] + rule_lst[(num+1):]
+                # rule_lst.remove(best_rule)
+                #--> modifie direct rule_lst, renvoie None
+                #PS: j'aime bien ton remove, c est cool il renvoie une liste modifiée
+
                 if len(other_rules) !=0:
                     _ = choice(other_rules)
                     action = _.conclusion
