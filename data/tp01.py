@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-__usage__ = "Mise en place du TP01"
+__usage__ = "TP01"
 __author__ = "mmc, Terral, Rodriguez, Geshkovski"
-__date__ = "19.02.16"
-__version__ = "0.1"
+__date__ = "23.02.16"
+__version__ = "0.2"
 
 from data.monde import objetsStatiques, Aspirateur, Monde
 from briques import Rule, KB
@@ -18,65 +18,79 @@ class Aspirateur_KB(Aspirateur):
         lAct: valeur par défaut la liste des 3 actions Gauche Droite Aspirer
         learn: valeur par défaut False (pas d'apprentissage)
     """
-    def __init__(self,probaExploitation,lCap=[],lAct="Gauche Droite Aspirer".split(),learn=False):
+    def __init__(self, probaExploitation, lCap=[], lAct="Gauche Droite Aspirer".split(), learn=False):
         super(Aspirateur_KB,self).__init__(lCap,lAct)
+
         assert 0 <= probaExploitation <= 1, "Probability expected"
-        assert isinstance(learn,bool), "Boolean expected got %s" % type(learn)
-        self.__la_variable_privee_contenant_la_base_de_connaissance = KB() # base de données vide
+        assert isinstance(learn, bool), "Boolean expected got %s" % type(learn)
+        
+        self.__knowbase = KB() # base de données vide
         self.__probaExploitation = probaExploitation
         self.__learn = learn
         self.__last_action = None # dernière action choisie
         self.__last_percept = None # dernier percept reçu
-        self.compteurs=0
-
+        
     @property
     def apprentissage(self): return self.__learn
     @apprentissage.setter
-    def apprentissage(self,v):
+    def apprentissage(self, v):
         assert isinstance(v, bool), "pas bool."
         self.__learn = v
         
     @property
-    def knowledge(self): return copy.deepcopy(self.__la_variable_privee_contenant_la_base_de_connaissance)
+    def knowledge(self): 
+        return copy.deepcopy(self.__knowbase)
     @knowledge.setter
     def knowledge(self,v):
         assert isinstance(v, KB), "pas KB"
-        self.__la_variable_privee_contenant_la_base_de_connaissance = v
+        self.__knowbase = v
         
     @property
-    def probaExploitation(self): return self.__probaExploitation
+    def probaExploitation(self): 
+        return self.__probaExploitation
     
-    def getEvaluation(self): return (self.nettoyage+1)/(len(self.knowledge)+1)
+    def getEvaluation(self): 
+        return (self.nettoyage+1)/(len(self.knowledge)+1)
         
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         # assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
 
-        # self.compteurs+=1
-
         self.__last_percept = percepts
-        liste_de_regles = self.__la_variable_privee_contenant_la_base_de_connaissance.find(percepts)
+        rule_lst = self.__knowbase.find(percepts)
 
-        if len(liste_de_regles) == 0:
+        if len(rule_lst) == 0:
             action = choice(self.actions)
+            self.compteurs['alea']+=1
         else:
-            liste_action_base = [regle.conclusion for regle in liste_de_regles]
-            liste_action_pas_base = list(set(self.actions).difference(liste_action_base))
-            meilleure_regle = max(liste_de_regles, key=lambda regle: regle.scoreMoyen)
+            base_actions = [regle.conclusion for regle in rule_lst]
+            notbase_actions = list(set(self.actions) - set(base_actions))
+            best_rule = max(rule_lst, key = lambda rule: rule.scoreMoyen)
             r = random()
 
             if r < self.probaExploitation:
-                action = meilleure_regle.conclusion
+                action = best_rule.conclusion
+                self.compteurs['exploitation']+=1
             else:
-                liste_de_regles.remove(meilleure_regle)
-                if len(liste_de_regles) != 0:
-                    regle = choice(liste_de_regles)
-                    if regle.scoreMoyen < 0:
-                        action = choice(liste_action_pas_base)
+                num = rule_lst.index(best_rule)
+                other_rules = rule_lst[:num] + rule_lst[(num+1):]
+                # rule_lst.remove(best_rule)
+                #--> modifie direct rule_lst, renvoie None
+                #PS: j'aime bien ton remove, c est cool il renvoie une liste modifiée
+                #Borjan: merci :D
+                
+                if len(other_rules) !=0:
+                    _ = choice(other_rules)
+                    action = _.conclusion
+                    if _.scoreMoyen < 0:
+                        action = choice(notbase_actions)
                 else:
-                    action = choice(liste_action_pas_base)
+                    action = choice(notbase_actions)
+                
+                self.compteurs['exploration'] += 1 
 
+        self.compteurs['total']+=1
         self.__last_action = action
         return self.__last_action
         
@@ -90,17 +104,10 @@ class Aspirateur_KB(Aspirateur):
             
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
-    def __init__(self,agent,nbLignes=1,nbColonnes=2):
-        # super(World,self).__init__(agent,nbLignes,nbColonnes)
-        super().__init__(agent, nbLignes, nbColonnes)
+    def __init__(self,agent, nbLignes=1, nbColonnes=2):
+        super(World,self).__init__(agent,nbLignes,nbColonnes)
         self.__cols = nbColonnes
         self.__lignes = nbLignes
-        self._table = [[0 for j in range(self.__cols)] for i in range(self.__lignes)]
-        self.initialisation()
-
-    # def simulation(self, n = 42):
-    #     super().simulation(n)
-    #     self.agent.compteur=0
     
     def initialisation(self):
         super(World,self).initialisation()
@@ -120,15 +127,10 @@ class World(Monde):
             if self.__lignes > nx >= 0 and self.__cols > ny >= 0: res.append(self.table[nx][ny])
             else: res.append(-1)
         return res   
-
-        
+ 
     def applyChoix(self,choix):
         """ modifie table & posAgent en fonction de choix """
 
-        # print('table : ',self.table)
-        # print('_table : ',self._table)
-        # print('posAgent : ',self.posAgent)
-        # print('_posAgent : ',self._posAgent)
         score = 0
         if choix == 'Aspirer':
             if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
