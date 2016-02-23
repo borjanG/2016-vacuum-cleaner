@@ -53,7 +53,7 @@ class Aspirateur_KB(Aspirateur):
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         # assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
 
-        self.compteurs+=1
+        # self.compteurs+=1
 
         self.__last_percept = percepts
         liste_de_regles = self.__la_variable_privee_contenant_la_base_de_connaissance.find(percepts)

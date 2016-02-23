@@ -62,6 +62,7 @@ class Aspirateur_KB(Aspirateur):
 
         if len(rule_lst) == 0:
             action = choice(self.actions)
+            self.compteurs['alea']+=1
         else:
             base_actions = [regle.conclusion for regle in rule_lst]
             notbase_actions = list(set(self.actions) - set(base_actions))
@@ -70,14 +71,13 @@ class Aspirateur_KB(Aspirateur):
 
             if r < self.probaExploitation:
                 action = best_rule.conclusion
+                self.compteurs['exploitation']+=1
             else:
-
                 num = rule_lst.index(best_rule)
                 other_rules = rule_lst[:num] + rule_lst[(num+1):]
                 # rule_lst.remove(best_rule)
                 #--> modifie direct rule_lst, renvoie None
                 #PS: j'aime bien ton remove, c est cool il renvoie une liste modifiée
-
                 if len(other_rules) !=0:
                     _ = choice(other_rules)
                     action = _.conclusion
@@ -85,7 +85,10 @@ class Aspirateur_KB(Aspirateur):
                         action = choice(notbase_actions)
                 else:
                     action = choice(notbase_actions)
+                
+                self.compteurs['exploration']+=1 
 
+        self.compteurs['total']+=1
         self.__last_action = action
         return self.__last_action
         

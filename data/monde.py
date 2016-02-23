@@ -180,7 +180,7 @@ class Monde(object):
     # print('DEBUT:')
     # print(self)
 
-    self.agent.compteurs=0
+    self.agent.compteurs={'alea':0,'exploitation':0,'total':0,'exploration':0}
 
     self.__historique = []
     
