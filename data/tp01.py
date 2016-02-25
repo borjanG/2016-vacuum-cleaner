@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-__usage__ = "TP01"
+__usage__ = "tp01"
 __author__ = "mmc, Terral, Rodriguez, Geshkovski"
-__date__ = "23.02.16"
-__version__ = "0.2"
+__date__ = "25.02.16"
+__version__ = "0.3"
 
 from data.monde import objetsStatiques, Aspirateur, Monde
 from briques import Rule, KB
@@ -24,10 +24,10 @@ class Aspirateur_KB(Aspirateur):
         assert 0 <= probaExploitation <= 1, "Probability expected"
         assert isinstance(learn, bool), "Boolean expected got %s" % type(learn)
         
-        self.__knowbase = KB() # base de données vide
+        self.__knowbase = KB()     # base de données vide
         self.__probaExploitation = probaExploitation
         self.__learn = learn
-        self.__last_action = None # dernière action choisie
+        self.__last_action = None  # dernière action choisie
         self.__last_percept = None # dernier percept reçu
         
     @property
@@ -35,19 +35,15 @@ class Aspirateur_KB(Aspirateur):
     @apprentissage.setter
     def apprentissage(self, v):
         assert isinstance(v, bool), "pas bool."
-        self.__learn = v
-        
+        self.__learn = v    
     @property
-    def knowledge(self): 
-        return copy.deepcopy(self.__knowbase)
+    def knowledge(self): return copy.deepcopy(self.__knowbase)
     @knowledge.setter
     def knowledge(self,v):
         assert isinstance(v, KB), "pas KB"
-        self.__knowbase = v
-        
+        self.__knowbase = v   
     @property
-    def probaExploitation(self): 
-        return self.__probaExploitation
+    def probaExploitation(self): return self.__probaExploitation
     
     def getEvaluation(self): 
         return (self.nettoyage+1)/(len(self.knowledge)+1)
@@ -55,7 +51,7 @@ class Aspirateur_KB(Aspirateur):
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
-        # assert all([ x in objetsStatiques for x in percepts ]), "bad percepts %s" % percepts
+        assert all([x in objetsStatiques for x in percepts]), "bad percepts %s" % percepts
 
         self.__last_percept = percepts
         rule_lst = self.__knowbase.find(percepts)
@@ -68,7 +64,6 @@ class Aspirateur_KB(Aspirateur):
             notbase_actions = list(set(self.actions) - set(base_actions))
             best_rule = max(rule_lst, key = lambda rule: rule.scoreMoyen)
             r = random()
-
             if r < self.probaExploitation:
                 action = best_rule.conclusion
                 self.compteurs['exploitation'] += 1
@@ -82,7 +77,6 @@ class Aspirateur_KB(Aspirateur):
                         action = choice(notbase_actions)
                 else:
                     action = choice(notbase_actions)
-                
                 self.compteurs['exploration'] += 1 
 
         self.compteurs['total'] += 1
@@ -156,7 +150,6 @@ class World(Monde):
         
     @property
     def perfGlobale(self):
-
         #Charlotte
         # compteur=0
         # for elem in self._passage:

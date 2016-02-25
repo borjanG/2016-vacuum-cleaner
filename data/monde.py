@@ -6,27 +6,24 @@ from random import randrange, choice
 from copy import deepcopy
 
 #This code contains easter eggs.
+__usage__ = "tp00"
 __author__ = "Terral, Rodriguez, Geshkovski"
-__date__ = "19.02.16"
-__version__ = "0.4"
+__date__ = "25.02.16"
+__version__ = "0.6"
 
-objetsStatiques = {100: ('aspirateur', '@'),
-                   0: ('rien', ' '),
-                   1: ('poussiere', ':')}
-
-#Liste de cles
-d = list(objetsStatiques.keys())
+objetsStatiques = {100: ('Aspirateur','@'),
+                    0: ('rien',' '),
+                    1: ('poussiere',':'),
+                    -1: ('erreur','?')}
 
   # ------------ #    
   #     MONDE    # -------------------------------------------------------------------#
   # ------------ #
 
 class Monde(object):
-
+  """ Monde constructor """
   def __init__(self, a, l=1, c=2):
-    """ Monde constructor """
-
-    assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre"
+    assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre, pas %s" % a.__class__
     assert type(l) == int and type(c) == int, "Il faut des entiers pour dimensions"
     
     self.__agent = a 
@@ -39,22 +36,15 @@ class Monde(object):
     self.initialisation()
 
   @property
-  def table(self):
-    return deepcopy(self._table)
+  def table(self): return deepcopy(self._table)
   @property 
-  def posAgent(self):
-    #Shallow copy suffit
-    return self._posAgent[:]
-
+  def posAgent(self): return self._posAgent[:]
   @property 
-  def agent(self):
-    return self.__agent 
+  def agent(self): return self.__agent 
   @property 
-  def historique(self):
-    return deepcopy(self.__historique)
+  def historique(self): return deepcopy(self.__historique)
   @property 
-  def perfGlobale(self):
-    return self.__perfGlobale
+  def perfGlobale(self): return self.__perfGlobale
 
   def applyChoix(self, action):
     """ Mise a jour du monde et de la position de l'agent en fonction 
@@ -80,21 +70,18 @@ class Monde(object):
         score = 2
       else:
         score = 0
-
     return score
 
   def getPerception(self, capteurs = []):
     """ Recuperation des valeurs dans les cases 
         disponibles au aspirateur par ses capteurs """
-    assert isinstance(capteurs, list), "needs a list."
 
     i = self.posAgent[0]
     j = self.posAgent[1]
-
     seer = [(i-1,j), (i-1,j+1), (i,j+1), (i+1,j+1), (i+1,j),
             (i+1,j-1), (i,j-1), (i-1,j-1), (i,j)]
+    oracle = list()
 
-    oracle = []
     for flash in capteurs:
       x = seer[flash][0]
       y = seer[flash][1]
@@ -102,7 +89,6 @@ class Monde(object):
         oracle.append(self.table[x][y])
       else:
         oracle.append(-1)
-
     return oracle
 
   def __str__(self):
@@ -115,7 +101,7 @@ class Monde(object):
         \u255A: ╚ ; \u255D: ╝
     """
 
-    tab = []
+    tab = list()
     key = max(objetsStatiques.keys()) #Pas plus de 100 keys qd meme
 
     for i in range(len(self.table)):
@@ -126,7 +112,7 @@ class Monde(object):
 
     l = len(tab)
     c = len(tab[0])
-    _=[]
+    _ = list()
 
     #Strings utiles
     _head = "\u2550"*3 + "\u2564"
@@ -191,9 +177,6 @@ class Monde(object):
       n-=1
       cpt+=1
     # self.__historique = []
-
-    # On stoque les scores de applyChoix dans __reward
-    # Doit on vraiment aussi y stoquer perfglobale?
     self.agent.setReward(self.perfGlobale)
     return self.perfGlobale 
 
@@ -216,10 +199,10 @@ class Monde(object):
     #Borjan
     _ = list(set(objetsStatiques.keys()).intersection(range(100)))
     self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+    # self.__historique = [] 
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """
-    #Agit sur table 
     pass
 
   # ------------ #    
@@ -228,32 +211,30 @@ class Monde(object):
 
 class Aspirateur(object):
   """ Aspirateur constructor """
-
   def __init__(self, capteurs = [], actions = ['Gauche', 'Droite', 'Aspirer']):
-    assert isinstance(capteurs, list) and set(capteurs).issubset(set(range(9))) and len(set(capteurs)) == len(capteurs), "I'm blind!"
-    assert isinstance(actions, (list, tuple)) 
-    #Les sets c'est trop fort en python yep.
+    assert isinstance(capteurs, list) \
+    and set(capteurs).issubset(set(range(9))) \
+    and len(set(capteurs)) == len(capteurs), "I'm blind!"
+    assert isinstance(actions, (list, tuple))
 
     self.__vivant = True
     self.__capteurs = capteurs
     self.__actions = actions
     self.__reward = list()
+    self.__total = 0
 
   @property 
-  def vivant(self):
-    return self.__vivant
-
+  def vivant(self): return self.__vivant
   @property 
-  def capteurs(self):
-    return self.__capteurs 
-
+  def capteurs(self): return self.__capteurs 
   @property 
-  def actions(self):
-    return self.__actions
+  def actions(self): return self.__actions
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
+    assert isinstance(percept, (list,tuple))
+    assert len(percept) == len(self.capteurs)
+    assert set(percept).issubset(objetsStatiques.keys()), "I'm blind!"
 
     index = randrange(len(self.actions))
     action = self.actions[index]
@@ -261,13 +242,14 @@ class Aspirateur(object):
 
   def getEvaluation(self):
     """ Recupere l'evaluation """
-    return 0.
+    return self.__total
 
   def setReward(self, reward):
     """ Associe une recompense au aspirateur """
     assert isinstance(reward, (float, int)), ' Stochy veut un nombre!'
     
     self.__reward.append(reward)
+    self.__total += reward
 
   def getLastReward(self):
     if len(self.__reward) != 0:
@@ -280,13 +262,14 @@ class Aspirateur(object):
 
 class AspiClairvoyant(Aspirateur):
   """ Aspirateur qui voit le contenu de sa propre case """
-
   def __init__(self, capteurs = [8], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
+    assert isinstance(percept, (list,tuple))
+    assert len(percept) == len(self.capteurs)
+    assert set(percept).issubset(objetsStatiques.keys()), "I'm blind!"
     
     if percept[0] == 1:
       #Much ado about nothing
@@ -294,18 +277,18 @@ class AspiClairvoyant(Aspirateur):
     else:
       choix = list(set(actions)-{'Aspirer'})
       action = choice(choix) 
-
     return action
 
 class AspiVoyant(Aspirateur):
   """ Aspirateur qui aspire la salete uniquement """
-
   def __init__(self, capteurs = [8,2], actions = ['Gauche', 'Droite', 'Aspirer']):
     super().__init__(capteurs, actions)
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """
-    assert set(percept).issubset(set(d).union([-1])), "I'm blind!"
+    assert isinstance(percept, (list,tuple))
+    assert len(percept) == len(self.capteurs)
+    assert set(percept).issubset(objetsStatiques.keys()), "I'm blind!"
   
     if len(percept) == 1:
       if percept[0] == 1:
