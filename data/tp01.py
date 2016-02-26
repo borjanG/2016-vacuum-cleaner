@@ -29,6 +29,7 @@ class Aspirateur_KB(Aspirateur):
         self.__learn = learn
         self.__last_action = None  # dernière action choisie
         self.__last_percept = None # dernier percept reçu
+        self.compteurs = {'alea': 0, 'exploitation': 0, 'total': 0, 'exploration': 0}
         
     @property
     def apprentissage(self): return self.__learn

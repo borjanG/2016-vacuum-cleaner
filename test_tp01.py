@@ -4,15 +4,15 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "tests unitaires pour tp01"
 __date__ = "11.02.16"
-__version__ = "0.5"
+__version__ = "0.9"
 
 #----- import ---------------------------------------
-from test_tp00a import test_table, test_perfGlobale, test_historique
 import copy
-
+import random
 ## remplacer XXX par le nom de votre fichier à tester
-#import XXX as tp01
 import data.tp01 as tp01
+#import corrige_tp01 as tp01
+import test_tp00a as ttp00a
 #----------------------------------------------------
 
 # NE RIEN MODIFIER A PARTIR D'ICI
@@ -22,7 +22,7 @@ import data.tp01 as tp01
 # un sous-test est de la forme subtest_xxx_yyy( params ) il est normalement
 # appelé depuis test_xxx pour controler plusieurs sous-cas
 
-def check_property(p,msg='default',letter='E'):
+def check_property(p:bool,msg:str='default',letter:str='E') -> str:
     """ permet de tester une propriété
     @input p: propriété à tester (vraie ou fausse)
     @input msg: message spécifique en cas d'erreur [defaut=default]
@@ -38,7 +38,7 @@ def check_property(p,msg='default',letter='E'):
         
     return _
 
-def has_failure(string,sz=1):
+def has_failure(string:str,sz:int=1) -> bool:
     """ vérifie si les sz derniers tests ont échoué """
     return string[-sz:] != '.'*sz
 
@@ -106,14 +106,113 @@ def subtest_rw_apprentissage(obj):
     
     return _s
 
+def get_info_from_history(h):
+    """ 
+        renvoie le nombre de pieces nettoyees 
+    """
+    _pieces_nettoyees = 0
+    # _h = [ (table,position),action ... ]
+    for ((_,(x,y)),act) in h :
+        if act == "Aspirer" and _[x][y] == 1:
+            _pieces_nettoyees += 1
+    return _pieces_nettoyees
+
+def subtest_historique(monde,letter):
+    """
+       monde est simulé
+    """
+    _t = monde.table # c'est supposé etre une copie
+    _h = monde.historique # idem
+    a,b = monde.posAgent # dernière position de l'agent
+    nbl,nbc = len(_t),len(_t[0])
+    _pieces_nettoyees = 0
+    _position_visitees =  [ [0 for j in range(nbc)] for i in range(nbl)]
+    _position_visitees[a][b] = 1
+    # _h = [ (table,position),action ... ]
+    for ((_,(x,y)),act) in _h :
+        _position_visitees[x][y] += 1
+        if act == "Aspirer" and _[x][y] == 1:
+            _pieces_nettoyees += 1
+    _cpt = 0
+    for i in range(nbl):
+        for j in range(nbc):
+            if _position_visitees[i][j] > 2: _cpt += 1
+    _pG = (_pieces_nettoyees - _cpt)
+
+    return check_property(monde.perfGlobale == _pG,
+                          "perfGlobale {} vs historique {}".format(
+                              monde.perfGlobale,_pG),letter)
+
+def subtest_learning(monde,letter):
+    _s = ''
+    _oldKB = copy.deepcopy(monde.aspi.knowledge)
+    for i in range(5):
+        if i%2 == 0: monde.agent.apprentissage = False
+        else: monde.agent.apprentissage = True
+        monde.step()
+        if i%2 == 0:
+            _s += check_property(str(_oldKB) == str(monde.knowledge),
+                                "erreur base mode non apprentissage",letter)
+        else:
+            _s += check_property(str(_oldKB) != str(monde.knowledge),
+                                "erreur base mode apprentissage",letter)
+            _oldKB = copy.deepcopy(monde.aspi.knowledge)
+    return _s
+def subtest_explo(monde):
+    # Si plusieurs regles avec meme percept
+    # le nbUsage devrait etre > pour les moins bon choix
+    _tmp =''
+    for p in tp01.objetsStatiques:
+        if 0 <= p < 100:
+            _lrules = monde.aspi.knowledge.find([p])
+
+            _best = None ; _highestUsage = None
+            for _rule in _lrules:
+                if _best is None or _rule.scoreMoyen > _best.scoreMoyen:
+                    _best = _rule
+                if (_highestUsage is None or
+                    _rule.nbUsage > _highestUsage.nbUsage):
+                    _highestUsage = _rule
+            _highest = [x for x in _lrules
+                        if x.nbUsage == _highestUsage.nbUsage ]
+            _tmp += check_property('Aspirer' in [x.conclusion for x in _highest],"Aspirer missing",'1')
+            if len(_highest) == 1: 
+                _tmp += check_property(_highestUsage.nbUsage > _best.nbUsage,
+                                    "wrong usage\nhi={}\nbe={}".format(_highestUsage,_best),'2')
+            else:
+                _tmp += check_property(_highestUsage.nbUsage >= _best.nbUsage,
+                                    "wrong usage\nhi={}\nbe={}".format(_highestUsage,_best),'3')    
+            _tmp += check_property(_highestUsage.scoreMoyen <= _best.scoreMoyen,
+                                    "wrong score\nhi={}\nbe={}".format(_highestUsage,_best),'4')
+            if has_failure(_tmp,2):
+                for x in _lrules: print(x)
+
+    print("subtest exploratoire",_tmp)
+    return _tmp
 #------- Var & Tools --------
+def hide_objets(fake=True):
+    objetsStatiques = dict()
+    if fake:
+        for i in (-25, -2, -1, 3, 13, 27, 45, 85, 99, 1011, 101, 228, 42):
+            objetsStatiques[i] = ('.'*min(abs(i),5),str(i))
+    else:
+        objetsStatiques = {
+            0: ("propre",' '),
+            1: ("sale",'.'),
+            3: ("prise",'p'),
+            4: ("station",'S'),
+           -1: ("dont care", '?'),
+          100: ("agent",'@'), }
+
+    ttp00a.tp00.objetsStatiques = objetsStatiques
+    tp01.objetsStatiques = objetsStatiques
+
+
 class MyEnv(object):
     """ On force les attributs à etre dans aspi et world """
     __slots__ = ('aspi','world')
-    for i in (-25, -2, -1, 3, 13, 27, 45, 85, 99, 1011, 101, 228, 42):
-        tp01.objetsStatiques[i] = ('.'*min(abs(i),5),str(i))
-    def __init__(self,kap=[],nbl=1,nbc=2):
-        self.aspi = tp01.Aspirateur_KB(.75,kap)
+    def __init__(self,kap=[],proba=.75,learn=False,nbl=1,nbc=2):
+        self.aspi = tp01.Aspirateur_KB(proba,kap,learn=learn)
         self.world = tp01.World(self.aspi,nbl,nbc)
     def __getattr__(self,att):
         if hasattr(self.aspi,att): return getattr(self.aspi,att)
@@ -180,19 +279,142 @@ def test_oldies():
     _s = ''
     _test = "table perfGlobale historique".split()
     for k in _test:
-        _out = eval("test_"+k)()
+        _out = eval("ttp00a.test_"+k)()
         _s += _out
         if not check_integrity(_out):
             print(k,_out)
             break
 
     return _s
-    
+
+
 #------ Tests Aspirateurs -------
+def test_setReward():
+    """
+       vérifie que l'on met à jour la base en cas d'apprentissage
+    """
+    _s =''
+    _m = MyEnv([],learn=True,nbc=13)
+    _s += subtest_learning(_m,'a')
+    hide_objets(True)
+    _m = MyEnv([8],nbc=13)
+    for p in tp01.objetsStatiques:
+        if 0 <= p < 99:
+            _m.aspi.knowledge.add(tp01.Rule([p],"Gauche",.2))
+    _s += subtest_learning(_m,'b')
+    return _s
+
+def test_getDecision():
+    """ 
+       on doit récupérer une décision
+       * aléatoire
+       * dans la base
+         - avec le plus gros score
+         - avec un score qui n'est pas le meilleur mais positif
+    """
+    _s = ''
+    hide_objets(False) # un environnement simple
+    kn = tp01.KB()
+    R = tp01.Rule
+    for p in tp01.objetsStatiques:
+        if 0 <= p < 100: kn.add( R([p],"Gauche",0))
+    #----------- tests exploitation ----------------------------------------
+    _m = MyEnv([8],proba=1.,learn=False,nbc=7) # exploitation pure
+    _m.aspi.knowledge = copy.deepcopy(kn)
+    _m.simulation(10)
+    _lact = [act for (_,act) in _m.historique]
+    _s += check_property(len(_lact)==10,"bad historique size",'a')
+    if has_failure(_s): return _s
+    _s += check_property(all([x=="Gauche" for x in _lact]),"bad actions",'b')
+    _s += check_property(str(_m.aspi.knowledge) == str(kn),"bad knowledge",'c')
+    _m.aspi.apprentissage = True 
+    _m.simulation(10)
+    _lact = [act for (_,act) in _m.historique]
+    _s += check_property(len(_lact)==10,"bad historique size",'A')
+    if has_failure(_s): return _s
+    _s += check_property(all([x=="Gauche" for x in _lact]),"bad actions",'B')
+    _s += check_property(str(_m.aspi.knowledge) != str(kn),"bad knowledge",'C')
+    
+    #----------- tests aleatoire ----------------------------------------
+    _m = MyEnv([8],proba=1.,learn=False,nbc=7) 
+    _m.simulation(10)
+    _lact = [act for (_,act) in _m.historique]
+    _s += check_property(len(_lact)==10,"bad historique size",'d')
+    _s += check_property(not all([x=="Gauche" for x in _lact]),
+                         "bad actions",'e')
+    _s += check_property(len(_m.aspi.knowledge) == 0,"bad knowledge",'f')
+    _m = MyEnv([8],proba=0.,learn=True,nbc=7) 
+    _m.simulation(10)
+    _s += check_property(len(_m.aspi.knowledge) > 0,
+                        "bad knowledge\n{}".format(_m.aspi.knowledge),'g')
+
+    #----------- tests exploration ----------------------------------------
+    kn = tp01.KB()
+    R = tp01.Rule
+    for p in tp01.objetsStatiques:
+        if 0 <= p < 100:
+            kn.add( R([p],"Gauche",200))
+    _m = MyEnv([8],proba=.0,learn=False,nbc=7) # exploitation faible
+    _m.aspi.knowledge = copy.deepcopy(kn)
+    _m.simulation(10)
+    _lact = [act for (_,act) in _m.historique]
+    _s += check_property(not all([x=="Gauche" for x in _lact]),
+                         "bad actions",'h')
+    _s += check_property(str(_m.aspi.knowledge) == str(kn),"bad knowledge",'i')
+    _m.aspi.apprentissage = True 
+    for p in tp01.objetsStatiques:
+        if 0 <= p < 100:
+            kn.add( R([p],"Aspirer",1e-3))
+    _m.aspi.knowledge = copy.deepcopy(kn)
+    _m.simulation(10)
+    _lact = [act for (_,act) in _m.historique]
+    _s += check_property(not all([x=="Gauche" for x in _lact]),
+                         "bad actions",'j')
+    _s += check_property(str(_m.aspi.knowledge) != str(kn),"bad knowledge",'k')
+    _s += subtest_explo(_m)
+    return _s
+
+def test_getEvaluation():
+    """ suppose que setReward est ok """
+    _s = ''
+    for learn in (True, False) :
+        _m = MyEnv([8],learn=learn,nbc=7)
+        _m.simulation(11)
+        _cpt = get_info_from_history(_m.historique)
+        _sz = len(_m.knowledge)
+        if learn: _s += check_property(0 < _sz < 7)
+        else:  _s += check_property(0 == _sz)
+        _s += check_property(_m.getEvaluation() == (_cpt + 1)/(_sz+1))
+
+    kn = tp01.KB()
+    R = tp01.Rule
+    kn.add(R([1],"Aspirer",1))
+    kn.add(R([1],"Gauche",-.5))
+    kn.add(R([1],"Droite",-.5))
+    kn.add(R([0],"Gauche",.5))
+    kn.add(R([0],"Droite",.5))
+    kn.add(R([0],"Aspirer",-1))
+    for p in tp01.objetsStatiques:
+        if 1 < p < 100: kn.add(R([p],"Gauche",.2))
+    _zs = len(kn)
+
+    for learn in (True, False) :
+        _m = MyEnv([8],learn=learn,nbc=7)
+        _m.aspi.knowledge = copy.deepcopy(kn)
+        _m.simulation(7)
+        _cpt = get_info_from_history(_m.historique)
+        _sz = len(_m.knowledge)
+        if not learn:
+            _s += check_property(_sz == _zs,"apprentissage {}".format(learn))
+        else:
+            _s += check_property(_sz >= _zs,"apprentissage {}".format(learn))
+
+        _s += check_property(_m.getEvaluation() == (_cpt + 1)/(_sz+1))
+    return _s
 #------ Tests Mondes ------------
 def test_applyChoix():
     _s = ''
-    _mmc = MyEnv(nbc=7)
+    _mmc = MyEnv(nbc=17)
     _mvt = {"Gauche": _mmc.gauche,
             "Droite": _mmc.droite,
             "Aspirer": _mmc.ici }
@@ -217,11 +439,84 @@ def test_applyChoix():
                 _val = _reward[k][_moi == _old]
             else:
                 _val = _reward[k][_ovu == _nvu]
+                if _ovu == 1:
+                    _s += check_property(_nvu == 0,
+                                "{}: failed expected {} got {}".format(k,0,_nvu),
+                                str(i+1))
             _s += check_property(_toi == _val,
                                  "bad return at {} for {}".format(i,k),str(i+1))
             if has_failure(_s): break
 
     return _s
+
+def test_getPerception():
+    """ on donne des capteurs on récupère des éléments du monde """
+    _s = ''
+
+    _mmc = MyEnv(nbc=13)
+    _capt = {
+        6: _mmc.gauche,
+        2: _mmc.droite,
+        8: _mmc.ici }
+        
+    for i in range(5):
+        for k in _capt:
+            _mmc.initialisation()
+            x,y = _mmc.posAgent
+            _out = _mmc.getPerception( [k] )
+            a,b = _capt[k]()
+            if k != 8 and (x,y) == (a,b): _exp = -1
+            else: _exp = _mmc.table[a][b]
+            _s += check_property(_out[0] == _exp,
+                                     ("un capteur [{}]"
+                                          "got {} expected {}".format(k,_out[0],_exp)),'1')
+            if has_failure(_s):
+                print(_mmc.table,_mmc.posAgent,k)
+                return _s
+
+    _mmc = MyEnv(nbc=7)
+    _capt = {
+        6: _mmc.gauche,
+        2: _mmc.droite,
+        8: _mmc.ici }
+
+    for i in range(5):
+        for lc in ([6,2],[6,8],[2,8],[6,2,8]):
+            _mmc.initialisation()
+            x,y = _mmc.posAgent
+            _out = _mmc.getPerception( lc )
+            _r = [ _capt[_]() for _ in lc ]
+            _th = []
+            for j,p in enumerate(lc):
+                a,b = _r[j]
+                if p != 8 and (x,y) == _r[j]: _th.append(-1)
+                else: _th.append(_mmc.table[a][b])
+            _s += check_property(_out == _th,
+                                 ("plusieurs capteurs: {}"
+                                  "expected {} got {}".format(lc,_th,_out)),
+                                  '2')
+            if has_failure(_s):
+                print(_mmc.table,_mmc.posAgent,lc)
+                return _s
+    return _s
+
+def test_perfGlobale_TP01():
+    """
+    # On va faire une simulation et regarder la variable historique
+    # pour récupérer les pièces nettoyées
+    # pour récupérer les position
+    # Attention manque la dernière position
+    #(on peut la calculer ou la demander)
+    """
+    hide_objets(False)
+    _s = ''
+    for learn in (False,True):
+        for i in range(5):
+            _m = MyEnv([8], nbc=7,learn=learn)
+            _m.simulation(7)
+            _s += subtest_historique(_m,str(i+1))
+    return _s
+
 #------ main --------------------
 def main():
     # l'existence de certaines choses est requise
@@ -273,7 +568,8 @@ def main():
         print("oldies:",_msg)
         _s += _msg ; _msg = ''
 
-    _todo = "applyChoix".split()
+    _todo = """applyChoix getPerception setReward perfGlobale_TP01 
+               getDecision getEvaluation""".split()
     _s += do_loop(_todo)
     # Bilan
     _all = len(_s) 
@@ -284,4 +580,5 @@ def main():
 if __name__ == "__main__" :
 
     print("succ %d fail %d sum %d, rate = %.2f" % main())
-    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(164))
+    print("expected >> succ {0} fail 0 sum {0} rate = 100.00".format(253))
+

@@ -163,19 +163,10 @@ class Monde(object):
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
 
-    self.agent.compteurs = {'alea': 0,
-                            'exploitation': 0,
-                            'total': 0,
-                            'exploration': 0}
     self.__historique = [] 
-    cpt = 0                 # compteur pour afficher historique
-
     while self.agent.vivant and n > 0:
       self.step()
-      # print("Avant : ",self.historique[cpt][0], "    Veut faire : ", self.historique[cpt][1])
-      # print(self)
       n-=1
-      cpt+=1
     # self.__historique = []
     self.agent.setReward(self.perfGlobale)
     return self.perfGlobale 
