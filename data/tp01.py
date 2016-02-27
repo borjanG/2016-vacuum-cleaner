@@ -3,11 +3,13 @@
 
 __usage__ = "tp01"
 __author__ = "mmc, Terral, Rodriguez, Geshkovski"
-__date__ = "25.02.16"
+__date__ = "28.02.16"
 __version__ = "0.3"
 
+#Custom py libs
 from data.monde import objetsStatiques, Aspirateur, Monde
 from data.briques import Rule, KB
+#Generic py libs
 import copy
 from random import choice, random
 
@@ -27,8 +29,8 @@ class Aspirateur_KB(Aspirateur):
         self.__knowbase = KB()     # base de données vide
         self.__probaExploitation = probaExploitation
         self.__learn = learn
-        self.__last_action = None  # dernière action choisie
-        self.__last_percept = None # dernier percept reçu
+        self.__lastAction = None  # dernière action choisie
+        self.__lastPercept = None # dernier percept reçu
         self.compteurs = {'alea': 0, 'exploitation': 0, 'total': 0, 'exploration': 0}
         
     @property
@@ -40,7 +42,7 @@ class Aspirateur_KB(Aspirateur):
     @property
     def knowledge(self): return copy.deepcopy(self.__knowbase)
     @knowledge.setter
-    def knowledge(self,v):
+    def knowledge(self, v):
         assert isinstance(v, KB), "pas KB"
         self.__knowbase = v   
     @property
@@ -50,12 +52,12 @@ class Aspirateur_KB(Aspirateur):
         # return (self.nettoyage+1)/(len(self.knowledge)+1)
         return (self.nettoyage+1)/(len(self.__knowbase)+1)
         
-    def getDecision(self,percepts):
+    def getDecision(self, percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
         assert len(percepts) == len(self.capteurs), "percepts and capteurs do not match"
         assert all([x in objetsStatiques for x in percepts]), "bad percepts %s" % percepts
 
-        self.__last_percept = percepts
+        self.__lastPercept = percepts
         rule_lst = self.__knowbase.find(percepts)
 
         if len(rule_lst) == 0:
@@ -82,16 +84,16 @@ class Aspirateur_KB(Aspirateur):
                 self.compteurs['exploration'] += 1 
 
         self.compteurs['total'] += 1
-        self.__last_action = action
-        return self.__last_action
+        self.__lastAction = action
+        return self.__lastAction
         
     def setReward(self, value):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
-            r = Rule(self.__last_action, self.__last_percept, value)
+            r = Rule(self.__lastAction, self.__lastPercept, value)
             self.__knowbase.add(r)
-            
-            
+            # self.knowledge.add(r)
+              
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
     def __init__(self,agent, nbLignes=1, nbColonnes=2):
@@ -101,7 +103,7 @@ class World(Monde):
     
     def initialisation(self):
         super(World,self).initialisation()
-        self._passage = [ [0 for j in range(len(self.table[0])) ] for i in range(len(self.table)) ]
+        self._passage = [[0 for j in range(len(self.table[0]))] for i in range(len(self.table))]
         i,j = self.posAgent
         self._passage[i][j] = 1
         self.agent.nettoyage = 0
@@ -109,7 +111,7 @@ class World(Monde):
     def getPerception(self,capteurs):
         """ informe l'agent en fonction des capteurs """
 
-        delta = [ (-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0) ]
+        delta = [(-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0)]
         res = []
         for x in capteurs:
             nx = self.posAgent[0] + delta[x][0]
@@ -120,32 +122,32 @@ class World(Monde):
                 res.append(-1)
         return res   
  
-    def applyChoix(self,choix):
+    def applyChoix(self, choix):
         """ modifie table & posAgent en fonction de choix """
 
+        dx = self.posAgent[0]
+        dy = self.posAgent[1]
         score = 0
+
         if choix == 'Aspirer':
-            if self.table[self.posAgent[0]][self.posAgent[1]] == 1:
-                self._table[self.posAgent[0]][self.posAgent[1]] = 0
-                self.agent.nettoyage+=1
+            if self.table[dx][dy] == 1:
+                self._table[dx][dy] = 0
+                self.agent.nettoyage += 1
                 score = 2
-            else:
-                score = 0
+            else: score = 0
         else:
-            ny = self.posAgent[1]
             if choix == 'Gauche':
-                if ny > 0: 
-                    self._posAgent = (self.posAgent[0], self.posAgent[1]-1)
+                if dy > 0: 
+                    self._posAgent = (dx, dy-1)
                     score = 1
-                else:
-                    score = -1
+                else: score = -1
             elif choix == 'Droite':
-                if ny < self.__cols-1: 
-                    self._posAgent = (self.posAgent[0], self.posAgent[1]+1)
+                if dy < self.__cols-1: 
+                    self._posAgent = (dx, dy+1)
                     score = 1
-                else:
-                    score = -1
-        i,j = self.posAgent
+                else: score = -1
+
+        i, j = self.posAgent
         self._passage[i][j] += 1  
         return score
         
