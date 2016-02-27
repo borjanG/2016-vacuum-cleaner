@@ -9,7 +9,7 @@ __version__ = "0.3"
 from data.monde import objetsStatiques, Aspirateur, Monde
 from data.briques import Rule, KB
 import copy
-from random import randint, choice, random
+from random import choice, random
 
 class Aspirateur_KB(Aspirateur):
     """ 4 paramètres
@@ -47,7 +47,8 @@ class Aspirateur_KB(Aspirateur):
     def probaExploitation(self): return self.__probaExploitation
     
     def getEvaluation(self): 
-        return (self.nettoyage+1)/(len(self.knowledge)+1)
+        # return (self.nettoyage+1)/(len(self.knowledge)+1)
+        return (self.nettoyage+1)/(len(self.__knowbase)+1)
         
     def getDecision(self,percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
@@ -74,7 +75,7 @@ class Aspirateur_KB(Aspirateur):
                 if len(other_rules) !=0:
                     _ = choice(other_rules)
                     action = _.conclusion
-                    if _.scoreMoyen < 0:
+                    if _.scoreMoyen < 0 and len(notbase_actions) != 0:
                         action = choice(notbase_actions)
                 else:
                     action = choice(notbase_actions)
