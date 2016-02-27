@@ -7,7 +7,7 @@ __date__ = "27.01.16"
 __version__ = "0.5"
 
 ## remplacer XXX par le nom de votre fichier
-import data.monde as tp00
+import data.tp00 as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI
 import random

@@ -4,18 +4,16 @@
 #Generic python libs
 from random import randrange, choice
 from copy import deepcopy
-
 #This code contains easter eggs.
-__usage__ = "tp00"
+__usage__ = "tp0x, x>0"
 __author__ = "Terral, Rodriguez, Geshkovski"
 __date__ = "25.02.16"
 __version__ = "0.6"
 
 objetsStatiques = {100: ('Aspirateur','@'),
-                    0: ('rien',' '),
-                    1: ('poussiere',':'),
-                    -1: ('erreur','?')}
-
+                    	0: ('rien',' '),
+                    	1: ('poussiere',':'),
+                    	-1: ('erreur','?')}
   # ------------ #    
   #     MONDE    # -------------------------------------------------------------------#
   # ------------ #
@@ -168,7 +166,7 @@ class Monde(object):
       self.step()
       n-=1
     # self.__historique = []
-    self.agent.setReward(self.perfGlobale)
+    # self.agent.setReward(self.perfGlobale)
     return self.perfGlobale 
 
   def initialisation(self):
@@ -197,7 +195,7 @@ class Monde(object):
     pass
 
   # ------------ #    
-  #     AGENT    # --------------------------------------------------------------------------------------------------------------------#
+  #     AGENT    # ------------------------------------------------------------------------#
   # ------------ #
 
 class Aspirateur(object):

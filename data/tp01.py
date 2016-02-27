@@ -7,7 +7,7 @@ __date__ = "25.02.16"
 __version__ = "0.3"
 
 from data.monde import objetsStatiques, Aspirateur, Monde
-from briques import Rule, KB
+from data.briques import Rule, KB
 import copy
 from random import randint, choice, random
 
@@ -84,13 +84,12 @@ class Aspirateur_KB(Aspirateur):
         self.__last_action = action
         return self.__last_action
         
-    def setReward(self,value):
+    def setReward(self, value):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
-            action = self.__last_action
-            percepts = self.__last_percept
-            r = Rule(percepts, action, value)
-            self.knowledge.add(r)
+            r = Rule(self.__last_action, self.__last_percept, value)
+            self.__knowbase.add(r)
+            
             
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
