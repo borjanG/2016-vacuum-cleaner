@@ -49,8 +49,7 @@ class Aspirateur_KB(Aspirateur):
     def probaExploitation(self): return self.__probaExploitation
     
     def getEvaluation(self): 
-        # return (self.nettoyage+1)/(len(self.knowledge)+1)
-        return (self.nettoyage+1)/(len(self.__knowbase)+1)
+        return (self.nettoyage+1)/(len(self.knowledge)+1)
         
     def getDecision(self, percepts):
         assert isinstance(percepts,(list,tuple)), "%s should be list or tuple" % percepts
@@ -91,8 +90,9 @@ class Aspirateur_KB(Aspirateur):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
             r = Rule(self.__lastAction, self.__lastPercept, value)
-            self.__knowbase.add(r)
-            # self.knowledge.add(r)
+            _ = self.knowledge
+            _.add(r)
+            self.knowledge = _
               
 class World(Monde):
     """ constructeur avec 3 paramètres, syntaxe identique au constructeur de Monde """
