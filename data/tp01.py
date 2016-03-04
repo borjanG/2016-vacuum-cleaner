@@ -12,6 +12,7 @@ from data.briques import Rule, KB
 #Generic py libs
 import copy
 from random import choice, random
+# import collections
 
 class Aspirateur_KB(Aspirateur):
     """ 4 paramètres
@@ -31,7 +32,8 @@ class Aspirateur_KB(Aspirateur):
         self.__learn = learn
         self.__lastAction = None  # dernière action choisie
         self.__lastPercept = None # dernier percept reçu
-        self.compteurs = {'alea': 0, 'exploitation': 0, 'total': 0, 'exploration': 0}
+        # self.compteurs = collections.OrderedDict()
+        self.compteurs = {'alea': 0, 'exploitation' : 0, 'total' : 0, 'exploration': 0}
         
     @property
     def apprentissage(self): return self.__learn
@@ -89,7 +91,7 @@ class Aspirateur_KB(Aspirateur):
     def setReward(self, value):
         super(Aspirateur_KB,self).setReward(value)
         if self.apprentissage:
-            r = Rule(self.__lastAction, self.__lastPercept, value)
+            r = Rule(self.__lastPercept, self.__lastAction, value)
             _ = self.knowledge
             _.add(r)
             self.knowledge = _

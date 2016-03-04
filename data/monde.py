@@ -161,6 +161,7 @@ class Monde(object):
   def simulation(self, n = 42):
     """ Execution de n etats et evolue le monde """
 
+    self.initialisation()
     self.__historique = [] 
     while self.agent.vivant and n > 0:
       self.step()
