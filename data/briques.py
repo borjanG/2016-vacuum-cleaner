@@ -4,10 +4,12 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "briques de base pour la réalisation aspi autonome"
 __date__ = "05.02.16"
-__version__ = "0.1"
+__version__ = "0.3"
 
 #------------ import -------------
 import random
+import numpy as np
+import copy
 #---------------------------------
 
 class UT(object):
@@ -155,6 +157,132 @@ class KB(object):
         
     def __len__(self): return len(self.__kb)
 
+
+class Statistics(object):
+    def __init__(self,data):
+        self.data = data
+        self.__switch = {
+        "moyenne": np.mean,
+        "maximum": np.max,
+        "minimum": np.min,
+        "ecart type": np.std,
+        "mediane": np.median,
+        "taille donnees": len,
+        }
+    def __repr__(self):
+        return "{0}({1})".format(self.__class__.__name__,self.data)
+
+    @property
+    def summary(self):
+        _summary = dict()
+        for k in self.__switch:
+            _summary[k] = round(self.__switch[k](self.data),3)
+        return _summary
+    
+    def __str__(self):
+        _s = ''
+        _summary = self.summary
+        for k in sorted(_summary.keys()):
+            _s += "{0:15s}: {1}\n".format(k,_summary[k])
+        return _s
+
+
+mmcBinaire = {
+    '00': "Repos",
+    '01': "Droite",
+    '10': "Gauche",
+    '11': "Aspirer" }
+mmcUnaire = {
+    'A': "Aspirer",
+    'D': "Droite",
+    'G': "Gauche",
+    'R': "Repos"
+    }
+    
+class ProgramGenetic(object):
+    """ 
+        Un programme génétique est une chaine de caractères 
+        On a besoin de connaitre l'alphabet
+        On a besoin de connaitre la taille d'un gène
+        On a besoin de connaitre le langage
+
+        Usage:
+        >>> x = ProgramGenetic(2,8,"0 1".split(),mmcBinaire)
+        >>> x.program
+        '0000010000000111'
+        >>> x[2]
+        '11'
+        >>> x[-1]
+        '10'
+        >>> x[4] 
+        '11'
+        >>> x[4] = "00"
+        >>> x[4] 
+        '00'
+        >>> len(x)
+        8
+        >>> len(x.program)
+        16
+        >>> x.program
+        '0100111100010110'
+        >>> x.program = '0111100000111111'
+        >>> x.program
+        '0111100000111111'
+        >>> x.decoder(2)
+        'Gauche'
+    """
+
+    def __init__(self, szGene, nbGenes, alphabet, dicode):
+        assert isinstance(szGene,int)
+        assert isinstance(nbGenes,int)
+        assert isinstance(alphabet,(list,tuple))
+        assert all([len(x)==1 for x in alphabet])
+        assert isinstance(dicode,dict)
+
+        self.__szG = szGene
+        self.__nbG = nbGenes
+        self.__szC = szGene * nbGenes # taille d'un chromosome
+        self.__alf = alphabet
+        assert all([len(k)==szGene for k in dicode])
+        assert all([all([x in alphabet for x in k]) for k in dicode])
+        self.__code = dicode
+        self.__pgm = ''.join([random.choice(self.__alf)
+                              for _ in range(self.__szC)])
+
+    @property
+    def program(self): return copy.deepcopy(self.__pgm)
+    @program.setter
+    def program(self, v):
+        assert isinstance(v,str),\
+          "str expected  found {}".format(type(v))
+        assert len(v) == self.__szC,\
+          "expected a len of {} found {}".format(self.__szC,len(v))
+        assert all([_ in self.__alf for _ in v]),\
+          "some part of {} are not in {}".format(v,self.__alf)
+        self.__pgm = v
+
+    @property
+    def actions(self): return set(self.__code.values())
+    def __len__(self): return self.__nbG
+    def __getitem__(self, i):
+        _i = self.__nbG + i if i < 0 else i
+        return self.__pgm[_i*self.__szG:(_i+1)*self.__szG]
+    def __setitem__(self, i, v):
+        _i = self.__nbG + i if i < 0 else i
+        _old = self.program
+        try:
+            assert v in self.__code, "{} not in {}".format(v,self.__code.keys())
+            _before = _old[:_i*self.__szG]
+            _after = _old[(_i+1)*self.__szG:]
+            self.program = _before + v + _after
+        except Exception as _e:
+            print("failure:",_e)
+
+    def decoder(self,i):
+        return self.__code.get(self[i])
+    
+    def __str__(self): return self.program
+        
 if __name__ == "__main__" :
     #----- UT ---------------------------
     timer = UT()
@@ -187,4 +315,13 @@ if __name__ == "__main__" :
             assert( 1 - base*rate**j == f(i) )
         _s = _msg + "proba panne[t= %02d] = %0.3f" % (i,f(i))
         print(_s) 
+        
+    print("ProgramGenetic(...)")
+    x = ProgramGenetic(2,8,"0 1".split(),mmcBinaire)
+    print("x.program",x.program)
+    print("x[3]=",x[3])
+
+    y = ProgramGenetic(1,8,"A G D R".split(),mmcUnaire)
+    print("y.program",y.program)
+    print("y[3]=",y[3])
         

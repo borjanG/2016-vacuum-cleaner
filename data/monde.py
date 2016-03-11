@@ -10,10 +10,8 @@ __author__ = "Terral, Rodriguez, Geshkovski"
 __date__ = "25.02.16"
 __version__ = "0.6"
 
-objetsStatiques = {100: ('Aspirateur','@'),
-                    	0: ('rien',' '),
-                    	1: ('poussiere',':'),
-                    	-1: ('erreur','?')}
+objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':'), -1: ('erreur','?')}
+
   # ------------ #    
   #     MONDE    # -------------------------------------------------------------------#
   # ------------ #
@@ -162,12 +160,11 @@ class Monde(object):
     """ Execution de n etats et evolue le monde """
 
     self.initialisation()
-    self.__historique = [] 
     while self.agent.vivant and n > 0:
+      # print(self.table)
+      print(self.historique)
       self.step()
       n-=1
-    # self.__historique = []
-    # self.agent.setReward(self.perfGlobale)
     return self.perfGlobale 
 
   def initialisation(self):
@@ -189,7 +186,7 @@ class Monde(object):
     #Borjan
     _ = list(set(objetsStatiques.keys()).intersection(range(100)))
     self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
-    # self.__historique = [] 
+    self.__historique = [] 
 
   def updateWorld(self):
     """ Mise a jour aleatoire du monde dynamique """

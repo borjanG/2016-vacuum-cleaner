@@ -15,10 +15,10 @@ if __name__ == "__main__":
   # a.setReward(42)
   # print(a.getEvaluation())
 
-  a = Aspirateur_KB(0.1)
-  m = World(a,1,2)
+  # a = Aspirateur_KB(0.7, learn=True)
+  # m = World(a,1,2)
   # print(m)
-  m.simulation(4)
+  # m.simulation(4)
   # print(m)
 
 
