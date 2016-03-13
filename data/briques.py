@@ -4,7 +4,7 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "briques de base pour la réalisation aspi autonome"
 __date__ = "05.02.16"
-__version__ = "0.3"
+__version__ = "0.4"
 
 #------------ import -------------
 import random
@@ -282,7 +282,55 @@ class ProgramGenetic(object):
         return self.__code.get(self[i])
     
     def __str__(self): return self.program
-        
+
+class GeneratePercept(object):
+    """
+       lCapteurs: liste dont les éléments sont dans 0..8
+       dicObjets: dictionnaire dont les clefs sont numériques
+       - seules les clefs 0..99 sont considérées
+       - pour les capteurs autre que 8, la clef -1 est rajoutée
+
+       ATTENTION: Aucun controle quand on mésusage de cette classe
+    """
+    __slots__ = ("lCap","dObj","values")
+    def __init__(self,lCapteurs,dicObjets):
+        if lCapteurs == []:
+            raise ValueError("{} cant work with capteurs: {}"
+                             .format(self.__class__.__name__,lCapteurs))
+        print("création d'un {}".format(self.__class__.__name__))
+        self.lCap = lCapteurs
+        self.dObj = dicObjets
+        self.values = None
+
+    def __str__(self):
+        return ("capteurs: {0.lCap}\ndico: {0.dObj}\n"
+                "nbValeurs: {0.howMany}".format(self))
+    @property
+    def howMany(self):
+        import functools,operator
+        _keys = [x for x in self.dObj.keys() if 0 <= x < 100] # clefs valides
+        _dom1 = len(_keys) # taille du domaine pour capteur 8
+        _dom2 = _dom1 + 1 # taille du domaine pour capteur in 0..7
+        _ = map(lambda _: _dom1 if _ == 8 else _dom2,self.lCap)
+        return functools.reduce(operator.mul,_)
+
+    def producer(self):
+        """
+        produit dans un ordre donné les différentes valeurs des capteurs
+        """
+        import itertools
+        _dom1 = [x for x in self.dObj.keys() if 0 <= x < 100] # clefs valides
+        _dom2 = _dom1[:] + [-1] # domaine pour capteur in 0..7
+        _support = map(lambda _: _dom1 if _ == 8 else _dom2, self.lCap)
+        return itertools.product( *_support )
+
+    def find(self,percept):
+        """
+           renvoie l'index du percept supposé valide
+        """
+        if self.values is None: self.values = list(self.producer())
+        return self.values.index( tuple(percept) )
+    
 if __name__ == "__main__" :
     #----- UT ---------------------------
     timer = UT()
@@ -325,3 +373,20 @@ if __name__ == "__main__" :
     print("y.program",y.program)
     print("y[3]=",y[3])
         
+
+    dicoT = {-2: 'a', 121: 'b', 0: 'c', 2: 'd', 13: 'e', 42: 'f', 1024: 'h'}
+    lKap = [0,1,6,8,2]
+    mmc = GeneratePercept(lKap,dicoT)
+    print(mmc)
+    assert mmc.howMany == 4*5**4, "wrong size (1)"
+    assert mmc.howMany == len(list(mmc.producer())), "wrong size (2)"
+    for p in ( [2,2,2,2,2], [2,2,0,2,2], [-1,2,0,2,2]):
+        print("percept: {} correspond à l'index: {}"
+              .format(p,mmc.find(p)))
+
+    cpt = 0
+    for x in mmc.producer():
+        if -1 in x: cpt += 1
+    print("{}% de cas avec bords {}/{}"
+          .format(100*cpt/mmc.howMany,cpt,mmc.howMany))
+

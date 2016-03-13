@@ -19,15 +19,18 @@ class Aspirateur_PG(Aspirateur):
     def __init__(self,prog=None,lCap=[]):
         if prog is None:
             # choisir le nom de votre variable, remplacez les ...
+            # traiter le cas lCap = [] vs lCap != []
             self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), mmcUnaire)
         elif isinstance(prog,ProgramGenetic):
+            # vérifier que prog est compatible si lCap != []
+            # sinon provoquer une erreur
             self.__chromosome = prog
         else:
             raise AssertionError("{} expected got {}"
                                  .format(ProgramGenetic,type(prog)))
         # récupération des actions depuis votre variable
         # attention ce n'est pas une 'list' c'est un 'set'
-        lAct = set(self.actions)
+        lAct = list(self.__chromosome.actions)
         super().__init__(lCap,lAct)
         # choisir la variable pour energie
         self.__energy = 100
@@ -46,7 +49,7 @@ class Aspirateur_PG(Aspirateur):
     @energie.setter
     def energie(self,v):
         assert isinstance(v,int), "int expected found {}".format(type(v))
-        self.__energy = max(0,min(100,v)) # force la valeur entre 0 et 100
+        self.__energy = max(0, min(100, v)) # force la valeur entre 0 et 100
         if self.__energy == 0:
             self.vivant = False
 
@@ -71,19 +74,27 @@ class Aspirateur_PG(Aspirateur):
         """ renvoie l'évaluation de l'agent """
 
         score = (self.nettoyage / self.dirty) * 10
-        if not self.vivant:
-            score -= 100
-        elif self.energie < 25 : score += 1/2 * self.energie / 100
-        elif self.energie < 50 : score += 2/3 * self.energie / 100
-        elif self.energie < 75 : score += 3/4 * self.energie / 100
-        else: score += self.energie / 100
+        
+        #Borjan
+        index = int(self.energie / 25)
+        corep = [1/2 * self.energie / 100, 2/3 * self.energie / 100, 3/4 * self.energie / 100, self.energie / 100]
+        if not self.vivant: score -= 100
+        else: score += corep[index]
+
+        #Mmc
+        # if not self.vivant:
+        #     score -= 100
+        # elif self.energie < 25 : score += 1/2 * self.energie / 100
+        # elif self.energie < 50 : score += 2/3 * self.energie / 100
+        # elif self.energie < 75 : score += 3/4 * self.energie / 100
+        # else: score += self.energie / 100
         return score
 
     def getDecision(self,percepts):
         """ deux cas à traiter suivant que percepts = [] ou pas """
         if percepts == []:
             # on utilise cpt pour savoir ce qu'il faut lire/récupérer
-            return
+            return self.chromosome.decoder(self.chromosome[self.cpt*2:self.cpt*2+2])
         # a partir d'ici on est dans le cas ou l'agent percoit
         # il faut associer au percepts un numéro et aller regarder
         # quelle est l'instruction à renvoyer
@@ -140,14 +151,11 @@ class Monde_AG(Monde):
         score = 0
         energedic = dict()          #Ha ha ha
 
-        if len(self.capteurs) == 0:
-            energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': 3}
-        else:
-            energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': (0, 20)}
+        if len(self.capteurs) == 0: energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': 3}
+        else: energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': (0, 20)}
 
         #Borjan (mode Schlickienne)
         self.agent.energie = energedic[choix] if choix != 'Repos' else energedic[choix][1 if self._table[dx][dy] == 2 else 0] 
-
         #Charlotte
         # if choix != 'Repos': self.agent.energie = energedic[choix]
         # else:
