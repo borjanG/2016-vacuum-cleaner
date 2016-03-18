@@ -3,35 +3,54 @@
 
 __usage__ = "Mise en place du TP02a"
 __date__ = "10.03.16"
-__version__ = "0.1"
+__version__ = "0.2"
 
 # remplacer XXX par votre fichier issu du TD2 (le 00a)
-#from XXX import objetsStatiques, Aspirateur, Monde
 from data.monde import objetsStatiques, Aspirateur, Monde
-from briques import ProgramGenetic, mmcUnaire
-import copy, random, functools
+from briques import ProgramGenetic, GeneratePercept
+import copy, random
+
+mmcUnaire = {
+    'A': "Aspirer",
+    'D': "Droite",
+    'G': "Gauche",
+    'R': "Repos"
+    }
 
 class Aspirateur_PG(Aspirateur):
     """
-        lCap: valeur par défaut []
         prog: un programme genetique, par défaut None
+        gp: un GeneratePercept, par défaut None
+        lCap: valeur par défaut []
     """
-    def __init__(self,prog=None,lCap=[]):
+    def __init__(self, prog = None, gp = None, lCap = []):
+        # gestion du GeneratePercept choisir la variable de stockage
+        if gp is not None: self.__stock = gp
+        elif lCap == []: self.__stock = None
+        else: self.__stock = GeneratePercept(lCap, objetsStatiques)
         if prog is None:
             # choisir le nom de votre variable, remplacez les ...
             # traiter le cas lCap = [] vs lCap != []
-            self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), mmcUnaire)
-        elif isinstance(prog,ProgramGenetic):
+            if lcap == []: self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), mmcUnaire)
+            else:
+                decode = dict()
+                for p in range(self.__stock.howMany):
+                    c = random.choice("A G D R".split())
+                    decode[c] = mmcUnaire[c]
+                self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), decode) 
+        elif isinstance(prog, ProgramGenetic):
             # vérifier que prog est compatible si lCap != []
+            if lCap != []:
+                assert (len(prog) == self.__stock.howMany), "pas compatible"
             # sinon provoquer une erreur
             self.__chromosome = prog
         else:
             raise AssertionError("{} expected got {}"
-                                 .format(ProgramGenetic,type(prog)))
+                                 .format(ProgramGenetic, type(prog)))
         # récupération des actions depuis votre variable
         # attention ce n'est pas une 'list' c'est un 'set'
         lAct = list(self.__chromosome.actions)
-        super().__init__(lCap,lAct)
+        super().__init__(lCap, lAct)
         # choisir la variable pour energie
         self.__energy = 100
         self.__cpt = 0
@@ -48,7 +67,7 @@ class Aspirateur_PG(Aspirateur):
     def energie(self): return self.__energy
     @energie.setter
     def energie(self,v):
-        assert isinstance(v,int), "int expected found {}".format(type(v))
+        assert isinstance(v, int), "int expected found {}".format(type(v))
         self.__energy = max(0, min(100, v)) # force la valeur entre 0 et 100
         if self.__energy == 0:
             self.vivant = False
@@ -57,13 +76,13 @@ class Aspirateur_PG(Aspirateur):
     @property
     def vivant(self): return self.__vivant
     @vivant.setter
-    def vivant(self,v):
-        if isinstance(v,bool): self.__vivant = v
+    def vivant(self, v):
+        if isinstance(v, bool): self.__vivant = v
 
     @property
     def cpt(self): return self.__cpt
     @cpt.setter
-    def cpt(self,v):
+    def cpt(self, v):
         assert isinstance(v,int)
         self.__cpt = min(0, max(self.__cpt, len(program))) # attention cpt est contraint entre 0 et le nombre de genes
         
@@ -72,7 +91,6 @@ class Aspirateur_PG(Aspirateur):
 
     def getEvaluation(self):
         """ renvoie l'évaluation de l'agent """
-
         score = (self.nettoyage / self.dirty) * 10
         
         #Borjan
@@ -90,8 +108,9 @@ class Aspirateur_PG(Aspirateur):
         # else: score += self.energie / 100
         return score
 
-    def getDecision(self,percepts):
+    def getDecision(self, percepts):
         """ deux cas à traiter suivant que percepts = [] ou pas """
+
         if percepts == []:
             # on utilise cpt pour savoir ce qu'il faut lire/récupérer
             return self.chromosome.decoder(self.chromosome[self.cpt*2:self.cpt*2+2])
@@ -103,7 +122,7 @@ class Aspirateur_PG(Aspirateur):
 
 
 class Monde_AG(Monde):
-    def __init__(self,agent,nbLignes=1,nbColonnes=2):
+    def __init__(self, agent, nbLignes = 1, nbColonnes = 2):
         # On regarde si l'agent à une variable energie
         assert hasattr(agent,'energie'), "attribut 'energie' is required"
         super().__init__(agent,nbLignes,nbColonnes)
@@ -113,13 +132,14 @@ class Monde_AG(Monde):
     
     def initialisation(self):
         super().initialisation()
-        # ajouter à l'agent un compteur de pièces nettoyées, initalisé à 0
         self.agent.nettoyage = 0
         self.agent.repos = 0
         # ajouter à l'agent le nombre de pièces sales au départ
         #3 methodes:
         self.agent.dirty = sum(self.table, []).count(1)
+        #Borjan
         # self.agent.dirty = functools.reduce(lambda x, y: x+y, self.table).count(1)
+        #Charlotte
         # self.agent.dirty = [x for sousliste in self.table for x in sousliste].count(1)
 
         # On regarde si l'agent a une commande reset
@@ -127,7 +147,7 @@ class Monde_AG(Monde):
             self.agent.reset()
 
  
-  def getPerception(self,capteurs):
+  def getPerception(self, capteurs):
         """ informe l'agent en fonction des capteurs """
         # code similaire à celui de World
         delta = [(-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0)]
