@@ -13,6 +13,7 @@ from data.briques import Rule, KB
 import copy
 from random import choice, random
 # import collections
+objetsStatiques[-1] = ('erreur','?')
 
 class Aspirateur_KB(Aspirateur):
     """ 4 paramètres

@@ -10,7 +10,7 @@ __author__ = "Terral, Rodriguez, Geshkovski"
 __date__ = "25.02.16"
 __version__ = "0.6"
 
-objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':'), -1: ('erreur','?')}
+objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':')}
 
   # ------------ #    
   #     MONDE    # -------------------------------------------------------------------#
@@ -162,7 +162,7 @@ class Monde(object):
     self.initialisation()
     while self.agent.vivant and n > 0:
       # print(self.table)
-      print(self.historique)
+      # print(self.historique)
       self.step()
       n-=1
     return self.perfGlobale 
