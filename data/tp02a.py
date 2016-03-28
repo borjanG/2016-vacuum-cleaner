@@ -135,23 +135,16 @@ class Monde_AG(Monde):
         # self.agent.dirty = [x for sousliste in self.table for x in sousliste].count(1)
 
         self._posAgent = (randrange(self.__lignes), randrange(self.__cols))
-         #Borjan -> to do.
-        
-
-
-            
-            
-
         #Charlotte
-        # _ = list(set(objetsStatiques.keys()).intersection(range(100))).remove(2)
-        # self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
-        # if self.__cols > 3:
-        #     liste = [(i,j) for i in range(self.__lignes) for j in range(self.__cols)]
-        #     for i in range(3):
-        #         elem = random.choice(liste)
-        #         l,c = elem
-        #         self._table[l][c] = 2
-        #         liste.remove(elem)
+        _ = list(set(objetsStatiques.keys()).intersection(range(100))).remove(2)
+        self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+        if self.__cols > 3:
+            liste = [(i,j) for i in range(self.__lignes) for j in range(self.__cols)]
+            for i in range(3):
+                elem = random.choice(liste)
+                l,c = elem
+                self._table[l][c] = 2
+                liste.remove(elem)
         self.__historique = [] 
         if hasattr(self.agent,'reset') and callable(self.agent.reset):
             self.agent.reset()

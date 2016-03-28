@@ -8,7 +8,7 @@ Un chromosome pour aspi avec capteurs sera basé sur GeneratePercept
 """
 
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
-__version__ = "0.2"
+__version__ = "0.3"
 __date__ = "15.03.16"
 __usage__ = "Utilisation de l'algo génétique"
 
@@ -16,46 +16,8 @@ __usage__ = "Utilisation de l'algo génétique"
 from XXXX import objetsStatiques, Aspirateur_PG, MondeSimulation
 from XXXX import Simulateur
 from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
+from tools_tp02 import generateEnvts
 import agslib
-
-"""
-# comment marche le simulateur
-# le nombre d'itérations, le fichier, les capteurs, la panne
-# la méthode run prend en paramètre un ProgramGenetic
-# un ProgamGenetic a besoin
-# taille gène, nb Gènes, alphabet, un dictionnaire
-# un GeneratePercept prend des capteurs non vide et un dictionnaire
-
-# On crée un simulateur pour aspi sans capteur
-# On crée deux simulateur pour aspi avec 2 capteurs 
-# On crée un simulateur pour aspi avec 3 capteurs 
-
-sim1 = Simulateur(25,"tyty.txt",[])
-sim2 = Simulateur(25,"tyty.txt",[2,8])
-sim3 = Simulateur(25,"tyty.txt",[6,8])
-sim4 = Simulateur(25,"tyty.txt",[6,2,8])
-
-g2 = GeneratePercept([2,8],objetsStatiques)
-g3 = GeneratePercept([6,8],objetsStatiques)
-g4 = GeneratePercept([6,2,8],objetsStatiques)
-prog1 = ProgramGenetic(2,20,"01",mmcBinaire)
-prog2 = ProgramGenetic(1,20,"ARGD",mmcUnaire)
-prog3 = ProgramGenetic(2,g2.howMany,"01",mmcBinaire)
-prog4 = ProgramGenetic(1,g3.howMany,"AGDR",mmcUnaire)
-prog5 = ProgramGenetic(2,g4.howMany,"01",mmcBinaire)
-print(1,sim1.panne,sim1.run(prog1))
-sim1.panne = True
-print(2,sim1.panne,sim1.run(prog2))
-print(3,sim2.panne,sim2.run(prog3))
-print(4,sim3.panne,sim3.run(prog3))
-sim3.panne = True
-print(5,sim3.panne,sim3.run(prog4,g3))
-
-pannes = (False,True)
-for sim4.panne in pannes: print(sim4.panne,sim4.run(prog5,g4))
-"""
-
-# Tentative d'héritage
 
 class PopAspi(agslib.Population):
     """ création de l'aspect généique avec accès au simulateur pour faire l'évaluation """
@@ -79,13 +41,56 @@ class PopAspi(agslib.Population):
         self.prog.program = chaine
         return max(.1,self.simulator.run( self.prog, self.gp )) # garantit des scores positifs
 
-p = PopAspi(25,'tyty.txt',[2,6,8],objetsStatiques,30,2,'01',mmcBinaire,True)
-p.run(50,"tyty_AG_01.txt",1)
-p.plotHistory(p.select(2)+'_genes_'+'01'+'_withPanne')
-p.run(50,"tyty_AG_01_b.txt")
-p.plotHistory(p.select(1)+'_genes_'+'01'+'_withPanne')
-p = PopAspi(25,'tyty.txt',[2,6,8],objetsStatiques,30,1,'AGDR',mmcUnaire,False)
-p.run(50,"tyty_AG_AGDR.txt",1)
-p.plotHistory(p.select(2)+'_genes_'+'AGDR'+'_noPanne')
-p.run(50,"tyty_AG_AGDR_b.txt",1)
-p.plotHistory(p.select(1)+'_genes_'+'AGDR'+'_noPanne')
+
+def main(fichier):
+    """ utilise fichier ou genere fichier 
+
+    On va évaluer un aspirateur effectuant 10 actions dans différents envts
+    On va mettre en compétition 50 aspirateurs du meme type
+    p = PopAspi(10,...,50,...)
+
+    L'algorithme génétique fait 25 itérations
+    p.run(25,...)
+
+    select(0) = _selectWheel
+    select(1) = _selectFraction
+    select(2) = _selectRank
+    """
+    import os
+    if fichier in os.listdir():
+        print("{} existe".format(fichier))
+        _rep = "oO0Yy"
+        _you = input("voulez vous utiliser ce fichier "+_rep+" ? ")
+        if _you not in _rep :
+            print("génération d'environnements de tests")
+            generateEnvts(fichier)
+    else:
+        print("génération d'environnements de tests")
+        generateEnvts(fichier)
+
+        
+    _base = fichier.split('.')[0]
+    p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,2,'01',
+                mmcBinaire,True)
+    _oname = _base+"_AG_01.txt"
+    p.run(25,_oname,0)
+    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    p.plotHistory(_base+p.select(0)+'_genes_'+'01'+'_withPanne')
+    _oname = _base+"_AG_01_b.txt"
+    p.run(25,_oname,1)
+    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    p.plotHistory(_base+p.select(1)+'_genes_'+'01'+'_withPanne')
+    p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,1,'AGDR',
+                mmcUnaire,False)
+    _oname = _base+"_AG_AGDR.txt"
+    p.run(25,_oname,0)
+    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    p.plotHistory(_base+p.select(0)+'_genes_'+'AGDR'+'_noPanne')
+    _oname = _base+"_AG_AGDR_b.txt"
+    p.run(25,_oname,1)
+    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    p.plotHistory(_base+p.select(1)+'_genes_'+'AGDR'+'_noPanne')
+
+if __name__ == "__main__" :
+    main('tyty2.txt')
+

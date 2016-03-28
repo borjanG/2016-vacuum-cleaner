@@ -8,20 +8,19 @@ Complétez les informations en fonction des directives de la fiche
 
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __version__ = "0.1"
-
 __date__ = "14.03.16"
 __usage__ = "Le simulateur"
 
 # remplacer XXX par le fichier du TP02-A
-from tp02a import objetsStatiques, Aspirateur_PG, Monde
+#from XXX import objetsStatiques, Aspirateur_PG, Monde
 #from corrige_tp02a import objetsStatiques, Aspirateur_PG, Monde
 from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
 from tools_tp02 import readerEnvts
 import copy, random
 
 # On ajoute dans objetsStatiques 2, 3 et 4 et -1
-objetsStatiques[3] = ('jouets aspirables', 'j')
-objetsStatiques[4] = ('jouets deplacables', 'J')
+objetsStatiques[2] = ...
+...
 
 class MondeSimulation(Monde):
     def __init__(self,agent,nbLignes=1,nbColonnes=2):

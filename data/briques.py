@@ -4,7 +4,7 @@
 __author__ = "mmc <marc-michel dot corsini at u-bordeaux dot fr>"
 __usage__ = "briques de base pour la réalisation aspi autonome"
 __date__ = "05.02.16"
-__version__ = "0.4"
+__version__ = "0.5"
 
 #------------ import -------------
 import random
@@ -209,7 +209,7 @@ class ProgramGenetic(object):
         Usage:
         >>> x = ProgramGenetic(2,8,"0 1".split(),mmcBinaire)
         >>> x.program
-        '0000010000000111'
+        '0100111111010110'
         >>> x[2]
         '11'
         >>> x[-1]
@@ -235,7 +235,7 @@ class ProgramGenetic(object):
     def __init__(self, szGene, nbGenes, alphabet, dicode):
         assert isinstance(szGene,int)
         assert isinstance(nbGenes,int)
-        assert isinstance(alphabet,(list,tuple))
+        assert isinstance(alphabet,(list,tuple,str))
         assert all([len(x)==1 for x in alphabet])
         assert isinstance(dicode,dict)
 
@@ -244,7 +244,8 @@ class ProgramGenetic(object):
         self.__szC = szGene * nbGenes # taille d'un chromosome
         self.__alf = alphabet
         assert all([len(k)==szGene for k in dicode])
-        assert all([all([x in alphabet for x in k]) for k in dicode])
+        assert all([all([x in alphabet for x in k]) for k in dicode]),\
+          "alph {} dico {}".format(alphabet,dicode.keys())
         self.__code = dicode
         self.__pgm = ''.join([random.choice(self.__alf)
                               for _ in range(self.__szC)])
@@ -290,14 +291,14 @@ class GeneratePercept(object):
        - seules les clefs 0..99 sont considérées
        - pour les capteurs autre que 8, la clef -1 est rajoutée
 
-       ATTENTION: Aucun controle quand on mésusage de cette classe
+       ATTENTION: Aucun controle quant au mésusage de cette classe
     """
     __slots__ = ("lCap","dObj","values")
     def __init__(self,lCapteurs,dicObjets):
         if lCapteurs == []:
             raise ValueError("{} cant work with capteurs: {}"
                              .format(self.__class__.__name__,lCapteurs))
-        print("création d'un {}".format(self.__class__.__name__))
+        print("création d'un {} pour {} taille envt {}".format(self.__class__.__name__,lCapteurs,len(dicObjets)))
         self.lCap = lCapteurs
         self.dObj = dicObjets
         self.values = None
@@ -368,8 +369,14 @@ if __name__ == "__main__" :
     x = ProgramGenetic(2,8,"0 1".split(),mmcBinaire)
     print("x.program",x.program)
     print("x[3]=",x[3])
+    x = ProgramGenetic(2,8,"01",mmcBinaire)
+    print("x.program",x.program)
+    print("x[3]=",x[3])
 
     y = ProgramGenetic(1,8,"A G D R".split(),mmcUnaire)
+    print("y.program",y.program)
+    print("y[3]=",y[3])
+    y = ProgramGenetic(1,8,"AGDR",mmcUnaire)
     print("y.program",y.program)
     print("y[3]=",y[3])
         
@@ -390,3 +397,8 @@ if __name__ == "__main__" :
     print("{}% de cas avec bords {}/{}"
           .format(100*cpt/mmc.howMany,cpt,mmc.howMany))
 
+
+    try:
+        mmc = GeneratePercept([],dicoT)
+    except Exception as _e:
+        print(_e)
