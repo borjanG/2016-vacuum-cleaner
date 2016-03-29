@@ -7,7 +7,7 @@ __date__ = "22.03.16"
 __version__ = "0.1"
 
 from data.monde import objetsStatiques, Aspirateur, Monde
-from briques import ProgramGenetic, GeneratePercept
+from data.briques import ProgramGenetic, GeneratePercept
 import copy, random
 
 plagiatUnaire = {'A': "Aspirer", 'D': "Droite", 'G': "Gauche", 'R': "Repos"}
@@ -56,6 +56,9 @@ class Aspirateur_PG(Aspirateur):
         self.cpt = 0
         self.repos = 0
         
+    # A verifier avec mmc
+    @property 
+    def stock(self): return self.__stock
     @property
     def energie(self): return self.__energy
     @energie.setter
@@ -80,7 +83,7 @@ class Aspirateur_PG(Aspirateur):
         
     @property
     def nbTours(self): 
-    """ renvoie le nombre d'itérations pendant lesquelles aspi est vivant """
+        """ renvoie le nombre d'itérations pendant lesquelles aspi est vivant """
         return self.__cptalive
 
     @property
@@ -93,7 +96,9 @@ class Aspirateur_PG(Aspirateur):
         #Borjan
         index = int(self.energie / 25)
         link = [1/2 * self.energie / 100, 2/3 * self.energie / 100, 3/4 * self.energie / 100, self.energie / 100]
-        score -= 100 if not self.vivant else score += link[index]
+        if not self.vivant: score -= 100
+        else: score += link[index]
+        # score -= 100 if not self.vivant else score += link[index]
         return score
 
         #Mmc
@@ -109,8 +114,8 @@ class Aspirateur_PG(Aspirateur):
         """ deux cas à traiter suivant que percepts = [] ou pas """
 
         if percepts == []:
-            return self.chromosome.decoder(self.chromosome[self.cpt])
-        return self.chromosome[self.__stock.find(percepts)]
+            return self.program.decoder(self.program[self.cpt])
+        return self.program[self.__stock.find(percepts)]
 
 
 class Monde_AG(Monde):
@@ -150,20 +155,20 @@ class Monde_AG(Monde):
             self.agent.reset()
 
  
-  def getPerception(self, capteurs):
+    def getPerception(self, capteurs):
         """ informe l'agent en fonction des capteurs """
         delta = [(-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0)]
         res = []
         for x in capteurs:
             nx = self.posAgent[0] + delta[x][0]
             ny = self.posAgent[1] + delta[x][1]
-            if self.__lignes > nx >= 0 and self.__cols > ny >= 0: 
+            if self.__lignes > nx >= 0 and self.__cols > ny >= 0:  
                 res.append(self.table[nx][ny])
             else: 
                 res.append(-1)
         return res
 
-   def applyChoix(self,choix):
+    def applyChoix(self,choix):
         """ 
             modifie table & posAgent en fonction de choix 
             modifie l'energie de l'aspirateur
@@ -173,11 +178,11 @@ class Monde_AG(Monde):
         score = 0
         energedic = dict()          #Ha ha ha
 
-        if len(self.capteurs) == 0: energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': 3}
-        else: energedic = {'Aspirer' : 5, 'Gauche' : 1, 'Droite': 1, 'Repos': (0, 20)}
+        if len(self.agent.capteurs) == 0: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': 3}
+        else: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (0, 20)}
 
         #Borjan (mode Schlickienne)
-        self.agent.energie -= energedic[choix] if choix != 'Repos' else energedic[choix][1 if self._table[dx][dy] == 2 else 0] 
+        self.agent.energie += energedic[choix] if choix != 'Repos' else energedic[choix][1 if self._table[dx][dy] == 2 else 0] 
         #Charlotte
         # if choix != 'Repos': self.agent.energie = energedic[choix]
         # else:
