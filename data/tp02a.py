@@ -21,15 +21,15 @@ class Aspirateur_PG(Aspirateur):
         lCap: valeur par défaut []
     """
     def __init__(self, prog = None, gp = None, lCap = []):
-        assert isinstance(lCap, list), "I'm blind!"
-        assert lCap in {[6,8], [8,2], [6,8,2]}, "I'm hallucinating!"
-        assert len(set(lCap)) == len(lCap), "I'm astygmatic!"
+        # assert isinstance(lCap, list), "I'm blind!"
+        # assert lCap in {[6,8], [8,2], [6,8,2]}, "I'm hallucinating!"
+        # assert len(set(lCap)) == len(lCap), "I'm astygmatic!"
 
         if gp is not None: self.__stock = gp
         elif lCap == []: self.__stock = None
         else: self.__stock = GeneratePercept(lCap, objetsStatiques)
         if prog is None:
-            if lcap == []: self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), plagiatUnaire)
+            if lCap == []: self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), plagiatUnaire)
             else:
                 decode = dict()
                 for p in range(self.__stock.howMany):
@@ -55,6 +55,7 @@ class Aspirateur_PG(Aspirateur):
         self.vivant = True
         self.cpt = 0
         self.repos = 0
+        self.energie=100
         
     # A verifier avec mmc
     @property 
@@ -79,7 +80,8 @@ class Aspirateur_PG(Aspirateur):
     @cpt.setter
     def cpt(self, v):
         assert isinstance(v,int)
-        self.__cpt = min(0, max(self.__cpt, len(program))) # attention cpt est contraint entre 0 et le nombre de genes
+        self.__cpt=v % len(self.program)
+        # self.__cpt = min(0, max(v, len(self.program))) # attention cpt est contraint entre 0 et le nombre de genes
         
     @property
     def nbTours(self): 
@@ -132,17 +134,19 @@ class Monde_AG(Monde):
         self.agent.nettoyage = 0
         self.agent.repos = 0
 
-        self.agent.dirty = sum(self.table, []).count(1)
         #Commentaires inutiles
         #Borjan
         # self.agent.dirty = functools.reduce(lambda x, y: x+y, self.table).count(1)
         #Charlotte
         # self.agent.dirty = [x for sousliste in self.table for x in sousliste].count(1)
 
-        self._posAgent = (randrange(self.__lignes), randrange(self.__cols))
+        self._posAgent = (random.randrange(self.__lignes), random.randrange(self.__cols))
         #Charlotte
-        _ = list(set(objetsStatiques.keys()).intersection(range(100))).remove(2)
-        self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+        _ = list(set(objetsStatiques.keys()).intersection(range(100)))
+        _.remove(2)
+        self._table = [[random.choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
+
+        self.agent.dirty = sum(self.table, []).count(1)
         if self.__cols > 3:
             liste = [(i,j) for i in range(self.__lignes) for j in range(self.__cols)]
             for i in range(3):
@@ -150,7 +154,7 @@ class Monde_AG(Monde):
                 l,c = elem
                 self._table[l][c] = 2
                 liste.remove(elem)
-        self.__historique = [] 
+        self.__historique = []
         if hasattr(self.agent,'reset') and callable(self.agent.reset):
             self.agent.reset()
 
@@ -206,7 +210,7 @@ class Monde_AG(Monde):
                 score = 1
             else: score = -1
         else:
-            if len(self.capteurs) == 0:
+            if len(self.agent.capteurs) == 0:
                 score = 0
             else:
                 if self._table[dx][dy] == 2:
@@ -217,7 +221,7 @@ class Monde_AG(Monde):
 
         i, j = self.posAgent
         self._passage[i][j] += 1 
-        self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.chromosome)
+        if self.agent.capteurs==[]:self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
 
         if self.agent.vivant:
             self.agent.__cptalive += 1 

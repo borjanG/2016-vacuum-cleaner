@@ -29,7 +29,7 @@ class Monde(object):
     self._posAgent = (0,0)
     self.__historique = list()
     self.__perfGlobale = 0.
-    self.initialisation()
+    # self.initialisation()
 
   @property
   def table(self): return deepcopy(self._table)

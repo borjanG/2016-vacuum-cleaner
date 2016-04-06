@@ -11,10 +11,11 @@ __version__ = "0.5"
 import copy
 import random
 ## remplacer XXX par le nom de votre fichier à tester
+#import XXX as tp02a
 import data.tp02a as tp02a
-#import corrige_tp02a as tp02a
+# import corrige_tp02a as tp02a
 from data.briques import mmcBinaire, mmcUnaire, ProgramGenetic, GeneratePercept
-from test_tp01 import test_getPerception
+from test_tp01 import test_getPerception, hide_objets
 #----------------------------------------------------
 
 # NE RIEN MODIFIER A PARTIR D'ICI
@@ -67,7 +68,7 @@ def subtest_readonly(obj,lattr):
     return _s
 
 #---------- tools ------------------------------------------------
-def get_info_from_history(h):
+def get_info_frm_history(h):
     """ 
         renvoie le nombre de pieces nettoyees 
     """
@@ -78,6 +79,11 @@ def get_info_from_history(h):
             _pieces_nettoyees += 1
     return _pieces_nettoyees
 
+def get_sales_frm_history(h):
+    """ pièces sales dans la première ligne """
+    ((t,_),_) = h[0]
+    return t[0].count(1)
+    
 def get_action_frm_history(h,action="Repos"):
     """ 
         renvoie le nombre d'actions d'un certain type
@@ -238,6 +244,7 @@ def test_reset():
     for k in (5,7,13):
 
         mmc.world.simulation(k)
+        print(_out,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 
         _out += check_property(mmc.aspi.vivant,"vivant is wrong")
         _out += check_property(mmc.aspi.cpt == k % len(mmc.aspi.program),
@@ -246,6 +253,7 @@ def test_reset():
         _out += check_property(0 < mmc.aspi.energie <= 100, "energie is wrong")
         
         mmc.aspi.reset()
+
     return _out
 
 def test_nbTours():
@@ -364,15 +372,43 @@ def test_program():
 
 def test_getEvaluation():
     """ nettoyees / sales * 10 + alpha energie / 100 """
+    def almost(a): return round(float(a),4)
+    from fractions import Fraction
     def rateEnergy(x):
         """ renvoie le coefficient associé au niveau d'énergie """
-        from fractions import Fraction
+
         alfa = { (0,25): "1/2", (25,50): "2/3", (50,75): "3/4", (75,101): "1" }
         for a,b in alfa:
-            if a <= x < b: return Fraction(alfa[x,y])
+            if a <= x < b: return Fraction(alfa[a,b])
             continue
         raise ValueError("{} not in range 0..100".format(x))
+
     _out = ''
+    for col in (2,3,5,7,11,13,17,19):
+        hide_objets(False)
+        mmc = MyEnv(nbc=col)
+        # energie est à 100
+        _out += check_property( mmc.aspi.energie == 100,
+                                "{} should be 100".format(mmc.aspi.energie),"e")
+        # on lance la simulation
+        mmc.simulation(10)
+        # on récupère le score calculé
+        _ev = mmc.aspi.getEvaluation()
+        # on controle le résultat
+        _e = mmc.aspi.energie
+        energy = rateEnergy(_e) * Fraction(_e,100)
+        cleaned = get_info_frm_history( mmc.world.historique )
+        dirty =  get_sales_frm_history( mmc.world.historique )
+        # pour voir le calcul effectif
+        #print("{}/{} * 10 + {} = {}".format(cleaned,dirty,energy,_ev))
+        if dirty == 0 :
+            _score = energy
+        else:
+            _score = Fraction(cleaned*10,dirty) + energy
+
+        _out += check_property( almost(_ev) == almost(_score),
+                                    "found {} expected {}".format(_ev,_score))
+
     return _out
 
 def test_getDecision():
@@ -527,7 +563,7 @@ if __name__ == "__main__" :
         'test_applyChoix': 0,
         'test_initialisation': 3,
         'test_getDecision': 0,
-        'test_getEvaluation': 0,
+        'test_getEvaluation': 16,
         'test_program': 126,
         'test_vivant': 10,
         'test_cpt': 7,
