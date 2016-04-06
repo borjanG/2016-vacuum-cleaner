@@ -242,10 +242,7 @@ def test_reset():
     # Un nouvel environnement, une simulation de taille 5
     mmc = MyEnv(nbc=7)
     for k in (5,7,13):
-
         mmc.world.simulation(k)
-        print(_out,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
-
         _out += check_property(mmc.aspi.vivant,"vivant is wrong")
         _out += check_property(mmc.aspi.cpt == k % len(mmc.aspi.program),
                                "cpt is wrong")
@@ -253,7 +250,6 @@ def test_reset():
         _out += check_property(0 < mmc.aspi.energie <= 100, "energie is wrong")
         
         mmc.aspi.reset()
-
     return _out
 
 def test_nbTours():
@@ -262,7 +258,9 @@ def test_nbTours():
     for col in (3,7,11,13):
         mmc = MyEnv(nbc = col)
         for nb in (5,7,11,13,17):
+            print("here", nb, col)
             mmc.world.simulation(nb)
+            print("here again")
             szh = len(mmc.world.historique)
             _out += check_property(mmc.aspi.nbTours == szh,
                                    "nbTours expected {} got {}"

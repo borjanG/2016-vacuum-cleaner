@@ -160,30 +160,16 @@ class Monde(object):
     """ Execution de n etats et evolue le monde """
 
     self.initialisation()
-    while self.agent.vivant and n > 0:
-      # print(self.table)
-      # print(self.historique)
+    i = 0
+    while i < n and self.agent.vivant :
       self.step()
-      n-=1
+      i+= 1
     return self.perfGlobale 
 
   def initialisation(self):
     """ Initialisation du monde """
+    
     self._posAgent = (randrange(self.__lignes), randrange(self.__cols))
-
-    #Charlotte
-    # l=list(objetsStatiques.keys())
-    # if 100 in l:l.remove(100)
-    # t=len(l)
-    # self._table = [[l[randrange(t)] for j in range(self.__cols)]
-    #                 for i in range(self.__lignes)]
-
-    #mmc
-    # _ = [ k for k in objetsStatiques.keys() if 0 <= k < 100 ]
-    # self._table = [ [ choice( _ ) for j in range(self.__cols) ]
-                        # for i in range(self.__lignes) ]
-
-    #Borjan
     _ = list(set(objetsStatiques.keys()).intersection(range(100)))
     self._table = [[choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
     self.__historique = [] 

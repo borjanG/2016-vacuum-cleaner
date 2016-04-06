@@ -55,9 +55,9 @@ class Aspirateur_PG(Aspirateur):
         self.vivant = True
         self.cpt = 0
         self.repos = 0
-        self.energie=100
+        self.energie = 100
+        self.__cptalive = 0
         
-    # A verifier avec mmc
     @property 
     def stock(self): return self.__stock
     @property
@@ -80,8 +80,7 @@ class Aspirateur_PG(Aspirateur):
     @cpt.setter
     def cpt(self, v):
         assert isinstance(v,int)
-        self.__cpt=v % len(self.program)
-        # self.__cpt = min(0, max(v, len(self.program))) # attention cpt est contraint entre 0 et le nombre de genes
+        self.__cpt = v % len(self.program)
         
     @property
     def nbTours(self): 
@@ -93,55 +92,37 @@ class Aspirateur_PG(Aspirateur):
 
     def getEvaluation(self):
         """ renvoie l'évaluation de l'agent """
-        score = (self.nettoyage / self.dirty) * 10
-        
-        #Borjan
+
+        score = (self.nettoyage / self.dirty) * 10 if self.dirty != 0 else self.nettoyage * 10
         index = int(self.energie / 25)
         link = [1/2 * self.energie / 100, 2/3 * self.energie / 100, 3/4 * self.energie / 100, self.energie / 100]
         if not self.vivant: score -= 100
         else: score += link[index]
-        # score -= 100 if not self.vivant else score += link[index]
         return score
-
-        #Mmc
-        # if not self.vivant:
-        #     score -= 100
-        # elif self.energie < 25 : score += 1/2 * self.energie / 100
-        # elif self.energie < 50 : score += 2/3 * self.energie / 100
-        # elif self.energie < 75 : score += 3/4 * self.energie / 100
-        # else: score += self.energie / 100
-        # return score
 
     def getDecision(self, percepts):
         """ deux cas à traiter suivant que percepts = [] ou pas """
 
+        if self.vivant:
+            self.__cptalive += 1 
         if percepts == []:
-            return self.program.decoder(self.program[self.cpt])
+            return self.program.decoder(self.cpt)
         return self.program[self.__stock.find(percepts)]
-
 
 class Monde_AG(Monde):
     def __init__(self, agent, nbLignes = 1, nbColonnes = 2):
         assert hasattr(agent,'energie'), "attribut 'energie' is required"
-        # assert nbColonnes in range(16), "too big of a world!"
         super().__init__(agent,nbLignes,nbColonnes)
         self.__lignes = nbLignes
         self.__cols = nbColonnes
-        self.optimumTheorique = 0
+        self.optimumTheorique = 10
 
     def initialisation(self):
         super().initialisation()
         self.agent.nettoyage = 0
         self.agent.repos = 0
 
-        #Commentaires inutiles
-        #Borjan
-        # self.agent.dirty = functools.reduce(lambda x, y: x+y, self.table).count(1)
-        #Charlotte
-        # self.agent.dirty = [x for sousliste in self.table for x in sousliste].count(1)
-
         self._posAgent = (random.randrange(self.__lignes), random.randrange(self.__cols))
-        #Charlotte
         _ = list(set(objetsStatiques.keys()).intersection(range(100)))
         _.remove(2)
         self._table = [[random.choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
@@ -157,7 +138,6 @@ class Monde_AG(Monde):
         self.__historique = []
         if hasattr(self.agent,'reset') and callable(self.agent.reset):
             self.agent.reset()
-
  
     def getPerception(self, capteurs):
         """ informe l'agent en fonction des capteurs """
@@ -177,22 +157,15 @@ class Monde_AG(Monde):
             modifie table & posAgent en fonction de choix 
             modifie l'energie de l'aspirateur
         """
+
         dx = self.posAgent[0]
         dy = self.posAgent[1]
         score = 0
         energedic = dict()          #Ha ha ha
-
-        if len(self.agent.capteurs) == 0: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': 3}
+        if len(self.agent.capteurs) == 0: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (3, 3)}
         else: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (0, 20)}
-
-        #Borjan (mode Schlickienne)
         self.agent.energie += energedic[choix] if choix != 'Repos' else energedic[choix][1 if self._table[dx][dy] == 2 else 0] 
-        #Charlotte
-        # if choix != 'Repos': self.agent.energie = energedic[choix]
-        # else:
-        #     idx = 1 if self._table[dx][dy] == 2 else 0
-        #     self.agent.energie -= energedic[choix][idx]
-
+    
         if choix == 'Aspirer':
             if self.table[dx][dy] == 1:
                 self._table[dx][dy] = 0
@@ -220,13 +193,10 @@ class Monde_AG(Monde):
             self.agent.repos += 1
 
         i, j = self.posAgent
-        self._passage[i][j] += 1 
-        if self.agent.capteurs==[]:self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
-
-        if self.agent.vivant:
-            self.agent.__cptalive += 1 
+        if self.agent.capteurs == []: 
+            self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
         return score
 
     @property
     def perfGlobale(self):
-        return agent.getEvaluation()/self.optimumTheorique - self.agent.repos + self.__lignes*self.__cols
+        return self.agent.getEvaluation()/self.optimumTheorique - self.agent.repos + self.__lignes*self.__cols
