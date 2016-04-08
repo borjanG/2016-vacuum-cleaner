@@ -11,8 +11,14 @@ from data.briques import ProgramGenetic, GeneratePercept
 import copy, random
 
 plagiatUnaire = {'A': "Aspirer", 'D': "Droite", 'G': "Gauche", 'R': "Repos"}
-objetsStatiques[-1] = ("erreur", "?")
-objetsStatiques[2] = ("station", '$')
+# objetsStatiques[-1] = ("erreur", "?")
+# objetsStatiques[2] = ("station", '$')
+objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':'),
+-1:("erreur", "?"),2:("station", '$')}
+objetsStatiques_pasCapteurs={100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':'),
+-1:("erreur", "?")}
+
+#cd pdf tp02a : aspi sans capteur : pas de prise?
 
 class Aspirateur_PG(Aspirateur):
     """
@@ -31,11 +37,13 @@ class Aspirateur_PG(Aspirateur):
         if prog is None:
             if lCap == []: self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), plagiatUnaire)
             else:
-                decode = dict()
-                for p in range(self.__stock.howMany):
-                    _ = random.choice("A G D R".split())
-                    decode[_] = plagiatUnaire[_]
-                self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), decode) 
+                # decode = dict()
+                # for p in range(self.__stock.howMany):
+                #     _ = random.choice("A G D R".split())
+                #     decode[_] = plagiatUnaire[_]
+                # self.__chromosome = ProgramGenetic(1, 8, "A G D R".split(), decode) 
+
+                self.__chromosome = ProgramGenetic(1, self.__stock.howMany, "A G D R".split(), plagiatUnaire) 
         elif isinstance(prog, ProgramGenetic):
             if lCap != []:
                 assert (len(prog) == self.__stock.howMany), "pas compatible"
@@ -47,7 +55,7 @@ class Aspirateur_PG(Aspirateur):
         super().__init__(lCap, lAct)
         self.__energy = 100
         self.__cpt = 0
-        self.__cptalive = 0
+        # self.__cptalive = 0 #inutile car on appelle reset
         self.reset()
 
     def reset(self):
@@ -80,7 +88,7 @@ class Aspirateur_PG(Aspirateur):
     @cpt.setter
     def cpt(self, v):
         assert isinstance(v,int)
-        self.__cpt = v % len(self.program)
+        self.__cpt = min(max(0,v % len(self.program)),len(self.program)-1)
         
     @property
     def nbTours(self): 
@@ -93,21 +101,34 @@ class Aspirateur_PG(Aspirateur):
     def getEvaluation(self):
         """ renvoie l'évaluation de l'agent """
 
-        score = (self.nettoyage / self.dirty) * 10 if self.dirty != 0 else self.nettoyage * 10
+        # score = (self.nettoyage / self.dirty) * 10 if self.dirty != 0 else self.nettoyage * 10
+        
+        score = (self.nettoyage / self.dirty) * 10 if self.dirty != 0 else 0
         index = int(self.energie / 25)
+        index=min(index,3) ###########
         link = [1/2 * self.energie / 100, 2/3 * self.energie / 100, 3/4 * self.energie / 100, self.energie / 100]
         if not self.vivant: score -= 100
         else: score += link[index]
         return score
 
+        # score = (self.nettoyage / self.dirty) * 10 if self.dirty != 0 else 0
+        # if not self.vivant:
+        #     score -= 100;ener=-100
+        # elif self.energie < 25 : score += 1/2 * self.energie / 100;ener=1/2 * self.energie / 100
+        # elif self.energie < 50 : score += 2/3 * self.energie / 100;ener=2/3 * self.energie / 100
+        # elif self.energie < 75 : score += 3/4 * self.energie / 100;ener=3/4 * self.energie / 100
+        # else: score += self.energie / 100;ener=self.energie / 100
+        # return score
+
     def getDecision(self, percepts):
         """ deux cas à traiter suivant que percepts = [] ou pas """
 
-        if self.vivant:
+        if self.vivant:#pas vraiment besoin de tester au final, si?
             self.__cptalive += 1 
         if percepts == []:
             return self.program.decoder(self.cpt)
-        return self.program[self.__stock.find(percepts)]
+        #return self.program[self.__stock.find(percepts)]
+        return self.program.decoder(self.__stock.find(percepts))
 
 class Monde_AG(Monde):
     def __init__(self, agent, nbLignes = 1, nbColonnes = 2):
@@ -127,7 +148,6 @@ class Monde_AG(Monde):
         _.remove(2)
         self._table = [[random.choice(_) for j in range(self.__cols)] for i in range(self.__lignes)]
 
-        self.agent.dirty = sum(self.table, []).count(1)
         if self.__cols > 3:
             liste = [(i,j) for i in range(self.__lignes) for j in range(self.__cols)]
             for i in range(3):
@@ -135,7 +155,12 @@ class Monde_AG(Monde):
                 l,c = elem
                 self._table[l][c] = 2
                 liste.remove(elem)
-        self.__historique = []
+        
+        self.agent.dirty = sum(self.table, []).count(1)
+
+        self.__historique = [] #on ne peut pas le faire d ici. de tte facon deja fait dans initialisation
+        #de la classe mere
+
         if hasattr(self.agent,'reset') and callable(self.agent.reset):
             self.agent.reset()
  
@@ -162,7 +187,8 @@ class Monde_AG(Monde):
         dy = self.posAgent[1]
         score = 0
         energedic = dict()          #Ha ha ha
-        if len(self.agent.capteurs) == 0: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (3, 3)}
+        if len(self.agent.capteurs) == 0: 
+            energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (3, 3)}
         else: energedic = {'Aspirer' : -5, 'Gauche' : -1, 'Droite': -1, 'Repos': (0, 20)}
         self.agent.energie += energedic[choix] if choix != 'Repos' else energedic[choix][1 if self._table[dx][dy] == 2 else 0] 
     
@@ -194,7 +220,8 @@ class Monde_AG(Monde):
 
         i, j = self.posAgent
         if self.agent.capteurs == []: 
-            self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
+            self.agent.cpt +=1
+            # self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
         return score
 
     @property

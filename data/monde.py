@@ -165,7 +165,7 @@ class Monde(object):
       self.step()
       i+= 1
     return self.perfGlobale 
-
+    
   def initialisation(self):
     """ Initialisation du monde """
     

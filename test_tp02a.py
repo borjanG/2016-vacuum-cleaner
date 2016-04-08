@@ -258,9 +258,9 @@ def test_nbTours():
     for col in (3,7,11,13):
         mmc = MyEnv(nbc = col)
         for nb in (5,7,11,13,17):
-            print("here", nb, col)
+            # print("here", nb, col)
             mmc.world.simulation(nb)
-            print("here again")
+            # print("here again")
             szh = len(mmc.world.historique)
             _out += check_property(mmc.aspi.nbTours == szh,
                                    "nbTours expected {} got {}"
@@ -398,7 +398,7 @@ def test_getEvaluation():
         cleaned = get_info_frm_history( mmc.world.historique )
         dirty =  get_sales_frm_history( mmc.world.historique )
         # pour voir le calcul effectif
-        #print("{}/{} * 10 + {} = {}".format(cleaned,dirty,energy,_ev))
+        # print("{}/{} * 10 + {} = {}".format(cleaned,dirty,energy,_ev))
         if dirty == 0 :
             _score = energy
         else:
@@ -536,6 +536,7 @@ def main():
         except Exception as _e:
             print("failure: {}".format(meth))
             print(_e)
+            print('rahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
             _msg = 'X'
         if _msg == '': continue # pas de test effectué
         _s += _msg
