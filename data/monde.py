@@ -20,16 +20,16 @@ class Monde(object):
   """ Monde constructor """
   def __init__(self, a, l=1, c=2):
     assert isinstance(a, Aspirateur), "Il faut un Stochy en parametre, pas %s" % a.__class__
-    assert type(l) == int and type(c) == int, "Il faut des entiers pour dimensions"
+    # assert type(l) == int and type(c) == int, "Il faut des entiers pour dimensions"
     
-    self.__agent = a 
+    self.__agent = a
     self.__lignes = l
     self.__cols = c
     self._table = [[0 for j in range(c)] for i in range(l)]
     self._posAgent = (0,0)
     self.__historique = list()
     self.__perfGlobale = 0.
-    # self.initialisation()
+    self.initialisation()
 
   @property
   def table(self): return deepcopy(self._table)

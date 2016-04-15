@@ -488,7 +488,24 @@ class Population(object):
 
         return bestIndividu.genotype
         """
-        raise Exception("TODO: run")
+        i = 0
+        quand = 0
+        popAG = [ Individu(self.szChrom, self.alphabet, fitness) for _ in range(self.szPop)]
+        bestIndividu = max(popAG)
+        del self.history
+        while i < nbIterations and not isOver(popAG):
+            popAG = nextGeneration(popAG)
+            del self.history
+            if bestIndividu < max(popAG):
+                bestIndividu = max(popAG)
+                quand = i
+            i += 1
+        if isOver(popAG):
+            print('stabilisation iteration', i)
+        print('meilleur a iteration', quand, 'adequation', bestIndividu.adequation)
+        if fichier is not None: 
+            with open(fichier, 'w') as f: print(bestIndividu.genotype, file = f)
+        return bestIndividu.genotype
 
     def isOver(self):
         """
@@ -503,6 +520,17 @@ class Population(object):
         renvoie Vrai si le gène numGene a convergé
         faux sinon
         """
+		# pour chaque individu de la population:
+		# 	individu.genotype
+		# 	recupère premier gène
+		# 	stoque stocke dans une liste
+		# pour chaque allèle possible du gène:
+		# 	voir s'il est présent dans la liste avec un taux>delta
+			
+		# liste=list()
+		# for indiv in self.popAG:
+		# 	liste.append(indiv.genotype[numGene*szGenes:numGene*szGenes+szGenes+1])
+		# for 
         raise Exception("TODO: hasConverged")
 
     def _selectWheel(self,nbParents=None):
