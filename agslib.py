@@ -490,17 +490,33 @@ class Population(object):
         """
         i = 0
         quand = 0
-        popAG = [ Individu(self.szChrom, self.alphabet, fitness) for _ in range(self.szPop)]
-        bestIndividu = max(popAG)
+
+        # popAG = [ Individu(self.szChrom, self.alphabet, fitness) for _ in range(self.szPop)]
+        self.popAG = [ Individu(self.szChrom,self.alphabet,fitness)
+                         for _ in range(self.szPop) ]
+
+        # bestIndividu = max(popAG)
+        bestIndividu = max(self.popAG)
         del self.history
-        while i < nbIterations and not isOver(popAG):
-            popAG = nextGeneration(popAG)
-            del self.history
-            if bestIndividu < max(popAG):
-                bestIndividu = max(popAG)
+
+        # while i < nbIterations and not isOver(popAG):
+        while i < nbIterations and not self.isOver():
+
+            # popAG = nextGeneration(popAG)
+            self.nextGeneration()
+
+            del self.history #surement faux il ne faut pas l initialiser!!!!!!!!!!!!!!!!!!!!!!!!
+            #self.history[quand]=self.popAG ???
+
+            # if bestIndividu < max(popAG):
+                # bestIndividu = max(popAG)
+            if bestIndividu < max(self.popAG):
+                bestIndividu = max(self.popAG)
                 quand = i
             i += 1
-        if isOver(popAG):
+
+        # if isOver(popAG):
+        if self.isOver():
             print('stabilisation iteration', i)
         print('meilleur a iteration', quand, 'adequation', bestIndividu.adequation)
         if fichier is not None: 
@@ -511,7 +527,11 @@ class Population(object):
         """
         renvoie vrai si on a convergence des genes dans la population
         """
-        raise Exception("TODO: isOver")
+        for i in range(self.nbGenes):
+            res=self.hasConverged(i)
+            if res==False:return False
+        return res
+        # raise Exception("TODO: isOver")
 
     stable = property(isOver,None,None)
     
@@ -531,7 +551,21 @@ class Population(object):
 		# for indiv in self.popAG:
 		# 	liste.append(indiv.genotype[numGene*szGenes:numGene*szGenes+szGenes+1])
 		# for 
-        raise Exception("TODO: hasConverged")
+
+        liste=list()
+        dic={}
+        for indiv in self.popAG:
+            sz=self.szGenes
+            c=indiv.genotype[numGene*sz:numGene*sz+sz+1]
+            if c in dic:
+                dic[c]+=1
+            else:
+                dic[c]=1
+        for cle,item in dic.items():
+            if item/self.szPop > self.rateCVG:return True
+        return False
+
+        # raise Exception("TODO: hasConverged")
 
     def _selectWheel(self,nbParents=None):
         """
