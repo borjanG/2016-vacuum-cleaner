@@ -167,6 +167,7 @@ def subtest_run_selectBest(kode):
         # best est-il affecté ?
         _out += check_property( getattr(pop,best_att) is not None,
                                 "'best' is not set")
+
     if not check_integrity(_out): return _out
     # la sortie de run est-elle bien best
     for pop,sortie in zip(pops,_output):
@@ -176,8 +177,10 @@ def subtest_run_selectBest(kode):
     # controle de la bonne évolution des stats
     for b,a in zip(_avant,_apres):
         for i in range(4):
+            # print("here", b[i] <= a[i] if i == 2 else b[i] < a[i], i)
             _out += check_property(b[i] <= a[i] if i == 2 else b[i] < a[i],
                                    "something odds in the computation")
+    # print(_out,'ggggggggggggggggggggggggggggggggggggggggggggggggggggg')
     # il faut controler que c'est effectivement le best de popAG
     # bug douloureux de mmcPop
     for pop,sortie in zip(pops,_output):
@@ -327,10 +330,10 @@ def test_isOver():
     _out = ''
     # ça n'a pas convergé
     for k in range(0,10,2): _out += subtest_isOver_shouldNot(k+1)
-    if not check_integrity(_out): return _out
+    if not check_integrity(_out): 
+        return _out
     # ça devrait
     for k in range(10,20,2): _out += subtest_isOver_should(k+1)
-
     return _out
 
 
@@ -411,9 +414,7 @@ def test_run():
         except:
             print("failure subtest_run_selectBest({})".format(x))
             _out += '{}'.format(x)
-
     for x in range(3): _out += subtest_run_useSelect(x)
-
     # il faudrait récupérer le nombre d'itérations ....
     # tester une population qui a convergé et vérifier que ça marche
 

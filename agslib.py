@@ -41,7 +41,10 @@ def fitness(chaine):
 	prend en entree une chaine de caracteres et renvoie
 	une valeur numerique : Il faudra surcharger
 	"""
-	raise NotImplementedError("fitness: undef")
+	x=chaine
+	return x.count('0') * x.count('2') - x.count('1') + 7
+
+	# raise NotImplementedError("fitness: undef")
 
 class Population(object):
 	"""
@@ -492,17 +495,13 @@ class Population(object):
 		"""
 		i = 0
 		quand = 0
-
 		
 		self.popAG = [ Individu(self.szChrom,self.alphabet,fitness)
 						 for _ in range(self.szPop) ]
-
-		# bestIndividu=max(self.popAG, key = lambda individu: individu.adequation)
 		bestIndividu = max(self.popAG)
 		del self.history
-		print(nbIterations)
 		while i < nbIterations and not self.isOver():
-			self.popAG=self.nextGeneration()
+			self.popAG = self.nextGeneration(code)
 
 			self.__history[i] = self.scores
 
@@ -524,11 +523,14 @@ class Population(object):
 		"""
 		renvoie vrai si on a convergence des genes dans la population
 		"""
+		
+		cv=0
 		for i in range(self.nbGenes):
 			res=self.hasConverged(i)
-			if res==False:return False
-		return res
-		# raise Exception("TODO: isOver")
+			if res:cv+=1
+		rate = self.rateCVG
+		th = math.ceil((1-rate) * self.nbGenes)
+		return cv >= th
 
 	stable = property(isOver,None,None)
 	
@@ -544,20 +546,18 @@ class Population(object):
 		# pour chaque allèle possible du gène:
 		# 	voir s'il est présent dans la liste avec un taux>delta
 			
-		liste=list()
-		dic={}
+		liste = list()
+		dic = {}
 		for indiv in self.popAG:
-			sz=self.szGenes
-			c=indiv.genotype[numGene*sz:numGene*sz+sz+1]
+			sz = self.szGenes
+			c = indiv.genotype[numGene*sz:numGene*sz+sz]
 			if c in dic:
-				dic[c]+=1
+				dic[c] += 1
 			else:
-				dic[c]=1
+				dic[c] = 1
 		for cle,item in dic.items():
-			if item/self.szPop > self.rateCVG:return True
+			if item/self.szPop >= self.rateCVG: return True
 		return False
-
-		# raise Exception("TODO: hasConverged")
 
 	def _selectWheel(self,nbParents=None):
 		"""
@@ -599,7 +599,7 @@ class Population(object):
 			_pop.append(self.popAG[j])
 			
 		for indiv in _pop:
-			indiv.adequation=0
+			indiv.adequation=None
 		
 		return _pop
 
@@ -625,23 +625,19 @@ class Population(object):
 		"""
 		if nbParents is None : nbParents = self.szPop
 		_selection = []
-		_pop = []
 		_residu = []
 		_min,_moy,_max,_sum = self.evaluation()
-		l = [i.adequation for i in self.popAG]
-		adequation_moyenne = float(sum(l))/max(len(l),1)
-
+		
 		for x in range(nbParents):
 			indiv = self.popAG[x]
-			val = int(indiv.adequation // adequation_moyenne)
+			val = int(indiv.adequation // _moy)
 			_selection = _selection + [indiv for i in range(val)]
-			_pop = _pop + [x for i in range(val)]
-			if indiv.adequation % adequation_moyenne > 0:
+			if indiv.adequation % _moy > 0:
 				_residu.append(indiv)
-		n = self.szPop - len(_pop)
-		_selection.append(random.sample(_residu,n))
-		# for i in _pop:
-		# 	i.adequation=0
+		n = self.szPop - len(_selection)
+		_selection = _selection + random.sample(_residu, n)
+		for indi in _selection:
+			indi.adequation = None
 		random.shuffle(_selection)
 		return _selection
 
