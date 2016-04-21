@@ -496,17 +496,37 @@ class Population(object):
                          for _ in range(self.szPop) ]
 
         # bestIndividu = max(popAG)
-        bestIndividu = max(self.popAG)
+        bestIndividu=max(self.popAG, key = lambda individu: individu.adequation)
+        # bestIndividu = max(self.popAG)
+        # print('best :',bestIndividu,' type : ',type(bestIndividu))
         del self.history
 
         # while i < nbIterations and not isOver(popAG):
         while i < nbIterations and not self.isOver():
-
+        	# print('here')
             # popAG = nextGeneration(popAG)
-            self.nextGeneration()
+            # tmp=self.popAG
+            self.popAG=self.nextGeneration()
+            # print(self.popAG)
 
-            del self.history #surement faux il ne faut pas l initialiser!!!!!!!!!!!!!!!!!!!!!!!!
+            # res=""
+            # for cpyt in range(self.szPop):
+            # 	if self.popAG[cpyt]==tmp[cpyt]:
+            # 		res+='.'
+            # 	else:
+            # 		res+='E'
+            # print(res)
+
+
+
+
+            # _min,_moy,_max,_sum = self.evaluation()
+            # self.__scores=
+            self.__history=self.scores
+            # del self.history #surement faux il ne faut pas l initialiser!!!!!!!!!!!!!!!!!!!!!!!!
             #self.history[quand]=self.popAG ???
+            # print(self.history)
+            # print(self.scores)
 
             # if bestIndividu < max(popAG):
                 # bestIndividu = max(popAG)
@@ -521,6 +541,8 @@ class Population(object):
         print('meilleur a iteration', quand, 'adequation', bestIndividu.adequation)
         if fichier is not None: 
             with open(fichier, 'w') as f: print(bestIndividu.genotype, file = f)
+
+        self.__bestIndividu=bestIndividu
         return bestIndividu.genotype
 
     def isOver(self):
@@ -597,9 +619,26 @@ class Population(object):
             print("computation failure : '{}'\n"
                   "{}".format(_attr,self.evaluation()))
             return self.popAG
-            
+        
+        for cpt in range(nbParents):
+        	R = random.random()
+        	j = 0
+        	while R > _proba[j]:
+        		R-=_proba[j]
+        		j+=1
+        	_pop.append(self.popAG[j])
+            # while R > _proba[j]:
+            #     R = R - _proba[j]
+            #     j = j + 1
+            # _pop.append(j)
+        
+        for indiv in _pop:
+        	indiv.adequation=0
+        
+        return _pop
 
-        raise Exception("TODO _selectWheel")
+        # raise Exception("TODO _selectWheel")
+
 
     def _selectFraction(self,nbParents=None):
         """
@@ -622,9 +661,22 @@ class Population(object):
         _pop = []
         _residu = []
         _min,_moy,_max,_sum = self.evaluation()
+        l=[i.adequation for i in self.popAG]
+        adequation_moyenne=float(sum(l))/max(len(l),1)
+        for x in range(nbParents):
+        	indiv=self.popAG[x]
+        	_pop.append(indiv.adequation//adequation_moyenne*x)
+        	if indiv.adequation % adequation_moyenne > 0:
+        		_residu.append(indiv)
+        n=self.szPop-len(_pop)
+        _pop.append(random.sample(_residu,n))
+        for i in _pop:
+        	i.adequation=0
+        random.suffle(_pop)
+        return _pop
 
 
-        raise Exception("TODO _selectFraction")
+        # raise Exception("TODO _selectFraction")
 
     #------------------------ FIN MODIFICATIONS -----------------------#
 
@@ -636,27 +688,33 @@ def test_main(crossP):
     x.crossPoint = crossP
 
     for a in x.popAG :
-        print (a.genotype,a.adequation)
+        print ('genotype : ',a.genotype,' ; adequation : ',a.adequation)
     print( x.isOver(  ) )
     print("_"*10)
     y = Population(1,7,1,'012')
     y.popAG[0] = y.popAG[1] # on force les individus
     for a in y.popAG :
-        print (a.genotype,a.adequation)
+        print ('genotype : ',a.genotype,' ; adequation : ',a.adequation)
     print( y.isOver(  ) )
 
     for kode in range(4):
         print("_"*10)
         x = Population(23,7,1,'012')
         x.crossPoint = crossP
-        x.run(250,code=kode)
+        # x.run(250,code=kode)
+        x.run(2,code=kode)
+        # print(x.szPop)
         # version sortie graphique
+        # print('here')
+        # print(x.select(kode)+'crossP %d'%x.crossPoint)
         x.plotHistory(x.select(kode)+'crossP %d'%x.crossPoint)
         ## # version ecran ascii
         ## print(x.select(kode))
         ## x.showHistory()
 
-        print(x,x.bestIndividu.genotype,
+        # print('popX   :',x.popAG)
+        # print('bestindiv : ',x.bestIndividu)
+        print(x.bestIndividu.genotype,
               x.bestIndividu.adequation,
               x.bestEval,
               x.bestIndividu.victoires)

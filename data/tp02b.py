@@ -12,9 +12,9 @@ __date__ = "09.04.16"
 __usage__ = "Le simulateur"
 
 # remplacer XXX par le fichier du TP02-A
-from data.tp02 import objetsStatiques, Aspirateur_PG, Monde
+from data.tp02a import objetsStatiques, Aspirateur_PG, Monde
 #from corrige_tp02a import objetsStatiques, Aspirateur_PG, Monde
-from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
+from data.briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
 from tools_tp02 import readerEnvts
 import copy, random
 
@@ -177,7 +177,7 @@ class MondeSimulation(Monde):
         # renvoie de la récompense
         # mise à jour des compteurs utiles
 
-class Simulateur(objet):
+class Simulateur(object):
     """ En entrée:
         - le nombre maximum d'itérations
         - le fichier des environnements
