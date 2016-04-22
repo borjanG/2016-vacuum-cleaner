@@ -28,15 +28,12 @@ class MondeSimulation(Monde):
     def __init__(self, agent, nbLignes=1, nbColonnes=2):
         assert hasattr(agent,'energie'), "attribut 'energie' is required"
         super().__init__(agent,nbLignes,nbColonnes)
-        self.agent = agent
 
     def simulation(self, n, envt=None, position=None):
         """ 
             la simulation dure max n tours et s'arrete des que l'agent 
             n'est plus opérationnel
         """
-        # A verifier, pas sur
-        # assert n == 20 if len(self.agent.capteurs) = 0 else n = len(self.agent.program)
         self.max_tours = n
 
         self.initialisation(envt,position)
@@ -62,7 +59,7 @@ class MondeSimulation(Monde):
     @property
     def perfGlobale(self):
         self.aspirables_apres = [x for sousliste in self.table for x in sousliste].count(3)
-        return self.agent.energie/100 + self.agent.nettoyage/self.agent.dirty - self.agent.repos/len(self.agent.actions) + self.aspirables_apres/self.aspirables_avant + self.agent.nbTours/self.max_tours
+        return self.agent.energie/100 + self.agent.nettoyage/max(1, self.agent.dirty) - self.agent.repos/max(1, len(self.agent.actions)) + self.aspirables_apres/max(1, self.aspirables_avant) + self.agent.nbTours/max(1, self.max_tours)
         # Voir fiche TP02-B
         
     def getPerception(self,capteurs):
@@ -83,15 +80,16 @@ class MondeSimulation(Monde):
             if _proba < .1 : _panne = random.choice(kapteurs)
 
         res = []
-        for x in kapteurs:
+        for x in capteurs:
             nx = self.posAgent[0] + _d[x][0]
             ny = self.posAgent[1] + _d[x][1]
-            if self.__lignes > nx >= 0 and self.__cols > ny >= 0: 
+            # if self.__lignes > nx >= 0 and self.__cols > ny >= 0: 
+            if len(self.table) > nx >= 0 and len(self.table[0]) > ny >= 0:
                 res.append(self.table[nx][ny])
             else: 
                 res.append(-1)
         if _panne > -1: 
-            res[_panne] = -1
+            res[capteurs.index(_panne)] = -1
             print("panne sur le capteur {}".format(_panne))
         return res
 
@@ -146,9 +144,9 @@ class MondeSimulation(Monde):
                     score = 1
             else: score = -1
         elif choix == 'Droite':
-            if dy < self.__cols-1:
+            if dy < len(self.table[0])-1:
                 if self.table[dx][dy+1] == 4:
-                    if dy < self.cols - 2 and self.table[dx][dy+2] == 0:
+                    if dy < len(self.table[0]) - 2 and self.table[dx][dy+2] == 0:
                         self._table[dx][dy+1] = 4
                         self._posAgent = (dx, dy+1)
                 else: 
@@ -156,7 +154,7 @@ class MondeSimulation(Monde):
                     score = 1
             else: score = -1
         else:
-            if len(self.capteurs) == 0:
+            if len(self.agent.capteurs) == 0:
                 score = 0
             else:
                 if self._table[dx][dy] == 2:
@@ -166,11 +164,10 @@ class MondeSimulation(Monde):
             self.agent.repos += 1
 
         i, j = self.posAgent
-        self._passage[i][j] += 1 
-        self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.chromosome)
+        # self._passage[i][j] += 1 
+        if self.agent.capteurs == []: 
+            self.agent.cpt = (self.agent.cpt + 1) % len(self.agent.program)
 
-        if self.agent.vivant:
-            self.agent.__cptalive += 1 
         return score
         # Appliquer les opérations demandées
         # mise à jour de self.agent.energie
@@ -239,17 +236,29 @@ class Simulateur(object):
         else:
             mondes_ok = (1,2)
 
-        with open(self.__ficEnvt,'r') as fic:
-            for ligne in fic:
-                data = ligne.split('')
-                teep = data[0]
-                if teep in mondes_ok:
-                    nbCol = data[1]
-                    objets = [data[2:2+nbCol]]
-                    positions = [data[2+nbCol:]]
-                    m = MondeSimulation(asp, 1, nbCol)
-                    for x in positions:
-                        cpt += m.simulation(self.__nbMaxIter, objets, x)
+        dic=readerEnvts(self.__ficEnvt)
+
+        for ligne in dic:
+            typ = dic[ligne][0]
+            nbCol = dic[ligne][1]
+            table = dic[ligne][2]
+            positions = dic[ligne][3]
+            if typ in mondes_ok:
+                m = MondeSimulation(asp, 1, nbCol)
+                for x in positions:
+                    cpt += m.simulation(self.__nbMaxIter, table, x)
+
+        # with open(self.__ficEnvt,'r') as fic:
+        #     for ligne in fic:
+        #         data = ligne.split('')
+        #         teep = data[0]
+        #         if teep in mondes_ok:
+        #             nbCol = data[1]
+        #             objets = [data[2:2+nbCol]]
+        #             positions = [data[2+nbCol:]]
+        #             m = MondeSimulation(asp, 1, nbCol)
+        #             for x in positions:
+        #                 cpt += m.simulation(self.__nbMaxIter, objets, x)
         return cpt
 
 

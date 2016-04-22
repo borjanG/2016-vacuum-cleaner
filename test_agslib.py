@@ -180,7 +180,7 @@ def subtest_run_selectBest(kode):
             # print("here", b[i] <= a[i] if i == 2 else b[i] < a[i], i)
             _out += check_property(b[i] <= a[i] if i == 2 else b[i] < a[i],
                                    "something odds in the computation")
-    # print(_out,'ggggggggggggggggggggggggggggggggggggggggggggggggggggg')
+    
     # il faut controler que c'est effectivement le best de popAG
     # bug douloureux de mmcPop
     for pop,sortie in zip(pops,_output):
@@ -417,7 +417,6 @@ def test_run():
     for x in range(3): _out += subtest_run_useSelect(x)
     # il faudrait récupérer le nombre d'itérations ....
     # tester une population qui a convergé et vérifier que ça marche
-
     for x in (0,1,2):
         for alf in ("012","3456","789012"):
             pops = mmcPop(k=1,p=2,r=.9,a=alf)

@@ -102,7 +102,6 @@ class Aspirateur_PG(Aspirateur):
 
     def getDecision(self, percepts):
         """ deux cas à traiter suivant que percepts = [] ou pas """
-
         self.__cptalive += 1 
         if percepts == []:
             return self.program.decoder(self.cpt)
@@ -140,7 +139,7 @@ class Monde_AG(Monde):
  
     def getPerception(self, capteurs):
         """ informe l'agent en fonction des capteurs """
-
+        
         delta = [(-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (0,0)]
         res = []
         for x in capteurs:

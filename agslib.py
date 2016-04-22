@@ -41,10 +41,10 @@ def fitness(chaine):
 	prend en entree une chaine de caracteres et renvoie
 	une valeur numerique : Il faudra surcharger
 	"""
-	x=chaine
-	return x.count('0') * x.count('2') - x.count('1') + 7
+	# x=chaine
+	# return x.count('0') * x.count('2') - x.count('1') + 7
 
-	# raise NotImplementedError("fitness: undef")
+	raise NotImplementedError("fitness: undef")
 
 class Population(object):
 	"""
@@ -290,16 +290,17 @@ class Population(object):
 		_name = _fmt % (name,self.alphabet,self.szPop,self.age)
 
 		if HASPLOT:
-
 			_max = self.bestEval
 			plt.axis([0, self.age, 0, _max*1.5]) #axes du graphe
 			for i,_lab in enumerate( ('min','moy','max') ):
 				datas = [ self.history[_][0][i] for _ in range(self.age) ]
+				# datas = [ self.history[_][i] for _ in range(self.age) ]
 				plt.plot(datas,label=_lab)
 			_label='%s, pop : %d, bestfitness : %2.3f (age %s) ' %\
 					(name,self.szPop,self.bestEval,self.quand)
 			plt.title(_label)
 			plt.legend()
+			# plt.show()
 			plt.savefig(_name)      #sauvegarde du graphe
 			print( 'sauvegarde dans',_name )
 			plt.cla()       #efface les axes du graphe
@@ -493,30 +494,68 @@ class Population(object):
 
 		return bestIndividu.genotype
 		"""
+
+		#Construction 
+		# self.restart()
+		# i = 0
+		# quand = 0
+		# # self.__iteration = 0
+		
+		# popAG = self.popAG
+		# bestIndividu = max(popAG)
+		# del self.history
+		# # self.__history[0] = [self.scores]
+		# # i = 1
+		# while i < nbIterations and not self.isOver():
+		# 	popAG = self.nextGeneration(code)
+		# 	self.__history[i] = [self.scores]
+
+		# 	if bestIndividu < max(popAG):
+		# 		bestIndividu = max(popAG)
+		# 		quand = i+1
+		# 		# self.__iteration = i
+		# 	self.popAG = popAG
+		# 	i += 1
+		# self.age = i-1
+		# if self.isOver():
+		# 	print('stabilisation iteration', i)
+		# print('meilleur a iteration', quand, 'adequation', bestIndividu.adequation)
+		# # print('meilleur a iteration', self.__iteration, 'adequation', bestIndividu.adequation)
+		# if fichier is not None: 
+		# 	with open(fichier, 'w') as f: print(bestIndividu.genotype, file = f)
+
+		# self.__iteration = quand 
+		# self.__bestIndividu = bestIndividu
+		# self.__best_adequation = bestIndividu.adequation
+		# return bestIndividu.genotype
+
+		#Working algorithm, NO TOUCH Plz.
+		self.restart()
 		i = 0
 		quand = 0
-		
-		self.popAG = [ Individu(self.szChrom,self.alphabet,fitness)
-						 for _ in range(self.szPop) ]
-		bestIndividu = max(self.popAG)
+		popAG = self.popAG
+		bestIndividu = max(popAG)
 		del self.history
+
 		while i < nbIterations and not self.isOver():
-			self.popAG = self.nextGeneration(code)
+			popAG = self.nextGeneration(code)
+			self.__history[i] = [self.scores]
 
-			self.__history[i] = self.scores
-
-			if bestIndividu < max(self.popAG):
-				bestIndividu = max(self.popAG)
+			if bestIndividu < max(popAG):
+				bestIndividu = max(popAG)
 				quand = i
+			self.popAG = popAG
 			i += 1
-		self.age = i-1 
+		self.age = i-1
 		if self.isOver():
 			print('stabilisation iteration', i)
 		print('meilleur a iteration', quand, 'adequation', bestIndividu.adequation)
 		if fichier is not None: 
 			with open(fichier, 'w') as f: print(bestIndividu.genotype, file = f)
 
-		self.__bestIndividu=bestIndividu
+		self.__iteration = quand 
+		self.__bestIndividu = bestIndividu
+		self.__best_adequation = bestIndividu.adequation
 		return bestIndividu.genotype
 
 	def isOver(self):
@@ -524,10 +563,10 @@ class Population(object):
 		renvoie vrai si on a convergence des genes dans la population
 		"""
 		
-		cv=0
+		cv = 0
 		for i in range(self.nbGenes):
-			res=self.hasConverged(i)
-			if res:cv+=1
+			res = self.hasConverged(i)
+			if res: cv += 1
 		rate = self.rateCVG
 		th = math.ceil((1-rate) * self.nbGenes)
 		return cv >= th
@@ -594,8 +633,8 @@ class Population(object):
 			R = random.random()
 			j = 0
 			while R > _proba[j]:
-				R-=_proba[j]
-				j+=1
+				R -= _proba[j]
+				j += 1
 			_pop.append(self.popAG[j])
 			
 		for indiv in _pop:

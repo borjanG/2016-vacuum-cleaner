@@ -92,5 +92,5 @@ def main(fichier):
     p.plotHistory(_base+p.select(1)+'_genes_'+'AGDR'+'_noPanne')
 
 if __name__ == "__main__" :
-    main('tyty2.txt')
+    main('tyty3.txt')
 
