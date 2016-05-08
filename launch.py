@@ -1,13 +1,35 @@
 #Custom libs
 from data.monde import *
 from data.tp01 import *
+import numpy as np 
+import matplotlib.pyplot as plot 
+import pylab as py
+from scipy.stats import linregress
 
 if __name__ == "__main__":
 
-  # a = AspiVoyant()
+  a = AspiVoyant()
   # a = Aspirateur_KB(0.1)
   # a = Aspirateur()
   # m = Monde(a,1,5)
+  mondes = [Monde(a, 1, i) for i in range(1, 20)]
+  ord = list()
+  for monde in mondes:
+    # monde.simulation(2*len(monde.table[0]))
+    ord.append(monde.simulation(2*len(monde.table[0])))
+  # coeff = linregress(list(range(1, 20)), ord)
+  # a = coeff[0]
+  # b = coeff[1]
+  # ordo = list()
+  # for i in range(1, 20):
+    # ordo.append(a*i + b)
+
+  py.plot(list(range(1, 20)), ord, "Green")
+  py.xlabel("Taille du monde (nombre de colonnes)")
+  # py.ylabel("#Cases avec poussiere debut / #Cases avec poussiere fin")
+  # py.ylabel("#Pieces netoyees - #de cases ou il passe 3+ fois")
+  py.title("Aspi v1 (Deter)")
+  plot.show()
   # m.simulation(10)
   # print(m.historique)
   # print(m.table)

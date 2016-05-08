@@ -10,7 +10,7 @@ __author__ = "Terral, Rodriguez, Geshkovski"
 __date__ = "25.02.16"
 __version__ = "0.6"
 
-objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien',' '), 1: ('poussiere',':')}
+objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien','.'), 1: ('poussiere','x')}
 
   # ------------ #    
   #     MONDE    # -------------------------------------------------------------------#
@@ -40,7 +40,14 @@ class Monde(object):
   @property 
   def historique(self): return deepcopy(self.__historique)
   @property 
-  def perfGlobale(self): return self.__perfGlobale
+  def perfGlobale(self): 
+    start = deepcopy(self.__historique[0][0][0])
+    ones_start = int(sum(start, []).count(1))
+    end = deepcopy(self.__historique[-1][0][0])
+    ones_end = int(sum(end, []).count(1))
+    # if ones_end != 0:
+    return (ones_start - ones_end)**2
+    # return 0
 
   def applyChoix(self, action):
     """ Mise a jour du monde et de la position de l'agent en fonction 
@@ -202,6 +209,10 @@ class Aspirateur(object):
   def capteurs(self): return self.__capteurs 
   @property 
   def actions(self): return self.__actions
+  @property
+  def total(self):
+      return self.__total
+  
 
   def getDecision(self, percept = []):
     """ Renvoie une action en accord avec l'etat de l'environnement """

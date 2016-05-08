@@ -168,5 +168,12 @@ class World(Monde):
         for i in range(len(self._passage)):
             T += len(list(filter(lambda x: x>2, self._passage[i])))
         return self.agent.nettoyage - T
-
+        # return self.agent.nettoyage
+        # start = copy.deepcopy(self.historique[0][0][0])
+        # ones_start = int(sum(start, []).count(1))
+        # end = copy.deepcopy(self.historique[-1][0][0])
+        # ones_end = int(sum(end, []).count(1))
+        # if ones_start != 0:
+        #     return ones_end/ones_start
+        # return 0
 

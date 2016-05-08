@@ -7,8 +7,8 @@ __version__ = "0.1"
 
 # remplacer XXX par votre fichier issu du TD2
 #from XXX import objetsStatiques, Aspirateur, Monde
-from corrige_tp00a import objetsStatiques, Aspirateur, Monde
-from briques import Rule, KB
+from Final.corrige_tp00a import objetsStatiques, Aspirateur, Monde
+from Final.briques import Rule, KB
 import copy, random
 
 TupLst = tuple,list

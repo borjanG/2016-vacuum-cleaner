@@ -1,4 +1,4 @@
-from data.tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
+from Final.corrige_tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
 import numpy as np # pour faire des stats simples
 
 def test_performance(w,n,nb=10):
@@ -55,17 +55,39 @@ def build_base():
     return _maBase
     
 if __name__ == "__main__":
-    input("Aléatoire")
+    import pylab as py 
+    import matplotlib.pyplot as plot 
+    from scipy.stats import linregress
+    # input("Aléatoire")
     a = Aspirateur_KB(.7)
     w = World(a)
-    test_performance(w,4)
-    input("Apprenant")
-    b = Aspirateur_KB(.7,[8,2],learn=True)
+    # test_performance(w,4)
+    # input("Apprenant")
+    b = Aspirateur_KB(0.75,[8,2],learn=True)
     w = World(b)
     test_performance(w,4)
-    input("Base forcée")
-    c = Aspirateur_KB(.7,[8,2])
+    # input("Base forcée")
+    c = Aspirateur_KB(0.7,[8,2])
     c.knowledge = build_base()
-    w = World( c )
-    test_performance(w,4)
+    # w = World( c )
+    # test_performance(w,4)
+
+    # mondes = [World(b 1, i) for i in range(1, 20)]
+    # ord = list()
+    # for monde in mondes:
+    # # monde.simulation(2*len(monde.table[0]))
+    #     ord.append(monde.simulation(2*len(monde.table[0])))
+    # coeff = linregress(list(range(1, 20)), ord)
+    # _a = coeff[0]
+    # _b = coeff[1]
+    # ordo = list()
+    # for i in range(1, 20):
+    #     ordo.append(_a*i + _b)
+
+    # py.plot(list(range(1, 20)), ordo, "Green")
+    # py.xlabel("Taille du monde (nombre de colonnes)")
+    # # py.ylabel("#Cases avec poussiere debut / #Cases avec poussiere fin")
+    # # py.ylabel("#Pieces netoyees - #de cases ou il passe 3+ fois")
+    # py.title("Aspi v1 (Deter)")
+    # plot.show()
     

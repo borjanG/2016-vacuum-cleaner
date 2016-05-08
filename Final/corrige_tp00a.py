@@ -6,7 +6,7 @@ __version__ = "00a"
 
 import random
 import copy
-from ezCLI import grid
+from Final.ezCLI import grid
 
 # les éléments du monde dans un dictionnaire
 objetsStatiques = {100: ('Aspirateur','@'),
