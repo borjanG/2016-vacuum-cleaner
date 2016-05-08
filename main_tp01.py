@@ -10,31 +10,37 @@ def test_performance(w,n,nb=10):
         ATTENTION: compteurs est un dictionnaire que j'ai ajouté à Aspirateur_KB et qui est réinitialisé
         à chaque simulation, il est rempli dans Aspirateur_KB.getDecision
     """
+    res={}
     assert isinstance(w,World),"World instance required"
     _resultat={'agent': [], 'world': [], }
     for i in range(nb):
-        print("simulation %02d" % (i+1))
+        # print("simulation %02d" % (i+1))
         w.simulation(n)
-        print(w.agent.compteurs)
+        # print(w.agent.compteurs)
         _resultat['agent'].append(w.agent.getEvaluation())
         _resultat['world'].append(w.perfGlobale)
-        print("eval agent {0[agent]} vs perf globale {0[world]}".format(_resultat))
-        print(w) ; print("table: {0.table} posAgent is {0.posAgent}".format(w))
-        print(w.agent.knowledge)
-        print("Historique")
+        # print("eval agent {0[agent]} vs perf globale {0[world]}".format(_resultat))
+        # print(w) ; print("table: {0.table} posAgent is {0.posAgent}".format(w))
+        # print(w.agent.knowledge)
+        # print("Historique")
         for i,((t,p),a) in enumerate(w.historique):
-            print("%02d: table %s position %s action %s" % (i,t,p,a))
-        print("_"*23)
+            pass
+            # print("%02d: table %s position %s action %s" % (i,t,p,a))
+        # print("_"*23)
     _evalAgent = {'v':np.array( _resultat['agent'] ), 'name':"Evaluation Agent"}
     _globalPerf = { 'v': np.array( _resultat['world'] ), 'name': "Performance Globale"}
     for data in (_evalAgent,_globalPerf):
-        print("statistiques",data['name'])
+        # print("statistiques",data['name'])
         arr = data['v']
-        print("moyenne", round(np.mean( arr ),3))
-        print("mediane", round(np.median( arr ),3) )
-        print("minimum", round(np.min( arr ),3))
-        print("maximum", round(np.max( arr ),3))
-        print("EcT", round(np.std( arr ),3))
+        # print("moyenne", round(np.mean( arr ),3))
+        # print("mediane", round(np.median( arr ),3) )
+        # print("minimum", round(np.min( arr ),3))
+        # print("maximum", round(np.max( arr ),3))
+        # print("EcT", round(np.std( arr ),3))
+        #ajout:
+        res[data['name']]=round(np.mean( arr ),3)
+    # print(res)
+    return res
     
 
 def build_base():
@@ -57,22 +63,61 @@ def build_base():
 if __name__ == "__main__":
     import pylab as py 
     import matplotlib.pyplot as plot 
-    from scipy.stats import linregress
+    # from scipy.stats import linregress
     # input("Aléatoire")
-    a = Aspirateur_KB(.7)
-    w = World(a)
+    # a = Aspirateur_KB(.7)
+    # w = World(a)
     # test_performance(w,4)
     # input("Apprenant")
-    b = Aspirateur_KB(0.75,[8,2],learn=True)
-    w = World(b)
-    test_performance(w,4)
+    # b = Aspirateur_KB(0.75,[8,2],learn=True)
+    # w = World(b)
+    # test_performance(w,4)
     # input("Base forcée")
-    c = Aspirateur_KB(0.7,[8,2])
-    c.knowledge = build_base()
+    # c = Aspirateur_KB(0.7,[8,2])
+    # c.knowledge = build_base()
     # w = World( c )
     # test_performance(w,4)
 
-    # mondes = [World(b 1, i) for i in range(1, 20)]
+    #stochy
+    # a = Aspirateur_KB(.7)
+    # nb_cols=40
+    # mondes = [World(a, 1, i) for i in range(1, nb_cols)]
+    # eval_monde = list()
+    # eval_agent=list()
+    # for monde in mondes:
+    #     dico=test_performance(monde,2*len(monde.table[0]),10)
+    #     # print(dico)
+    #     eval_monde.append(dico['Performance Globale'])
+    #     eval_agent.append(dico['Evaluation Agent'])
+    # py.plot(list(range(1, nb_cols)), eval_monde, "Green", label='Performance Globale')
+    # # py.plot(list(range(1, nb_cols)), eval_agent, "Blue", label='Evaluation Agent')
+    # py.legend(loc='upper right')
+    # py.xlabel("Taille du monde (nombre de colonnes)")
+    # py.ylabel("Performance")
+    # py.title("Aspi v0 Stochy")
+    # plot.show()
+
+    #learny
+    a = Aspirateur_KB(0.75,[8,2],learn=True)
+    nb_cols=40
+    mondes = [World(a, 1, i) for i in range(1, nb_cols)]
+    eval_monde = list()
+    eval_agent=list()
+    for monde in mondes:
+        a.knowledge=KB()
+        dico=test_performance(monde,2*len(monde.table[0]),10)
+        # print(dico)
+        eval_monde.append(dico['Performance Globale'])
+        eval_agent.append(dico['Evaluation Agent'])
+    py.plot(list(range(1, nb_cols)), eval_monde, "Green", label='Performance Globale')
+    # py.plot(list(range(1, nb_cols)), eval_agent, "Blue", label='Evaluation Agent')
+    py.legend(loc='upper right')
+    py.xlabel("Taille du monde (nombre de colonnes)")
+    py.ylabel("Performance")
+    py.title("Aspi v1 learny")
+    plot.show()
+
+    # mondes = [World(a, 1, i) for i in range(1, 20)]
     # ord = list()
     # for monde in mondes:
     # # monde.simulation(2*len(monde.table[0]))
