@@ -13,9 +13,9 @@ __date__ = "15.03.16"
 __usage__ = "Utilisation de l'algo génétique"
 
 # remplacer XXXX par votre fichier correspondant au tp02b
-from data.tp02b import objetsStatiques, Aspirateur_PG, MondeSimulation
-from data.tp02b import Simulateur
-from data.briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
+from corrige_tp02b import objetsStatiques, Aspirateur_PG, MondeSimulation
+from corrige_tp02b import Simulateur
+from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
 from tools_tp02 import generateEnvts
 import agslib
 

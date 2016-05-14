@@ -33,6 +33,7 @@ class Aspirateur(object):
         self.__alive = True
         self.__value = 0
         self.__total = 0
+        
     @property
     def capteurs(self): return self.__capteurs
     @property

@@ -10,7 +10,7 @@ __version__ = "0.9"
 import copy
 import random
 ## remplacer XXX par le nom de votre fichier à tester
-import data.tp01 as tp01
+import tp01 as tp01
 #import corrige_tp01 as tp01
 import test_tp00a as ttp00a
 #----------------------------------------------------

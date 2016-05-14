@@ -78,6 +78,12 @@ Le monde dans lequel les agents evoluent est une sorte de damier: il est compose
 De la facon dont nous avons implementee aspirateurs et mondes, l'agent ne peut se deplacer qu'en colonne et le monde ne contient qu'une ligne.  
 \subsection{Point de vue de l'agent artificielle }
 \justify
+La performance des agents v0 et v1 peut etre observee de deux points de vue differents : via la fonction \texttt{getEvaluation} et via la fonction \texttt{perfGlobale}. \texttt{getEvaluation} est construite de la facon suivante : (card(pieces netoyees)+1)/(card(base de connaissances)+1). Quant a \texttt{perfGlobale}, elle est implementee de la facon suivante : card (pieces nettoyees) - card (pieces visitees 3 fois ou plus). 
+\justify
+Les valeurs observees ne sont pas directement les resultats de ces 2 fonctions (\texttt{getEvaluation} et \texttt{perfGlobale}), mais la moyenne de ces resultats effectuee a partir de 10 simulations (sur chaque monde). 
+\justify
+La duree d'une simulation sur un monde est $2*$(taille du monde). 
+\justify
 \textbf{Aspirateur v0 (Stochy)}
 \justify
 Le premier agent que nous allons observer choisit une action qu'il va faire de maniere aleatoire. Il ne dispose pas des capteurs (donc le monde n'est pas observable). Les actions dont il dispose sont: \texttt{'Gauche'} (aller a gauche), \texttt{'Droite'} (aller a droite) et \texttt{'Aspirer'}.
@@ -87,7 +93,8 @@ En plus de l'agent, les cases du monde correspondant peuvent contenir soit rien 
 \includegraphics[scale=0.65]{figure_1}
 \end{center}
 \justify
-Nous avons observee la performance de "Stochy" en fonction de la taille du monde. La performance est evaluee en regardant le quotient $\frac{\mathrm{nombre \ cases \  sales \  au \ debut}}{\mathrm{nombre \  cases \  sales  \ a \ la \ fin}}$. Si le quotient est eleve, la performance est bonne et inversement. Le temps maximal d'une simulation vaut $2*\mathrm{(nombre \   \ de \  colonnes)}$. On voit que la performance ne semble pas dependre de la taille du monde. 
+Nous avons observee la performance de "Stochy" en fonction de la taille du monde. Il n'y a pas d'interet a regarder l'evaluation de \texttt{getEvaluation}, puisque l'agent a d'autant plus de chance de nettoyer un grand nombre de poussiere que la taille de monde augmente (cette taille etant proportionelle au nombre de "poussieres" presentes). On observe 
+
 \justify
 \textbf{Aspirateur v0a (Deter)}
 \justify
@@ -96,6 +103,16 @@ C'est un aspirateur qui dispose de capteurs lui permettant de voir les cases du 
 \textbf{Aspirateur v1 (Learny)}
 \justify
 "Learny" est identique a "Deter", a l'exception du fait qu'il peut modifier la base de connaissances, c'est a dire, il dispose de la capacite d'apprendre de nouvelles regles. Au debut de la simulation, la base de connaissances peut etre vide ou non. De meme que pour "Deter", "Learny" a une probabilite d'exploitation $P_e$.
+\begin{center}
+\includegraphics[scale=0.65]{figure_2}
+\end{center}
+\justify
+L'evaluation que recoit l'agent a une 
+
+\begin{center}
+\includegraphics[scale=0.65]{figure_3}
+\end{center}
+
 \justify
 
 \justify

@@ -7,7 +7,7 @@ __date__ = "11.02.16"
 __version__ = "final"
 
 ## remplacer XXX par le nom de votre fichier
-import data.monde as tp00
+import monde as tp00
 #import corrige_tp00a as tp00
 
 # NE RIEN MODIFIER A PARTIR D'ICI

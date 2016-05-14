@@ -12,9 +12,9 @@ import copy
 import random
 ## remplacer XXX par le nom de votre fichier à tester
 #import XXX as tp02a
-import data.tp02a as tp02a
+import tp02a as tp02a
 #import corrige_tp02a as tp02a
-from data.briques import mmcBinaire, mmcUnaire, ProgramGenetic, GeneratePercept
+from briques import mmcBinaire, mmcUnaire, ProgramGenetic, GeneratePercept
 from test_tp01 import test_getPerception, hide_objets
 #----------------------------------------------------
 

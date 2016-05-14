@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.1.20)  7 MAY 2016 21:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.1.20)  13 MAY 2016 15:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -431,42 +431,47 @@ Overfull \hbox (2.38065pt too wide) in paragraph at lines 75--76
 erents types d'aspirateurs,
  []
 
-<figure_1.png, id=22, 586.8324pt x 442.2924pt>
+[4] <figure_1.png, id=25, 586.8324pt x 442.2924pt>
 File: figure_1.png Graphic file (type png)
  <use figure_1.png>
-Package pdftex.def Info: figure_1.png used on input line 87.
+Package pdftex.def Info: figure_1.png used on input line 93.
 (pdftex.def)             Requested size: 381.43654pt x 287.48665pt.
- [4]
-Overfull \hbox (27.46838pt too wide) in paragraph at lines 90--91
-\OT1/cmr/m/n/12 monde. La per-for-mance est eval-uee en re-gar-dant le quo-tien
-t $[]$.
- []
+ [5 <./figure_1.png>] <figure_2.png, id=31, 586.8324pt x 442.2924pt>
+File: figure_2.png Graphic file (type png)
+ <use figure_2.png>
+Package pdftex.def Info: figure_2.png used on input line 107.
+(pdftex.def)             Requested size: 381.43654pt x 287.48665pt.
 
-[5 <./figure_1.png>] <Consom1.PNG, id=33, 441.14813pt x 137.01187pt>
+<figure_3.png, id=32, 586.8324pt x 442.2924pt>
+File: figure_3.png Graphic file (type png)
+ <use figure_3.png>
+Package pdftex.def Info: figure_3.png used on input line 113.
+(pdftex.def)             Requested size: 381.43654pt x 287.48665pt.
+ [6 <./figure_2.png>] <Consom1.PNG, id=40, 441.14813pt x 137.01187pt>
 File: Consom1.PNG Graphic file (type png)
-
-<use Consom1.PNG>
-Package pdftex.def Info: Consom1.PNG used on input line 108.
+ <use Consom1.PNG>
+Package pdftex.def Info: Consom1.PNG used on input line 125.
 (pdftex.def)             Requested size: 374.97768pt x 116.46063pt.
- <Consom2.PNG, id=34, 283.0575pt x 162.10562pt>
+
+[7 <./figure_3.png>] <Consom2.PNG, id=45, 283.0575pt x 162.10562pt>
 File: Consom2.PNG Graphic file (type png)
 
 <use Consom2.PNG>
-Package pdftex.def Info: Consom2.PNG used on input line 111.
+Package pdftex.def Info: Consom2.PNG used on input line 128.
 (pdftex.def)             Requested size: 240.59999pt x 137.79042pt.
- <Consom3.PNG, id=35, 380.42125pt x 175.15437pt>
+ <Consom3.PNG, id=46, 380.42125pt x 175.15437pt>
 File: Consom3.PNG Graphic file (type png)
 
 <use Consom3.PNG>
-Package pdftex.def Info: Consom3.PNG used on input line 114.
+Package pdftex.def Info: Consom3.PNG used on input line 131.
 (pdftex.def)             Requested size: 323.35957pt x 148.88191pt.
- [6 <./Consom1.PNG> <./Consom2.PNG>] [7 <./Consom3.PNG>]
+ [8 <./Consom1.PNG> <./Consom2.PNG> <./Consom3.PNG>]
 (./Rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 1926 strings out of 494957
- 27006 string characters out of 6180028
+ 1936 strings out of 494957
+ 27164 string characters out of 6180028
  81646 words of memory out of 5000000
- 5136 multiletter control sequences out of 15000+600000
+ 5144 multiletter control sequences out of 15000+600000
  8063 words of font info for 29 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  38i,8n,23p,658b,177s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -479,10 +484,10 @@ ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmtt12.pfb>
-Output written on Rapport.pdf (8 pages, 193016 bytes).
+Output written on Rapport.pdf (9 pages, 268194 bytes).
 PDF statistics:
- 76 PDF objects out of 1000 (max. 8388607)
- 48 compressed objects within 1 object stream
+ 83 PDF objects out of 1000 (max. 8388607)
+ 50 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -119,7 +119,20 @@ def readChromFromFile(fichier):
     """ lecture d'un chromosome depuis un fichier """
     with open(fichier,"r") as f :
         _chrom = f.read().rstrip() # pas le '\n'
+        f.close()
     return _chrom
+    
+def readChromlCap(fichier):
+    """ renvoie un chromosome et une liste de capteurs """
+    with open(fichier,'r') as f:
+        l = f.readlines()
+        f.close()
+    _chrom = l[0].strip()
+    for x in l[1:]:
+        if x[0] == '#' : continue # on ignore les lignes débutant par #
+        _capteurs = [int(_) for _ in x.split() ]
+    if _capteurs == [ -1] : _capteurs = []
+    return _chrom, _capteurs
 
 def findDiff(chrom1,chrom2,szGene=1,verbose=True):
     """
