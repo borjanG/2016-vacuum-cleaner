@@ -19,6 +19,7 @@ from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
 from tools_tp02 import generateEnvts
 import agslib
 
+
 class PopAspi(agslib.Population):
     """ création de l'aspect généique avec accès au simulateur pour faire l'évaluation """
     def __init__(self,nbIteration,fichier,capteurs,envt,nbIndiv,szGene,alphabet,decodeur,panne=False):
@@ -70,27 +71,41 @@ def main(fichier):
 
         
     _base = fichier.split('.')[0]
-    p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,2,'01',
-                mmcBinaire,True)
-    _oname = _base+"_AG_01.txt"
-    p.run(25,_oname,0)
-    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
-    p.plotHistory(_base+p.select(0)+'_genes_'+'01'+'_withPanne')
-    _oname = _base+"_AG_01_b.txt"
-    p.run(25,_oname,1)
-    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
-    p.plotHistory(_base+p.select(1)+'_genes_'+'01'+'_withPanne')
-    p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,1,'AGDR',
+
+    print(objetsStatiques)
+
+    p = PopAspi(10,fichier,[8,2],objetsStatiques,50,1,'AGDR',
                 mmcUnaire,False)
     _oname = _base+"_AG_AGDR.txt"
     p.run(25,_oname,0)
-    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
     p.plotHistory(_base+p.select(0)+'_genes_'+'AGDR'+'_noPanne')
-    _oname = _base+"_AG_AGDR_b.txt"
-    p.run(25,_oname,1)
-    # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
-    p.plotHistory(_base+p.select(1)+'_genes_'+'AGDR'+'_noPanne')
+    
+    # _oname = _base+"_AG_AGDR_b.txt"
+    # p.run(25,_oname,1)
+    # p.plotHistory(_base+p.select(1)+'_genes_'+'AGDR'+'_noPanne')
+
+    # p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,2,'01',
+    #             mmcBinaire,True)
+    # _oname = _base+"_AG_01.txt"
+    # p.run(25,_oname,0)
+    # # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    # p.plotHistory(_base+p.select(0)+'_genes_'+'01'+'_withPanne')
+    # _oname = _base+"_AG_01_b.txt"
+    # p.run(25,_oname,1)
+    # # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    # p.plotHistory(_base+p.select(1)+'_genes_'+'01'+'_withPanne')
+
+    # p = PopAspi(10,fichier,[2,6,8],objetsStatiques,50,1,'AGDR',
+    #             mmcUnaire,False)
+    # _oname = _base+"_AG_AGDR.txt"
+    # p.run(25,_oname,0)
+    # # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    # p.plotHistory(_base+p.select(0)+'_genes_'+'AGDR'+'_noPanne')
+    # _oname = _base+"_AG_AGDR_b.txt"
+    # p.run(25,_oname,1)
+    # # ne marche que si vous avez pensé à utiliser historique dans run (agslib)
+    # p.plotHistory(_base+p.select(1)+'_genes_'+'AGDR'+'_noPanne')
 
 if __name__ == "__main__" :
-    main('tyty3.txt')
+    main('aaaaaaaa.txt')
 

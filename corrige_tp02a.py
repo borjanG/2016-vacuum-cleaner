@@ -97,6 +97,9 @@ class Aspirateur_PG(Aspirateur):
             
     def getDecision(self,percepts):
         self.__tour += 1 # aspi a survécu un tour de plus
+
+        # print(objetsStatiques)
+
         if percepts == []:
             _rep = self.program.decoder(self.cpt)
             self.cpt += 1

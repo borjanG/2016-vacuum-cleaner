@@ -1,5 +1,6 @@
 
 from tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
+from corrige_tp02a import Aspirateur_PG, Monde_AG
 from corrige_tp02a import *
 import numpy as np # pour faire des stats simples
 
