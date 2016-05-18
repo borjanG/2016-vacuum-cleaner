@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {1}Introduction \IeC {\`a} l'intelligence artificielle}{2}
+\contentsline {subsection}{\numberline {1.1}L'intelligence artificielle en bref}{2}
+\contentsline {subsection}{\numberline {1.2}Le probl\IeC {\`e}me}{3}
+\contentsline {section}{\numberline {2}Etudes comparative}{4}
+\contentsline {subsection}{\numberline {2.1}Point de vue de l'agent artificiel}{5}
+\contentsline {subsection}{\numberline {2.2}Point de vue de l'entreprise commerciale}{9}
+\contentsline {subsection}{\numberline {2.3}Point de vue du consommateur}{13}
+\contentsline {section}{\numberline {3}Annexes}{16}
