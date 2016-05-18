@@ -23,9 +23,6 @@ objetsStatiques[3] = ('jouet aspirable', 'j')
 objetsStatiques[4] = ('jouet déplaçable', 'J')
 objetsStatiques[-1] = ('erreur','?')
 
-# objetsStatiques = {100: ('Aspirateur','@'), 0: ('rien','.'), 1: ('poussiere','x'), -1:('erreur','?')}
-
-
 class MondeSimulation(Monde):
     def __init__(self,agent,nbLignes=1,nbColonnes=2):
         assert hasattr(agent,'energie'), "attribut 'energie' is required"

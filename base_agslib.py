@@ -62,7 +62,6 @@ class SomeOne(object):
         return self.__fitness
     @fitness.setter
     def fitness(self,fun):
-        #assert hasattr(fun,"__call__") # doit etre callable
         assert inspect.isfunction(fun),\
           "a callable was expected"
         assert len(inspect.getfullargspec(fun).args) == 1,\

@@ -1,5 +1,6 @@
-from tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
+from corrige_tp01 import Aspirateur_KB, World, KB, Rule, objetsStatiques
 import numpy as np # pour faire des stats simples
+# from monde import AspiVoyant
 
 def test_performance(w,n,nb=10):
     """
@@ -11,7 +12,7 @@ def test_performance(w,n,nb=10):
         à chaque simulation, il est rempli dans Aspirateur_KB.getDecision
     """
     res={}
-    assert isinstance(w,World),"World instance required"
+    # assert isinstance(w,World),"World instance required"
     _resultat={'agent': [], 'world': [], }
     for i in range(nb):
         # print("simulation %02d" % (i+1))
@@ -78,65 +79,86 @@ if __name__ == "__main__":
     # w = World( c )
     # test_performance(w,4)
 
-    # Stochy
+    #Stochy
     a = Aspirateur_KB(.7)
     nb_cols=40
     mondes = [World(a, 1, i) for i in range(1, nb_cols)]
     eval_monde = list()
-    eval_agent=list()
+    eval_agent = list()
     for monde in mondes:
         dico=test_performance(monde,2*len(monde.table[0]),10)
-        # print(dico)
         eval_monde.append(dico['Performance Globale'])
         eval_agent.append(dico['Evaluation Agent'])
-    # py.plot(list(range(1, nb_cols)), eval_monde, "Green", label='Performance Globale')
-    py.plot(list(range(1, nb_cols)), eval_agent, "Red", label='Evaluation Agent stochy')
-    # py.legend(loc='lower right')
-    py.xlabel("Taille du monde (nombre de colonnes)")
-    py.ylabel("Performance")
-    # py.title("Aspi v0 Stochy")
-    # plot.show()
+    # py.plot(list(range(1, nb_cols)), eval_monde, "Red", label='Stochy')
+    py.plot(list(range(1, nb_cols)), eval_agent, "Red", label='Stochy')
 
-    # #learny
+
+    #Learny
     a = Aspirateur_KB(0.75,[8,2],learn=True)
-    nb_cols=40
     mondes = [World(a, 1, i) for i in range(1, nb_cols)]
     eval_monde = list()
-    eval_agent=list()
+    eval_agent = list()
     for monde in mondes:
-        a.knowledge=KB()
-        dico=test_performance(monde,2*len(monde.table[0]),10)
-        # print(dico)
+        a.knowledge = KB()
+        dico = test_performance(monde,2*len(monde.table[0]),10)
         eval_monde.append(dico['Performance Globale'])
         eval_agent.append(dico['Evaluation Agent'])
-    # py.plot(list(range(1, nb_cols)), eval_monde, "Purple", label='Performance Globale')
-    py.plot(list(range(1, nb_cols)), eval_agent, "Blue", label='Evaluation Agent learny')
-    # py.legend(loc='upper right')
-    py.xlabel("Taille du monde (nombre de colonnes)")
-    py.ylabel("Performance")
-    # py.title("Aspi v1 learny")
-    # plot.show()
+    # py.plot(list(range(1, nb_cols)), eval_monde, "Blue", label='Learny')
+    py.plot(list(range(1, nb_cols)), eval_agent, "Blue", label='Learny')
 
 
-    #deter
+    #Deter
     a = Aspirateur_KB(0.75,[8,2],learn=False)
-    nb_cols=40
     mondes = [World(a, 1, i) for i in range(1, nb_cols)]
     eval_monde = list()
-    eval_agent=list()
+    eval_agent = list()
     for monde in mondes:
-        a.knowledge=KB()
-        dico=test_performance(monde,2*len(monde.table[0]),10)
-        # print(dico)
+        a.knowledge = build_base()
+        dico = test_performance(monde, 2*len(monde.table[0]),10)
         eval_monde.append(dico['Performance Globale'])
         eval_agent.append(dico['Evaluation Agent'])
-    # py.plot(list(range(1, nb_cols)), eval_monde, "Purple", label='Performance Globale')
-    py.plot(list(range(1, nb_cols)), eval_agent, "green", label='Evaluation Agent deter')
-    py.legend(loc='lower right')
+    # py.plot(list(range(1, nb_cols)), eval_monde, "green", label='Base forced')
+    py.plot(list(range(1, nb_cols)), eval_agent, "green", label='Base forced')
+    
+
+    py.legend(loc='upper left')
     py.xlabel("Taille du monde (nombre de colonnes)")
     py.ylabel("Performance")
-    # py.title("Aspi v1 learny")
+    # py.title("Nouvelle cover des Arctic Monkeys")
+    py.title("Point de vue agent : (getEval -> Original)")
     plot.show()
+
+
+    # #deter
+    # a = AspiVoyant([8,2])
+    # nb_cols=40
+    # mondes = [World(a, 1, i) for i in range(1, nb_cols)]
+    # eval_monde = list()
+    # eval_agent=list()
+    # for monde in mondes:
+    #     dico=test_performance(monde,2*len(monde.table[0]),10)
+    #     # print(dico)
+    #     eval_monde.append(dico['Performance Globale'])
+    #     eval_agent.append(dico['Evaluation Agent'])
+    # # py.plot(list(range(1, nb_cols)), eval_monde, "Purple", label='Performance Globale')
+    # py.plot(list(range(1, nb_cols)), eval_agent, "orange", label='Evaluation Agent deter nous 1')
+    # py.legend(loc='lower right')
+    # py.xlabel("Taille du monde (nombre de colonnes)")
+    # py.ylabel("Performance")
+
+    # mondes = [World(a, 1, i) for i in range(1, nb_cols)]
+    # eval_monde = list()
+    # eval_agent=list()
+    # for monde in mondes:
+    #     dico=test_performance(monde,2*len(monde.table[0]),10)
+    #     # print(dico)
+    #     eval_monde.append(dico['Performance Globale'])
+    #     eval_agent.append(dico['Evaluation Agent'])
+    # # py.plot(list(range(1, nb_cols)), eval_monde, "Purple", label='Performance Globale')
+    # py.plot(list(range(1, nb_cols)), eval_agent, "brown", label='Evaluation Agent deter nous 2')
+    # py.legend(loc='lower right')
+    # py.xlabel("Taille du monde (nombre de colonnes)")
+    # py.ylabel("Performance")
 
 
     # mondes = [World(a, 1, i) for i in range(1, 20)]

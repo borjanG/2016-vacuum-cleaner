@@ -298,9 +298,8 @@ class Population(object):
                     (name,self.szPop,self.bestEval,self.quand)
             plt.title(_label)
             plt.legend()
-            # plt.savefig(_name)      #sauvegarde du graphe
+            plt.savefig(_name)      #sauvegarde du graphe
             print( 'sauvegarde dans',_name )
-            plt.show()
             plt.cla()       #efface les axes du graphe
 
         else:

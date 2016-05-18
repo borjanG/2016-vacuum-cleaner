@@ -7,7 +7,7 @@ __version__ = "0.1"
 
 # remplacer XXX par votre fichier issu du TD2
 #from XXX import objetsStatiques, Aspirateur, Monde
-from monde import objetsStatiques, Aspirateur, Monde
+from corrige_tp00a import objetsStatiques, Aspirateur, Monde
 from briques import ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
 import copy, random
 from fractions import Fraction
@@ -78,32 +78,30 @@ class Aspirateur_PG(Aspirateur):
     @property
     def program(self): return self.__prog
 
-    # def getEvaluation(self):
-    #     # On renvoie l'évaluation de l'agent
-    #     # (nombre de pièces nettoyées + 1) / ( len(self.knowledge) + 1 )
-    #     if hasattr(self,'nettoyage') and hasattr(self,'pieces_sales'):
-    #         if self.pieces_sales == 0: _score = 0
-    #         else: _score = (self.nettoyage / self.pieces_sales) * 10
-    #     else:
-    #         raise AttributeError("'nettoyage' or 'pieces_sales' missing")
+    def getEvaluation(self):
+        # On renvoie l'évaluation de l'agent
+        # (nombre de pièces nettoyées + 1) / ( len(self.knowledge) + 1 )
+        if hasattr(self,'nettoyage') and hasattr(self,'pieces_sales'):
+            if self.pieces_sales == 0: _score = 0
+            else: _score = (self.nettoyage / self.pieces_sales) * 10
+        else:
+            raise AttributeError("'nettoyage' or 'pieces_sales' missing")
 
-    #     if not self.vivant: _score -= 100 ; _rho = 0
-    #     elif self.energie < 25: _rho = Fraction(1,2)
-    #     elif self.energie < 50: _rho = Fraction(2,3)
-    #     elif self.energie < 75: _rho = Fraction(3,4)
-    #     else: _rho = 1
+        if not self.vivant: _score -= 100 ; _rho = 0
+        elif self.energie < 25: _rho = Fraction(1,2)
+        elif self.energie < 50: _rho = Fraction(2,3)
+        elif self.energie < 75: _rho = Fraction(3,4)
+        else: _rho = 1
 
-    #     return _score + _rho * self.energie / 100
+        return _score + _rho * self.energie / 100
             
     def getDecision(self,percepts):
         self.__tour += 1 # aspi a survécu un tour de plus
-
-        # print(objetsStatiques)
-
         if percepts == []:
             _rep = self.program.decoder(self.cpt)
             self.cpt += 1
             return _rep
+
         return self.program.decoder(self.__gp.find(percepts))
 
 
@@ -225,6 +223,18 @@ class Monde_AG(Monde):
     def perfGlobale(self):
         nbRepos = [act for ((_,_),act) in self.historique ].count('Repos')
         return self.agent.getEvaluation() - nbRepos + len(self.table[0])
+
+    # @property
+    # def perfGlobale(self):
+    #     # return nombre de pièces nettoyées − nombre de pièces visitées 3 fois ou plus
+    #     _c = 0
+    #     nbl,nbc = len(self.table),len(self.table[0])
+    #     for i in range(nbl):
+    #         for j in range(nbc):
+    #             if self.__visitees[i][j] > 2: _c += 1
+    #     if hasattr(self.agent,'nettoyage'):
+    #         return self.agent.nettoyage - _c
+    #     else: raise AttributeError("agent has no attribut nettoyage")
 
 
 def restInPeace(hist):

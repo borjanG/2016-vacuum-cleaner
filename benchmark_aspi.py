@@ -9,13 +9,17 @@ __revision__ = "25.04.16"
 
 #----- import ---------
 from tools_tp02 import readChromlCap
-from tp01 import Aspirateur_KB
+from corrige_tp01 import Aspirateur_KB
 from corrige_tp02a import Aspirateur_PG
 from corrige_tp02b import objetsStatiques, MondeSimulation
 from briques import Rule, KB, ProgramGenetic, mmcUnaire, mmcBinaire, GeneratePercept
+from main_tp01 import test_performance
 #----------------------
 from fractions import Fraction
 import random
+
+import pylab as py 
+import matplotlib.pyplot as plot 
 #=======================
 
 """
@@ -117,40 +121,121 @@ prog.program = chrom
 
 # utilise-t-on des pannes
 panne = False
-if capteurs != []:
-    _ok = "oO0Yy"
-    _rep = input("L'aspirateur peut etre en panne [oui in {}] ? ".format(_ok))
-    panne = _rep in _ok
+# if capteurs != []:
+#     _ok = "oO0Yy"
+#     _rep = input("L'aspirateur peut etre en panne [oui in {}] ? ".format(_ok))
+#     panne = _rep in _ok
      
 actions = "Aspirer Gauche Droite Repos".split()
 aspirateurs = {}
-aspirateurs['genetique'] = Aspirateur_PG(prog, gp, capteurs)
-assert aspirateurs['genetique'].program.program == chrom, "something odd is happening"
+# aspirateurs['genetique'] = Aspirateur_PG(prog, gp, capteurs)
+# assert aspirateurs['genetique'].program.program == chrom, "something odd is happening"
+
 aspirateurs['aleatoire'] = Aspirateur_KBE(0, capteurs, actions )
 aspirateurs['apprenant'] = Aspirateur_KBE(.75, capteurs, actions, True)
+aspirateurs['genetique_kapt_panne'] = Aspirateur_PG(prog, gp, capteurs)
+aspirateurs['genetique_kapt_npanne'] = Aspirateur_PG(prog, gp, capteurs)
+aspirateurs['genetique_nkapt'] = Aspirateur_PG(prog, gp)
+aspirateurs['genetique_kapt_panne'].panne = True
+aspirateurs['genetique_kapt_npanne'].panne = False
 
+# for k in aspirateurs:
+#     aspirateurs[k].panne = panne
 
-for k in aspirateurs:
-    aspirateurs[k].panne = panne
-    
+stocker_eval = dict()
+stocker_perf = dict()    
 # création des mondes et récupérations des résultats
 # on manipule une copie de l'environnement pour éviter les pbs
 resultats = {}
-for k in aspirateurs:
-    print("Début simulation Aspirateur {0} energie {1.energie} capteurs {1.capteurs}".format(k, aspirateurs[k]))
-    m = MondeSimulation(aspirateurs[k],1,nbc)
-    for pos in lpos:
+
+#===============#
+#  taille monde #
+#===============#
+
+for nbc in range(2,50):
+    for k in aspirateurs:
+        m = MondeSimulation(aspirateurs[k],1,nbc)
+        
         if not hasattr(aspirateurs[k],'pieces_sales'):
             aspirateurs[k].pieces_sales = envt[:].count(1)
-        perf = m.simulation(nbMax, envt[:], pos)
-        score = m.agent.getEvaluation(  )
+
+        # for pos in lpos:
+        #     if not hasattr(aspirateurs[k],'pieces_sales'):
+        #         aspirateurs[k].pieces_sales = envt[:].count(1)
+        #     perf = m.simulation(nbMax, envt[:], pos)
+        #     score = m.agent.getEvaluation(  )
+
+        dico = test_performance(m, 2*nbc, 10)
+        perf = dico['Performance Globale']
+        score = dico['Evaluation Agent']
+
+        if k in stocker_eval:
+            stocker_eval[k].append(perf)
+        else:
+            stocker_eval[k] = list()
         resultats[k] = resultats.get(k,[]) + [ (perf,score,m.agent.energie,m.agent.vivant,m.agent.nbTours) ]
 
+#=======#
+# Plots #
+#=======#
 
-for k in aspirateurs:
-    print("_"*5,k,"_"*5)
-    for datas in resultats[k]:
-        print("perfG {0:.3} eval {1:.3} energie {2} vivant {3} nbIterations {4}".format(*datas))
+py.plot(list(range(2, nbc)), stocker_eval['aleatoire'], "Orange", label='Stochy')
+py.plot(list(range(2, nbc)), stocker_eval['genetique_nkapt'], "Blue", label='Genetic pas capt')
+py.plot(list(range(2, nbc)), stocker_eval['apprenant'], "Red", label='Learny')
+py.plot(list(range(2, nbc)), stocker_eval['genetique_kapt_panne'], "Purple", label="Genetic capt panne")
+py.plot(list(range(2, nbc)), stocker_eval['genetique_kapt_npanne'], "Green", label="Genetic capt no panne")
+py.title("Point de vue : entreprise (perfGlobale)")
+py.legend(loc = "upper right")
+py.xlabel("Taille du monde (# de colonnes)")
+py.ylabel("Performance")
+plot.show()
+
+#================#
+# nb simulations #
+#================#
+
+# a = range(1,100,5)
+# for i in a:
+#     for k in aspirateurs:
+#         m = MondeSimulation(aspirateurs[k],1,5)
+        
+#         if not hasattr(aspirateurs[k],'pieces_sales'):
+#             aspirateurs[k].pieces_sales = envt[:].count(1)
+
+#         # for pos in lpos:
+#         #     if not hasattr(aspirateurs[k],'pieces_sales'):
+#         #         aspirateurs[k].pieces_sales = envt[:].count(1)
+#         #     perf = m.simulation(nbMax, envt[:], pos)
+#         #     score = m.agent.getEvaluation(  )
+
+#         dico = test_performance(m, i, 10)
+#         perf = dico['Performance Globale']
+#         score = dico['Evaluation Agent']
+
+#         if k not in stocker_eval:
+#             stocker_eval[k] = list()
+#         stocker_eval[k].append(score)
+
+# py.plot(list(a), stocker_eval['aleatoire'], "Orange", label='Stochy')
+# py.plot(list(a), stocker_eval['genetique_nkapt'], "Blue", label='Genetic pas capt')
+# py.plot(list(a), stocker_eval['apprenant'], "Red", label='Learny')
+# py.plot(list(a), stocker_eval['genetique_kapt_panne'], "Purple", label="Genetic capt panne")
+# py.plot(list(a), stocker_eval['genetique_kapt_npanne'], "Green", label="Genetic capt no panne")
+# py.title("Point de vue agent : agent (getEval -> Original)")
+# py.legend(loc = "upper right")
+# py.xlabel("Nombre de simulations")
+# py.ylabel("Performance")
+# plot.show()
+
+#=======#
+# Plots #
+#=======#
+
+# for k in aspirateurs:
+#     print("_"*5,k,"_"*5)
+#     for datas in resultats[k]:
+#         print("perfG {0:.3} eval {1:.3} energie {2} vivant {3} nbIterations {4}".format(*datas))
+
         
 """
 Trace utilisation 2 fois sans panne, 2 fois avec pannes:
